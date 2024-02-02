@@ -70,7 +70,6 @@ function main() {
 		document.global.ballMesh.position.set(ballInfo.x, ballInfo.y, ballInfo.z);
 		document.global.arena.position.z += canvas.clientHeight;
 		document.global.arena.rotation.y += 0.01;
-		
 		document.global.arena.position.z -= canvas.clientHeight;
 
 		
