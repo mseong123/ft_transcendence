@@ -1,4 +1,5 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
+import {processBallMovement} from './gamePlay.js';
 
 function resizeRendererToDisplaySize( renderer ) {
 
@@ -7,21 +8,10 @@ function resizeRendererToDisplaySize( renderer ) {
 	const height = canvas.clientHeight;
 	const needResize = canvas.width !== width || canvas.height !== height;
 	if ( needResize ) {
-
 		renderer.setSize( width, height, false );
-
 	}
 	return needResize;
 
-}
-
-function resizeArena() {
-	let existingWidth = document.global.arenaMesh.geometry.parameters.geometry.parameters.width;
-	let existingHeight = document.global.arenaMesh.geometry.parameters.geometry.parameters.height;
-	let existingDepth = document.global.arenaMesh.geometry.parameters.geometry.parameters.depth;
-	console.log(existingWidth);
-	console.log(existingHeight);
-	console.log(existingDepth);
 }
 
 
@@ -31,24 +21,42 @@ function main() {
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color( "#FFFFFF" );
 
+	//create arena scenegraph including arena and ball
+	const arena = new THREE.Object3D();
+
 	//create arena;
 	const arenaGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry( canvas.clientWidth / 2.5, canvas.clientHeight / 2.5, canvas.clientHeight));
 	const arenaMaterial = new THREE.LineBasicMaterial( { color: document.global.arenaColor } );
 	const arenaMesh = new THREE.LineSegments( arenaGeometry, arenaMaterial );
 	document.global.arenaMesh = arenaMesh;
-	scene.add(arenaMesh);
+	arena.add(arenaMesh);
+
+	//create ball
+	const radius =  canvas.clientWidth / document.global.ballInfo.radiusDivision;
+	const widthSegments = 18;
+	const heightSegments = 18;
+	const ballGeometry = new THREE.SphereGeometry( radius, widthSegments, heightSegments );
+	const ballMaterial = new THREE.MeshPhongMaterial( { color: document.global.ballInfo.color, emissive:document.global.ballInfo.color} );
+	const ballMesh = new THREE.Mesh( ballGeometry, ballMaterial );
+	document.global.ballMesh = ballMesh;
+	arena.add(ballMesh);
+
+	document.global.arena = arena;
+	scene.add(arena);
 
 	//create camera
 	const fov = 60;
 	const aspect = document.global.aspect; // the canvas default
-
 	const near = 0.1;
 	const far = 3000;
 	const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
 	camera.position.z = canvas.clientHeight;
+	
+	
+	
 
 	function render( time ) {
-
+		const ballInfo =  document.global.ballInfo;
 		time *= 0.001;
 	
 		if ( resizeRendererToDisplaySize( renderer ) ) {
@@ -58,23 +66,20 @@ function main() {
 			camera.updateProjectionMatrix();
 	
 		}
-		document.global.arenaMesh.position.z += canvas.clientWidth;
-		document.global.arenaMesh.rotation.y += 2;
-		document.global.arenaMesh.position.z -= canvas.clientWidth;
-		resizeArena();
+		processBallMovement();
+		document.global.ballMesh.position.set(ballInfo.x, ballInfo.y, ballInfo.z);
+		document.global.arena.position.z += canvas.clientHeight;
+		document.global.arena.rotation.y += 0.01;
+		
+		document.global.arena.position.z -= canvas.clientHeight;
+
+		
 		
 	
-		// objects.forEach( ( obj, ndx ) => {
-	
-		// 	const speed = .1 + ndx * .05;
-		// 	const rot = time * speed;
-		// 	obj.rotation.x = rot;
-		// 	obj.rotation.y = rot;
-	
-		// } );
+		
 	
 		renderer.render( scene, camera );
-	
+		requestAnimationFrame(render);
 		
 	
 	}
