@@ -1,6 +1,48 @@
-canvas {
-	width:70%;
+.canvas-container {
+	position:relative;
 	min-width:500px;
+	width:70%;
+	overflow-x:hidden;
+}
+
+.canvas-background-1 {
+	z-index:0;
+	position:absolute;
+	top:0;
+	left:0;
+	width:222.5%;
+	height:100%;
+	background:url("./planetary1.jpg");
+	
+	background-size: auto 100%;
+	animation: rotateBackground 120s linear infinite;
+}
+
+.canvas-background-2 {
+	z-index:0;
+	position:absolute;
+	top:0;
+	left:222.5%;
+	width:222.5%;
+	height:100%;
+	background:url("./planetary1.jpg");
+	background-size: auto 100%;
+	animation: rotateBackground 120s linear infinite;
+}
+
+@keyframes rotateBackground {
+	0% {
+        transform: translateX(0);
+      }
+    100% {
+        transform: translateX(-100%);
+      }
+}
+
+canvas {
+	position:relative;
+	width:100%;
+	height:100%;
+	z-index:1;
 	display:block;
-	border:1px solid black;
 }

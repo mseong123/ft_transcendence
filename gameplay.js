@@ -1,25 +1,29 @@
-let canvas = document.querySelector("#c");
 let ballInfo =  document.global.ballInfo;
-let halfArenaWidth = canvas.clientWidth / 2.5 / 2;
-let halfArenaHeight = canvas.clientHeight / 2.5 / 2;
-let halfArenaDepth = canvas.clientHeight / 2;
-let ballRadius = canvas.clientWidth / ballInfo.radiusDivision;
+const arenaWidth = document.global.minWidth;
+let halfArenaWidth = document.global.minWidth / 2.5 / 2;
+let halfArenaHeight = document.global.minWidth / document.global.aspect / 2.5 / 2;
+let halfArenaDepth = document.global.minWidth / document.global.aspect / 2;
+let ballRadius = document.global.minWidth / ballInfo.radiusDivision;
+const paddleWidth = document.global.minWidth / document.global.minWidthDivision / 5;
+const paddleHeight = document.global.minWidth  / document.global.minWidthDivision / document.global.aspect / 7;
 
+const canvas = document.getElementById("c");
+canvas.addEventListener("mousemove", canvasMouseMove)
 
+function canvasMouseMove(e) {
+    var mouseX = e.clientX;
+	console.log(mouseX);
+    // document.global.paddleOneInfo.x = -((WIDTH - mouseX) / WIDTH * FIELD_WIDTH) + (FIELD_WIDTH / 2);
+  }
 
 
 function isXCollision() {
 	let ballX = ballInfo.x;
-	
-	
-	
 	return ballX - ballRadius < -halfArenaWidth || ballX + ballRadius > halfArenaWidth;
 }
 
 function isYCollision() {
 	let ballY = ballInfo.y;
-	
-	
 
 	return ballY - ballRadius < -halfArenaHeight || ballY + ballRadius > halfArenaHeight;
 }
