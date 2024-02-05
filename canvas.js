@@ -19,8 +19,8 @@ function createArenaMesh(thickness, arena) {
 	const arenaMaterial = new THREE.LineBasicMaterial( { color: document.global.arenaColor } );
 	const arenaMesh = [];
 	for (let i = 0; i < thickness; i++) {
-		const arenaGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry( (document.global.minWidth + i) / document.global.minWidthDivision,
-		(document.global.minWidth + i) / document.global.aspect / document.global.minWidthDivision , (document.global.minWidth + 1) / document.global.aspect));
+		const arenaGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry( (document.global.clientWidth + i) / document.global.widthDivision,
+		(document.global.clientWidth + i) / document.global.aspect / document.global.widthDivision , (document.global.clientWidth + 1) / document.global.aspect));
 		arenaMesh.push(new THREE.LineSegments( arenaGeometry, arenaMaterial ));
 		arena.add(arenaMesh[i]);
 	}
@@ -28,9 +28,9 @@ function createArenaMesh(thickness, arena) {
 }
 
 function createPaddleMesh() {
-	const paddleThickness = document.global.minWidth / document.global.aspect / 150;
-	const paddleWidth = document.global.minWidth / document.global.minWidthDivision / 5;
-	const paddleHeight = document.global.minWidth  / document.global.minWidthDivision / document.global.aspect / 7;
+	const paddleThickness = document.global.clientWidth / document.global.aspect / 150;
+	const paddleWidth = document.global.clientWidth / document.global.widthDivision / 5;
+	const paddleHeight = document.global.clientWidth  / document.global.widthDivision / document.global.aspect / 7;
 
 	const paddleGeometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleThickness )
 	const paddleMaterial = new THREE.MeshPhongMaterial( { color: document.global.paddleInfo.color, emissive: document.global.paddleInfo.color  } );
@@ -52,7 +52,7 @@ function main() {
 	createArenaMesh(document.global.arenaThickness, arena);
 
 	//create ball
-	const radius =  document.global.minWidth / document.global.ballInfo.radiusDivision;
+	const radius =  document.global.clientWidth / document.global.ballInfo.radiusDivision;
 	const widthSegments = 12;
 	const heightSegments = 12;
 	const ballGeometry = new THREE.SphereGeometry( radius, widthSegments, heightSegments );
@@ -70,12 +70,12 @@ function main() {
 	const near = 0.1;
 	const far = 3000;
 	const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
-	camera.position.z = document.global.minWidth / document.global.aspect;	
+	camera.position.z = document.global.clientWidth / document.global.aspect;	
 
 	//create paddles
 	const paddleOne = createPaddleMesh();
-	const paddleThickness = document.global.minWidth / document.global.aspect / 150;
-	paddleOne.position.set(0, 0, document.global.minWidth / document.global.aspect / 2 - (paddleThickness * 3));
+	const paddleThickness = document.global.clientWidth / document.global.aspect / 150;
+	paddleOne.position.set(0, 0, document.global.clientWidth / document.global.aspect / 2 - (paddleThickness * 3));
 	arena.add(paddleOne);
 
 
@@ -83,7 +83,7 @@ function main() {
 	const color = 0xFFFFFF;
 	const intensity = 10;
 	const light = new THREE.DirectionalLight(color, intensity);
-	light.position.set(document.global.minWidth,document.global.minWidth, 0);
+	light.position.set(document.global.clientWidth,document.global.clientWidth, 0);
 	document.global.light = light;
 	scene.add(light);
 	
@@ -103,12 +103,11 @@ function main() {
 	
 		}
 		processBallMovement();
-		processBallMovement();
 		document.global.ballMesh.position.set(ballInfo.x, ballInfo.y, ballInfo.z);
-		document.global.arena.position.z += document.global.minWidth / document.global.aspect;
+		document.global.arena.position.z += document.global.clientWidth / document.global.aspect;
 		document.global.arena.rotation.y += 0.005;
 		// document.global.arena.rotation.x += 0.01;
-		document.global.arena.position.z -= document.global.minWidth / document.global.aspect;
+		document.global.arena.position.z -= document.global.clientWidth / document.global.aspect;
 
 		
 		

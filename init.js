@@ -6,8 +6,8 @@ function resizeAspect(e) {
 
 function init() {
 	let global = {
-		minWidth:500,
-		minWidthDivision:2.5,
+		clientWidth:document.getElementById("c").clientWidth,
+		widthDivision:2.5,
 		aspect: 4/3,
 		arenaColor:"#ffffff",
 		arenaThickness:3,
@@ -29,13 +29,15 @@ function init() {
 			x:0,
 			y:0,
 			z:0,
-			velocityX:1,
-			velocityY:1,
-			velocityZ:1,
+			velocityX:3,
+			velocityY:3,
+			velocityZ:3,
 		}
 		
 	}
+	
 	document.global = global;
+	console.log(document.global.clientWidth)
 	resizeAspect();
 	window.addEventListener("resize", resizeAspect);
 }
