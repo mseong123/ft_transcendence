@@ -16,6 +16,38 @@ function resizeRendererToDisplaySize( renderer ) {
 
 }
 
+function createShadowPlanes(arena) {
+	const geometrySides = new THREE.PlaneGeometry( document.global.clientWidth / document.global.aspect /document.global.widthDivision, document.global.clientWidth  / document.global.aspect );
+	const geometryTopBottom = new THREE.PlaneGeometry( document.global.clientWidth /document.global.widthDivision, document.global.clientWidth  / document.global.aspect );
+	// const material = new THREE.MeshBasicMaterial({color:"white", side:THREE.DoubleSide});
+	const material = new THREE.ShadowMaterial({side:THREE.DoubleSide});
+	material.opacity = 0.3;
+	const shadowPlanes = [];
+
+	//sides
+	for (let i = 0; i < 2; i++) {
+		const plane = new THREE.Mesh( geometrySides, material );
+		plane.rotateX( Math.PI /2 );
+		plane.rotateY( Math.PI /2 );
+		plane.receiveShadow = true;
+		arena.add( plane );
+		shadowPlanes[i] = plane;
+	}
+	shadowPlanes[0].position.set(-document.global.clientWidth / document.global.widthDivision/2,0,0);
+	shadowPlanes[1].position.set(document.global.clientWidth / document.global.widthDivision/2,0,0);
+	//top bottom
+	for (let i = 2; i < 4; i++) {
+		const plane = new THREE.Mesh( geometryTopBottom, material );
+		plane.rotateX( Math.PI /2 );
+		plane.receiveShadow = true;
+		arena.add( plane );
+		shadowPlanes[i] = plane;
+	}
+	shadowPlanes[2].position.set(0,document.global.clientWidth / document.global.aspect/ document.global.widthDivision/2,0);
+	shadowPlanes[3].position.set(0,-document.global.clientWidth / document.global.aspect/ document.global.widthDivision/2,0);
+	document.global.shadowPlanes = shadowPlanes;
+}
+
 function createArenaMesh(thickness, arena) {
 	const arenaMaterial = new THREE.LineBasicMaterial( { color: document.global.arenaColor } );
 	const arenaMesh = [];
@@ -36,6 +68,7 @@ function createPaddleMesh() {
 	const paddleGeometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleThickness )
 	const paddleMaterial = new THREE.MeshPhongMaterial( { color: document.global.paddleInfo.color, emissive: document.global.paddleInfo.color, transparent:true, opacity:0.5  } );
 	const paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterial);
+	paddleMesh.receiveShadow = true;
 	return paddleMesh;
 
 }
@@ -44,7 +77,8 @@ function main() {
 	const canvas = document.querySelector( '#c' );
 	const renderer = new THREE.WebGLRenderer( { antialias: true, canvas } );
 	const scene = new THREE.Scene();
-	renderer.setClearColor( 0x000000, 0 )
+	renderer.setClearColor( 0x000000, 0 );
+	renderer.shadowMap.enabled = true;
 
 	//create arena scenegraph including arena and ball
 	const arena = new THREE.Object3D();
@@ -59,6 +93,8 @@ function main() {
 	const ballGeometry = new THREE.SphereGeometry( radius, widthSegments, heightSegments );
 	const ballMaterial = new THREE.MeshPhongMaterial( { color: document.global.ballInfo.color, emissive: document.global.ballInfo.color, shininess:30} );
 	const ballMesh = new THREE.Mesh( ballGeometry, ballMaterial );
+	ballMesh.position.set(0,50,50);
+	ballMesh.castShadow=true;
 	document.global.ballMesh = ballMesh;
 	arena.add(ballMesh);
 
@@ -86,20 +122,27 @@ function main() {
 
 
 	//create directional light
-	const color = 0xFFFFFF;
-	const intensity = 10;
-	const light = new THREE.DirectionalLight(color, intensity);
+	const directionalLightColor = 0xFFFFFF;
+	const directionalLightIntensity = 10;
+	const light = new THREE.DirectionalLight(directionalLightColor, directionalLightIntensity);
 	light.position.set(document.global.clientWidth,document.global.clientWidth, 0);
 	document.global.light = light;
-	scene.add(light);
-	
+	arena.add(light);
 
-	// const helper = new THREE.DirectionalLightHelper( light );
-	// scene.add( helper );
-	
+	//create point light for shadow
+	const pointLightColor = 0xFFFFFF;
+	const pointLightIntensity = 10;
+	const pointLight = new THREE.PointLight(pointLightColor, pointLightIntensity);
+	document.global.pointLight = pointLight;
+	// pointLight.castShadow=true;
+	arena.add(pointLight);
+
+
+
+	//create shadow planes
+	createShadowPlanes(arena);
+
 	function render( time ) {
-		const ballInfo =  document.global.ballInfo;
-		const paddleOneInfo =  document.global.paddleOneInfo;
 		time *= 0.001;
 	
 		if ( resizeRendererToDisplaySize( renderer ) ) {
@@ -111,10 +154,18 @@ function main() {
 		processBallMovement();
 		movePaddle();
 		document.global.arena.position.z += document.global.clientWidth / document.global.aspect;
-		// document.global.arena.rotation.y = 1.571;
-		// document.global.arena.rotation.y += 0.005;
+		// document.global.arena.rotation.y = -1.571;
+		document.global.arena.rotation.y += document.global.rotationY;
 		// document.global.arena.rotation.x += 0.01;
 		document.global.arena.position.z -= document.global.clientWidth / document.global.aspect;
+		document.global.frame++;
+		document.global.shadowFrame++;
+		if (document.global.shadowFrame === 10) {
+			document.global.pointLight.castShadow = true;
+		}
+		if (document.global.frame == 500) {
+			document.global.rotationY = 0.005;
+		}
 
 		
 		

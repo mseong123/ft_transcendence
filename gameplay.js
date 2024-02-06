@@ -165,6 +165,8 @@ export function processBallMovement() {
 		ballInfo.velocityY *= -1;
 	}
 	if(isZCollision()) {
+		document.global.pointLight.castShadow = false;
+		document.global.shadowFrame = 0;
 		ballMesh.position.set(0,0,0);
 		ballInfo.velocityX = 3;
 		ballInfo.velocityY = 3;
@@ -192,8 +194,9 @@ export function processBallMovement() {
 	function isZCollision() {
 		let ballZ = document.global.ballMesh.position.z;
 		
+		
 	
-		return ballZ - ballRadius < -halfArenaDepth -100|| ballZ + ballRadius > halfArenaDepth + 100;
+		return ballZ - ballRadius < -halfArenaDepth -50|| ballZ + ballRadius > halfArenaDepth + 50;
 	}
 }
 

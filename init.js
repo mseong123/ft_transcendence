@@ -10,7 +10,10 @@ function init() {
 		widthDivision:2.5,
 		aspect: 4/3,
 		arenaColor:"#ffffff",
-		arenaThickness:3,
+		arenaThickness:5,
+		shadowFrame:0,
+		frame:0,
+		rotationY:0,
 		paddleInfo:{
 			color:"rgb(128,128,128)",
 		},
