@@ -19,9 +19,9 @@ function resizeRendererToDisplaySize( renderer ) {
 function createShadowPlanes(arena) {
 	const geometrySides = new THREE.PlaneGeometry( document.global.clientWidth / document.global.aspect /document.global.widthDivision, document.global.clientWidth  / document.global.aspect );
 	const geometryTopBottom = new THREE.PlaneGeometry( document.global.clientWidth /document.global.widthDivision, document.global.clientWidth  / document.global.aspect );
-	const material = new THREE.MeshBasicMaterial({color:"white", side:THREE.DoubleSide});
-	// const material = new THREE.ShadowMaterial({side:THREE.DoubleSide});
-	// material.opacity = 0.3;
+	// const material = new THREE.MeshBasicMaterial({color:"white", side:THREE.DoubleSide});
+	const material = new THREE.ShadowMaterial({side:THREE.DoubleSide});
+	material.opacity = 0.3;
 	const shadowPlanes = [];
 
 	//sides
