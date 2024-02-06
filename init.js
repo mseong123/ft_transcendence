@@ -14,6 +14,7 @@ function init() {
 		shadowFrame:0,
 		frame:0,
 		rotationY:0,
+		rotationX:0,
 		paddleInfo:{
 			color:"rgb(128,128,128)",
 		},
@@ -40,7 +41,7 @@ function init() {
 		},
 		ballInfo:{
 			color:"#686868",
-			radiusDivision:70,
+			radiusDivision:80,
 			rotationX:0.01,
 			rotationY:0.01,
 			velocityX:3,

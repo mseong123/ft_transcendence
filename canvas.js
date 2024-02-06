@@ -19,9 +19,9 @@ function resizeRendererToDisplaySize( renderer ) {
 function createShadowPlanes(arena) {
 	const geometrySides = new THREE.PlaneGeometry( document.global.clientWidth / document.global.aspect /document.global.widthDivision, document.global.clientWidth  / document.global.aspect );
 	const geometryTopBottom = new THREE.PlaneGeometry( document.global.clientWidth /document.global.widthDivision, document.global.clientWidth  / document.global.aspect );
-	// const material = new THREE.MeshBasicMaterial({color:"white", side:THREE.DoubleSide});
-	const material = new THREE.ShadowMaterial({side:THREE.DoubleSide});
-	material.opacity = 0.3;
+	const material = new THREE.MeshBasicMaterial({color:"white", side:THREE.DoubleSide});
+	// const material = new THREE.ShadowMaterial({side:THREE.DoubleSide});
+	// material.opacity = 0.3;
 	const shadowPlanes = [];
 
 	//sides
@@ -132,7 +132,7 @@ function main() {
 	//create point light for shadow
 	const pointLightColor = 0xFFFFFF;
 	const pointLightIntensity = 10;
-	const pointLight = new THREE.PointLight(pointLightColor, pointLightIntensity);
+	const pointLight = new THREE.PointLight(pointLightColor, pointLightIntensity, 500000);
 	document.global.pointLight = pointLight;
 	// pointLight.castShadow=true;
 	arena.add(pointLight);
@@ -156,7 +156,7 @@ function main() {
 		document.global.arena.position.z += document.global.clientWidth / document.global.aspect;
 		// document.global.arena.rotation.y = -1.571;
 		document.global.arena.rotation.y += document.global.rotationY;
-		// document.global.arena.rotation.x += 0.01;
+		document.global.arena.rotation.x += document.global.rotationX;
 		document.global.arena.position.z -= document.global.clientWidth / document.global.aspect;
 		document.global.frame++;
 		document.global.shadowFrame++;
@@ -165,6 +165,9 @@ function main() {
 		}
 		if (document.global.frame == 500) {
 			document.global.rotationY = 0.005;
+		}
+		if (document.global.frame == 1000) {
+			document.global.rotationX = 0.005;
 		}
 
 		
