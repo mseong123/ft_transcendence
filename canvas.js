@@ -1,5 +1,6 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
-import {processBallMovement} from './gamePlay.js';
+import {processBallMovement} from './gameplay.js';
+import {movePaddle} from './gameplay.js';
 
 
 function resizeRendererToDisplaySize( renderer ) {
@@ -33,7 +34,7 @@ function createPaddleMesh() {
 	const paddleHeight = document.global.clientWidth  / document.global.widthDivision / document.global.aspect / 7;
 
 	const paddleGeometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleThickness )
-	const paddleMaterial = new THREE.MeshPhongMaterial( { color: document.global.paddleInfo.color, emissive: document.global.paddleInfo.color  } );
+	const paddleMaterial = new THREE.MeshPhongMaterial( { color: document.global.paddleInfo.color, emissive: document.global.paddleInfo.color, transparent:true, opacity:0.5  } );
 	const paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterial);
 	return paddleMesh;
 
@@ -74,9 +75,14 @@ function main() {
 
 	//create paddles
 	const paddleOne = createPaddleMesh();
+	const paddleTwo = createPaddleMesh();
 	const paddleThickness = document.global.clientWidth / document.global.aspect / 150;
 	paddleOne.position.set(0, 0, document.global.clientWidth / document.global.aspect / 2 - (paddleThickness * 3));
+	paddleTwo.position.set(0, 0, - (document.global.clientWidth / document.global.aspect / 2) + (paddleThickness * 3));
+	document.global.paddleOne = paddleOne;
+	document.global.paddleTwo = paddleTwo;
 	arena.add(paddleOne);
+	arena.add(paddleTwo);
 
 
 	//create directional light
@@ -93,19 +99,20 @@ function main() {
 	
 	function render( time ) {
 		const ballInfo =  document.global.ballInfo;
+		const paddleOneInfo =  document.global.paddleOneInfo;
 		time *= 0.001;
 	
 		if ( resizeRendererToDisplaySize( renderer ) ) {
-	
+
 			const canvas = renderer.domElement;
 			camera.aspect = canvas.clientWidth / canvas.clientHeight;
 			camera.updateProjectionMatrix();
-	
 		}
 		processBallMovement();
-		document.global.ballMesh.position.set(ballInfo.x, ballInfo.y, ballInfo.z);
+		movePaddle();
 		document.global.arena.position.z += document.global.clientWidth / document.global.aspect;
-		document.global.arena.rotation.y += 0.005;
+		// document.global.arena.rotation.y = 1.571;
+		// document.global.arena.rotation.y += 0.005;
 		// document.global.arena.rotation.x += 0.01;
 		document.global.arena.position.z -= document.global.clientWidth / document.global.aspect;
 
