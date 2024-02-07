@@ -1,32 +1,31 @@
 .canvas-container {
 	position:relative;
 	min-width:500px;
+	max-width:1280px;
 	width:70%;
 	overflow-x:hidden;
 	left:20px;
 }
 
 .canvas-background-1 {
-	z-index:0;
-	position:absolute;
 	top:0;
 	left:0;
 	width:222.5%;
 	height:100%;
 	background:url("./planetary1.jpg");
-	
-	background-size: auto 100%;
-	animation: rotateBackground 120s linear infinite;
 }
 
 .canvas-background-2 {
-	z-index:0;
-	position:absolute;
 	top:0;
 	left:222.5%;
 	width:222.5%;
 	height:100%;
 	background:url("./planetary1.jpg");
+}
+
+.canvas-background {
+	z-index:0;
+	position:absolute;
 	background-size: auto 100%;
 	animation: rotateBackground 120s linear infinite;
 }
@@ -46,4 +45,5 @@ canvas {
 	height:100%;
 	z-index:1;
 	display:block;
+	cursor:none;
 }
