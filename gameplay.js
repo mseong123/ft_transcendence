@@ -1,14 +1,3 @@
-//addeventlistener
-
-
-export function keyBinding() {
-	const canvas = document.getElementById("c");
-	canvas.addEventListener("mousemove", canvasMouseMove);
-	canvas.addEventListener("keydown", canvasKeydown);
-	canvas.addEventListener("keyup", canvasKeyup);
-}
-
-
 function canvasKeydown(e) {
 	let arrow = e.key;
 	if (e.keyCode === 87)
@@ -27,7 +16,6 @@ function canvasKeydown(e) {
 		document.global.keyboard.left =1;
 	if (arrow === 'ArrowRight')
 		document.global.keyboard.right =1;
-	
 }
 
 function canvasKeyup(e) {
@@ -75,47 +63,60 @@ function canvasMouseMove(e) {
 		positionY = (-arenaHeight / 2) + (paddleHeight/2);
 	
 	//hardcoded now to change later
-	console.log(positionX);
-	console.log(document.global.paddle.paddles[0]);
     document.global.paddle.paddles[0].position.x = positionX;
 	document.global.paddle.paddles[0].position.y = positionY;
+	
 }
 
+//addeventlistener
+export function keyBinding() {
+	const canvas = document.getElementById("c");
+	canvas.addEventListener("mousemove", canvasMouseMove);
+	canvas.addEventListener("keydown", canvasKeydown);
+	canvas.addEventListener("keyup", canvasKeyup);
+
+	//to change later
+	const gamestart = document.getElementById("gamestart");
+	gamestart.addEventListener("click", ()=>{document.global.gameplay.gameStart = 1});
+
+}
 
 function isBallAlignedWithPaddleX(paddle) {
 	const halfPaddleWidth = document.global.paddle.width / 2;
 	const sphereX = document.global.sphereMesh.position.x;
 	const paddleX = paddle.position.x;
-	return sphereX > paddleX - halfPaddleWidth && sphereX < paddleX + halfPaddleWidth;
+	return sphereX >= paddleX - halfPaddleWidth && sphereX <= paddleX + halfPaddleWidth;
 }
 
 function isBallAlignedWithPaddleY(paddle) {
 	let halfPaddleHeight = document.global.paddle.height / 2;
 	let sphereY = document.global.sphereMesh.position.y;
 	let paddleY = paddle.position.y;
-	return sphereY > paddleY - halfPaddleHeight && sphereY < paddleY + halfPaddleHeight;
+	return sphereY >= paddleY - halfPaddleHeight && sphereY <= paddleY + halfPaddleHeight;
 }
 
 function isPaddleCollision(paddles) {
-	let sphereRadius =  document.global.sphere.radius;
-	let paddleThickness = document.global.paddle.thickness;
+	const sphereRadius =  document.global.sphere.radius;
+	const paddleThickness = document.global.paddle.thickness;
+	const halfArenaDepth = document.global.arena.depth / 2;
 	
 	for (let i = 0; i < paddles.length; i++) {
-		const paddleZ = paddles[i].position.z;
-		const sphereZ = document.global.sphereMesh.position.z;
-		if (paddleZ < 0) 
-			return sphereZ - sphereRadius <= paddleZ + paddleThickness && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]);
-		else if (paddleZ > 0)
-			return sphereZ + sphereRadius >= paddleZ - paddleThickness && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]);
+		let paddleZ = paddles[i].position.z;
+		let sphereZ = document.global.sphereMesh.position.z;
+		if (paddleZ <= 0 && sphereZ - sphereRadius <= paddleZ + paddleThickness && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]))
+			return i;
+		else if (paddleZ > 0 && sphereZ + sphereRadius >= paddleZ - paddleThickness && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]))
+			return i;
 	}
+	return false;
 }
 
-function hitBallBack(paddle) {
+function hitSphereBack(paddle) {
 	const sphereMesh = document.global.sphereMesh;
 	const sphere = document.global.sphere;
 	
-    sphere.velocityX = (sphereMesh.position.x - paddle.position.x) / sphere.hitBackMultipler; 
-	sphere.velocityY = (sphereMesh.position.y - paddle.position.y) / sphere.hitBackMultipler;
+    sphere.velocityX = (sphereMesh.position.x - paddle.position.x) / document.global.paddle.hitBackModifier; 
+	sphere.velocityY = (sphereMesh.position.y - paddle.position.y) / document.global.paddle.hitBackModifier;
 	if (sphere.velocityY < 1 && sphere.velocityY > 0)
 		sphere.velocityY = 1;
 	if (sphere.velocityY > -1 && sphere.velocityY < 0)
@@ -132,7 +133,7 @@ function isXCollision() {
 	const radius = document.global.sphere.radius;
 	const halfArenaWidth = document.global.arena.width / 2;
 
-	return sphereX - radius < -halfArenaWidth || sphereX + radius > halfArenaWidth;
+	return sphereX - radius <= -halfArenaWidth || sphereX + radius >= halfArenaWidth;
 }
 
 function isYCollision() {
@@ -140,29 +141,30 @@ function isYCollision() {
 	const radius = document.global.sphere.radius;
 	const halfArenaHeight = document.global.arena.height / 2;
 
-	return sphereY - radius < -halfArenaHeight || sphereY + radius > halfArenaHeight;
+	return sphereY - radius <= -halfArenaHeight || sphereY + radius >= halfArenaHeight;
 }
 
 function isZCollision() {
 	const sphereZ = document.global.sphereMesh.position.z;
 	const radius = document.global.sphere.radius;
 	const halfArenaDepth = document.global.arena.depth / 2;
-	const sphereOutDivision = document.global.gameplay.sphereOutDivision;
-
-	return sphereZ - radius < -halfArenaDepth - (halfArenaDepth * 2) / sphereOutDivision || sphereZ + radius > halfArenaDepth + (halfArenaDepth * 2) / sphereOutDivision;
+	const sphereOutModifier = document.global.gameplay.sphereOutModifier;
+	// return sphereZ - radius <= -halfArenaDepth - sphereOutModifier || sphereZ + radius >= halfArenaDepth + sphereOutModifier;
+	return sphereZ - radius <= -halfArenaDepth || sphereZ + radius >= halfArenaDepth;
 }
 
 function updateSpherePosition() {
-	//update the sphere's position.
-	document.global.sphereMesh.position.x += sphereMesh.velocityX;
-	document.global.sphereMesh.position.y += sphereMesh.velocityY;
-	document.global.sphereMesh.position.z += sphereMesh.velocityZ;
+	document.global.sphereMesh.position.x += document.global.sphere.velocityX;
+	document.global.sphereMesh.position.y += document.global.sphere.velocityY;
+	document.global.sphereMesh.position.z += document.global.sphere.velocityZ;
 }
 
-export function processBallMovement() {
+export function processSphereMovement() {
 	const sphere = document.global.sphere;
 	
 	updateSpherePosition();
+	
+
 	
 	if(isXCollision()) {
 		sphere.velocityX *= -1;
@@ -170,25 +172,28 @@ export function processBallMovement() {
 	if(isYCollision()) {
 		sphere.velocityY *= -1;
 	}
-	if(isZCollision()) {f
+	if(isZCollision()) {
 		document.global.pointLight.castShadow = false;
 		document.global.gameplay.shadowFrame = 0;
+		// document.global.gameplay.gameStart = 0;
 		document.global.sphereMesh.position.set(0,0,0);
 		sphere.velocityX = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
 		sphere.velocityY = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
 		sphere.velocityZ = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
 	}
-	if(isPaddleCollision(document.global.paddle.paddles)) {
-		hitBallBack(document.global.paddle.paddles);
-	}
+	let paddleCollisionIndex = isPaddleCollision(document.global.paddle.paddles);
+	if(paddleCollisionIndex !== false)
+		hitSphereBack(document.global.paddle.paddles[paddleCollisionIndex]);
+	
+	
 }
 
 
 export function movePaddle() {
-	const arenaWidth = document.global.arena.width;
-	const arenaHeight = document.global.arena.height;
-	const paddleWidth = document.global.paddle.width;
-	const paddleHeight = document.global.paddle.height;
+	let arenaWidth = document.global.arena.width;
+	let arenaHeight = document.global.arena.height;
+	let paddleWidth = document.global.paddle.width;
+	let paddleHeight = document.global.paddle.height;
 
 	//local game
 	if (document.global.gameplay.local) {

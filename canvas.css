@@ -47,3 +47,7 @@ canvas {
 	display:block;
 	cursor:none;
 }
+
+canvas:focus {
+	outline:none;
+}

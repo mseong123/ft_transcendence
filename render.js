@@ -1,5 +1,5 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
-import {processBallMovement} from './gameplay.js';
+import {processSphereMovement} from './gameplay.js';
 import {movePaddle} from './gameplay.js';
 import {keyBinding} from './gameplay.js';
 
@@ -30,6 +30,7 @@ function createArenaMesh(arena3D) {
 
 function createSphereMesh(arena3D) {
 	const sphereGeometry = new THREE.SphereGeometry( document.global.sphere.radius, document.global.sphere.widthSegments, document.global.sphere.heightSegments );
+	console.log(document.global.sphere.radius);
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess} );
 	const sphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	sphereMesh.castShadow=true;
@@ -106,15 +107,15 @@ function createShadowPlanes(arena3D) {
 }
 
 function arenaRotateY() {
-	document.global.arena.position.z += document.global.arena.depth;
-	document.global.arena.rotation.y += document.global.gameplay.rotationY;
-	document.global.arena.position.z -= document.global.arena.depth;
+	document.global.arena3D.position.z += document.global.arena.depth;
+	document.global.arena3D.rotation.y += document.global.gameplay.rotationY;
+	document.global.arena3D.position.z -= document.global.arena.depth;
 }
 
 function arenaRotateX() {
-	document.global.arena.position.z += document.global.arena.depth;
-	document.global.arena.rotation.x += document.global.gameplay.rotationX;
-	document.global.arena.position.z -=document.global.arena.depth;
+	document.global.arena3D.position.z += document.global.arena.depth;
+	document.global.arena3D.rotation.x += document.global.gameplay.rotationX;
+	document.global.arena3D.position.z -=document.global.arena.depth;
 }
 
 function main() {
@@ -123,6 +124,7 @@ function main() {
 	const scene = new THREE.Scene();
 	renderer.setClearColor( 0x000000, 0 );
 	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 	//create arena scenegraph
 	const arena3D = new THREE.Object3D();
@@ -147,17 +149,20 @@ function main() {
 			camera.updateProjectionMatrix();
 		}
 		if (document.global.gameplay.gameStart)
-			processBallMovement();
+			processSphereMovement();
 		if (document.global.gameplay.initRotateY)
 			arenaRotateY();
 		if (document.global.gameplay.initRotateX)
 			arenaRotateX();
+		if (document.global.gameplay.rotate90)
+			document.global.arena3D.rotation.y = -1.571;
 		movePaddle();
 		
 		//gamestart shadow issue actions
-		document.global.gameplay.shadowFrame++;
+		if (document.global.gameplay.gameStart === 1)
+			document.global.gameplay.shadowFrame++;
 
-		if (document.global.shadowFrame === document.global.shadowFrameLimit) {
+		if (document.global.gameplay.shadowFrame === document.global.gameplay.shadowFrameLimit) {
 			document.global.pointLight.castShadow = true;
 		}
 		renderer.render( scene, camera );
