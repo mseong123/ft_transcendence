@@ -3,7 +3,6 @@ import {processSphereMovement} from './gameplay.js';
 import {movePaddle} from './gameplay.js';
 import {keyBinding} from './gameplay.js';
 
-
 function resizeRendererToDisplaySize( renderer ) {
 
 	const canvas = renderer.domElement;
@@ -30,7 +29,6 @@ function createArenaMesh(arena3D) {
 
 function createSphereMesh(arena3D) {
 	const sphereGeometry = new THREE.SphereGeometry( document.global.sphere.radius, document.global.sphere.widthSegments, document.global.sphere.heightSegments );
-	console.log(document.global.sphere.radius);
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess} );
 	const sphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	sphereMesh.castShadow=true;
@@ -45,16 +43,69 @@ function createCamera() {
 }
 
 function createPaddleMesh(arena3D) {
+	const colorPalette = document.global.paddle.colorEarth;
+	const paddleGeometry = new THREE.BoxGeometry(document.global.paddle.width, document.global.paddle.height, document.global.paddle.thickness )
+	const paddleMaterialOne = new THREE.MeshPhongMaterial( { color: colorPalette[0], emissive: colorPalette[0], transparent:true, opacity:document.global.paddle.opacity });
+	const paddleMaterialTwo = new THREE.MeshPhongMaterial( { color: colorPalette[1], emissive: colorPalette[1], transparent:true, opacity:document.global.paddle.opacity });
+	const paddleMaterialThree = new THREE.MeshPhongMaterial( { color: colorPalette[2], emissive: colorPalette[2], transparent:true, opacity:document.global.paddle.opacity });
+	const paddleMaterialFour = new THREE.MeshPhongMaterial( { color: colorPalette[3], emissive: colorPalette[3], transparent:true, opacity:document.global.paddle.opacity });
+	
 	if (document.global.gameplay.local) {
 		for (let i = 0; i < 2; i++) {
-			const paddleGeometry = new THREE.BoxGeometry(document.global.paddle.width, document.global.paddle.height, document.global.paddle.thickness )
-			const paddleMaterial = new THREE.MeshPhongMaterial( { color: document.global.paddle.color, emissive: document.global.paddle.color, transparent:true, opacity:document.global.paddle.opacity });
-			const paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterial);
-			paddleMesh.receiveShadow = true;
-			if (i === 0)
+			let paddleMesh;
+			if (i === 0) {
+				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialOne);
+				paddleMesh.castShadow = true;
+				paddleMesh.receiveShadow = true;
 				paddleMesh.position.set(0, 0, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
-			else
+			}
+			else {
+				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialTwo);
+				paddleMesh.castShadow = true;
+				paddleMesh.receiveShadow = true;
 				paddleMesh.position.set(0, 0, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+			}
+			document.global.paddle.paddles.push(paddleMesh);
+			arena3D.add(paddleMesh);
+		}
+	}
+	if (document.global.gameplay.multi) {
+		for (let i = 0; i < document.global.gameplay.playerCount; i++) {
+			let paddleMesh;
+			if (i == 0) {
+				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialOne);
+				paddleMesh.receiveShadow = true;
+				paddleMesh.castShadow = true;
+				if (document.global.gameplay.playerCount > 2) 
+					paddleMesh.position.set( -document.global.paddle.width / 4, -document.global.paddle.height / 4, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+				else
+					paddleMesh.position.set(0, 0, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+			}
+			else if (i == 1) {
+				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialTwo);
+				paddleMesh.receiveShadow = true;
+				paddleMesh.castShadow = true;
+				if (document.global.gameplay.playerCount == 4) 
+					paddleMesh.position.set(-document.global.paddle.width / 4, -document.global.paddle.height / 4, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+				else
+					paddleMesh.position.set(0, 0, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+			}
+				
+			else if (i == 2) {
+				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialThree);
+				paddleMesh.receiveShadow = true;
+				paddleMesh.castShadow = true;
+				if (document.global.gameplay.playerCount > 2)
+					paddleMesh.position.set(document.global.paddle.width / 4, document.global.paddle.height / 4, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
+				else 
+					paddleMesh.position.set(0, 0, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
+			}
+			else if (i = 3) {
+				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialFour);
+				paddleMesh.receiveShadow = true;
+				paddleMesh.castShadow = true;
+				paddleMesh.position.set(document.global.paddle.width / 4, document.global.paddle.height / 4, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
+			}
 			document.global.paddle.paddles.push(paddleMesh);
 			arena3D.add(paddleMesh);
 		}
@@ -134,6 +185,14 @@ function main() {
 	const camera = createCamera();
 	createPaddleMesh(arena3D);
 	createDirectionalLight(arena3D);
+	const spotLight = new THREE.SpotLight(document.global.pointLight.color);
+	spotLight.position.set( 0, document.global.arena.height / 2, document.global.arena.depth / 4);
+	spotLight.castShadow = true;
+	document.global.spotLight = spotLight;
+	// arena3D.add(spotLight);
+// 	const spotLightHelper = new THREE.SpotLightHelper( spotLight );
+// scene.add( spotLightHelper );
+
 	createPointLight(arena3D);
 	createShadowPlanes(arena3D);
 
@@ -155,7 +214,7 @@ function main() {
 		if (document.global.gameplay.initRotateX)
 			arenaRotateX();
 		if (document.global.gameplay.rotate90)
-			document.global.arena3D.rotation.y = -1.571;
+			document.global.arena3D.rotation.y = Math.PI / 2;
 		movePaddle();
 		
 		//gamestart shadow issue actions

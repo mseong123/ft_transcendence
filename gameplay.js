@@ -63,8 +63,8 @@ function canvasMouseMove(e) {
 		positionY = (-arenaHeight / 2) + (paddleHeight/2);
 	
 	//hardcoded now to change later
-    document.global.paddle.paddles[0].position.x = positionX;
-	document.global.paddle.paddles[0].position.y = positionY;
+    document.global.paddle.paddles[2].position.x = positionX;
+	document.global.paddle.paddles[2].position.y = positionY;
 	
 }
 
@@ -197,6 +197,29 @@ export function movePaddle() {
 
 	//local game
 	if (document.global.gameplay.local) {
+		const paddleOne = document.global.paddle.paddles[0]; //to change later, now hardcoded
+		const paddleTwo = document.global.paddle.paddles[1];
+		
+		
+		if (paddleOne.position.y < (arenaHeight / 2) - (paddleHeight/2))
+			paddleOne.position.y += document.global.keyboard.w * document.global.keyboard.speed;
+		if (paddleOne.position.y > (-arenaHeight / 2) + (paddleHeight/2))
+			paddleOne.position.y -= document.global.keyboard.s * document.global.keyboard.speed;
+		if (paddleOne.position.x < (arenaWidth / 2) - (paddleWidth/2))
+			paddleOne.position.x += document.global.keyboard.d * document.global.keyboard.speed;
+		if (paddleOne.position.x > (-arenaWidth / 2) + (paddleWidth/2))
+			paddleOne.position.x -= document.global.keyboard.a * document.global.keyboard.speed;
+
+		if (paddleTwo.position.y < (arenaHeight / 2) - (paddleHeight/2))
+			paddleTwo.position.y += document.global.keyboard.up * document.global.keyboard.speed;
+		if (paddleTwo.position.y > (-arenaHeight / 2) + (paddleHeight/2))
+			paddleTwo.position.y -= document.global.keyboard.down * document.global.keyboard.speed;
+		if (paddleTwo.position.x < (arenaWidth / 2) - (paddleWidth/2))
+			paddleTwo.position.x += document.global.keyboard.right * document.global.keyboard.speed;
+		if (paddleTwo.position.x > (-arenaWidth / 2) + (paddleWidth/2))
+			paddleTwo.position.x -= document.global.keyboard.left * document.global.keyboard.speed;
+	}
+	if (document.global.gameplay.multi) {
 		const paddleOne = document.global.paddle.paddles[0]; //to change later, now hardcoded
 		const paddleTwo = document.global.paddle.paddles[1];
 		

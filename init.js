@@ -48,13 +48,14 @@ function updateGlobal() {
 	//paddle info
 	if (!document.global.paddle) {
 		document.global.paddle={};
-		document.global.paddle.color = "#686868";
-		document.global.paddle.opacity = 0.5;
-		document.global.paddle.distanceFromEdgeModifier= 3;
+		document.global.paddle.colorEarth = ["#472D2D","#553939","#704F4F","#A77979"];
+		document.global.paddle.colorTwo = ["#40A2E3","#FFF6E9","#BBE2EC","#0D9276"];
+		document.global.paddle.opacity = 0.9;
+		document.global.paddle.distanceFromEdgeModifier= 2;
 		document.global.paddle.hitBackModifier = 5;
 		document.global.paddle.width = clientWidth / document.global.arena.widthDivision / 5;
 		document.global.paddle.height = clientWidth / document.global.arena.aspect / document.global.arena.widthDivision / 7;
-		document.global.paddle.thickness = clientWidth / document.global.arena.aspect / 150;
+		document.global.paddle.thickness = clientWidth / document.global.arena.aspect / 100;
 	}
 	
 	if (!document.global.paddle.paddles || !document.global.paddle.paddles.length) {
@@ -105,12 +106,14 @@ function updateGlobal() {
 		document.global.gameplay.shadowFrameLimit = 5;
 
 		//local game
-		document.global.gameplay.local = 1
+		document.global.gameplay.local = 0;
 		//remote and multiplayer game
-		document.global.gameplay.multi = 0
+		document.global.gameplay.multi = 1;
 		
 		//other game info
 		document.global.gameplay.playerNum = 0;
+		document.global.gameplay.playerCount = 4;
+		
 		document.global.gameplay.player = [];//Paddles are rendered based on 1 to 4 in a specific manner yet to be approached and fixed. Player num is sent through from server then attach key and mouse to the specific paddles.
 		document.global.gameplay.player.push({playerNum:1}) //default is 2 players (no computer for now)
 		document.global.gameplay.player.push({playerNum:2})
