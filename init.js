@@ -30,6 +30,7 @@ function updateGlobal() {
 		document.global.sphere.color = "#686868";
 		document.global.sphere.velocityDivision = 200;
 		document.global.sphere.radius = clientWidth / document.global.sphere.radiusDivision;
+		document.global.sphere.circleRadius = [document.global.sphere.radius * 2, document.global.sphere.radius * 3,document.global.sphere.radius * 4]
 	}
 	document.global.sphere.velocityX = clientWidth / document.global.sphere.velocityDivision;
 	document.global.sphere.velocityY = clientWidth / document.global.sphere.velocityDivision;
@@ -89,11 +90,34 @@ function updateGlobal() {
 	if (!document.global.shadowPlane) {
 		document.global.shadowPlane = {};
 		document.global.shadowPlane.opacity = 0.3
+		document.global.shadowPlane.sideWidth = clientWidth / document.global.arena.aspect / document.global.arena.widthDivision;
+		document.global.shadowPlane.sideHeight = clientWidth  / document.global.arena.aspect;
+		document.global.shadowPlane.TopBottomWidth = clientWidth / document.global.arena.widthDivision;
 	}
-	document.global.shadowPlane.sideWidth = clientWidth / document.global.arena.aspect / document.global.arena.widthDivision;
-	document.global.shadowPlane.sideHeight = clientWidth  / document.global.arena.aspect;
-	document.global.shadowPlane.TopBottomWidth = clientWidth / document.global.arena.widthDivision;
 	
+	//overall powerup info
+	if (!document.global.powerUp) {
+		document.global.powerUp = {};
+		document.global.powerUp.enable = 1;
+		document.global.powerUp.widthSegments = 6;
+		document.global.powerUp.heightSegments = 6;
+		document.global.powerUp.radius = document.global.sphere.radius;
+		document.global.powerUp.circleRadius = document.global.powerUp.radius * 2;
+		document.global.powerUp.shininess = 30;
+		document.global.powerUp.circleRotation = 0.1;
+		document.global.powerUp.index = Math.floor(Math.random() * 1); //to change for multiplayer
+		document.global.powerUp.mesh = [];
+		document.global.powerUp.color = ["#D0312D"];
+		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
+		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
+		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
+	}
+
+	//specific powerup info
+	if (!document.global.powerUp.largePaddle) {
+		document.global.powerUp.largePaddle = {};
+		document.global.powerUp.largePaddle.color = "#900603";
+	}
 
 	//gameplay
 	if (!document.global.gameplay) {
@@ -106,7 +130,6 @@ function updateGlobal() {
 		document.global.gameplay.rotationY = 0.005;
 		document.global.gameplay.rotationX = 0.005;
 		document.global.gameplay.rotate90 = 0;
-		document.global.gameplay.sphereOutModifier = clientWidth / 15;
 		document.global.gameplay.gameStartFrame = 0;
 		document.global.gameplay.gameStartFrameLimit = 25;
 		document.global.gameplay.shadowFrame = 0;

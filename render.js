@@ -2,6 +2,7 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
 import {processSphereMovement} from './gameplay.js';
 import {movePaddle} from './gameplay.js';
 import {keyBinding} from './gameplay.js';
+import {createPowerUp} from './powerup.js';
 
 function resizeRendererToDisplaySize( renderer ) {
 
@@ -157,16 +158,36 @@ function createShadowPlanes(arena3D) {
 	document.global.shadowPlanes = shadowPlanes;
 }
 
+
+
 function arenaRotateY() {
-	document.global.arena3D.position.z += document.global.arena.depth;
-	document.global.arena3D.rotation.y += document.global.gameplay.rotationY;
-	document.global.arena3D.position.z -= document.global.arena.depth;
+	if (document.global.gameplay.initRotateY) {
+		document.global.arena3D.position.z += document.global.arena.depth;
+		document.global.arena3D.rotation.y += document.global.gameplay.rotationY;
+		for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
+			document.global.powerUp.mesh[i].rotation.y -= document.global.gameplay.rotationY * 2;
+		}
+		document.global.arena3D.rotation.y += document.global.gameplay.rotationY;
+		document.global.arena3D.position.z -= document.global.arena.depth;
+	}
+	
 }
 
 function arenaRotateX() {
-	document.global.arena3D.position.z += document.global.arena.depth;
-	document.global.arena3D.rotation.x += document.global.gameplay.rotationX;
-	document.global.arena3D.position.z -=document.global.arena.depth;
+	if (document.global.gameplay.initRotateX) {
+		document.global.arena3D.position.z += document.global.arena.depth;
+		document.global.arena3D.rotation.x += document.global.gameplay.rotationX;
+		for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
+			document.global.powerUp.mesh[i].rotation.x -= document.global.gameplay.rotationX;
+		}
+		document.global.arena3D.position.z -=document.global.arena.depth;
+	}
+}
+
+function rotatePowerUp() {
+	if (document.global.powerUp.enable)
+		document.global.powerUp.mesh[document.global.powerUp.index].rotation.z += document.global.powerUp.circleRotation;
+	
 }
 
 function main() {
@@ -185,17 +206,9 @@ function main() {
 	const camera = createCamera();
 	createPaddleMesh(arena3D);
 	createDirectionalLight(arena3D);
-	const spotLight = new THREE.SpotLight(document.global.pointLight.color);
-	spotLight.position.set( 0, document.global.arena.height / 2, document.global.arena.depth / 4);
-	spotLight.castShadow = true;
-	document.global.spotLight = spotLight;
-	// arena3D.add(spotLight);
-// 	const spotLightHelper = new THREE.SpotLightHelper( spotLight );
-// scene.add( spotLightHelper );
-
 	createPointLight(arena3D);
 	createShadowPlanes(arena3D);
-
+	createPowerUp(arena3D);
 	//attach arena and add to scene
 	document.global.arena3D = arena3D;
 	scene.add(arena3D);
@@ -207,14 +220,17 @@ function main() {
 			camera.aspect = canvas.clientWidth / canvas.clientHeight;
 			camera.updateProjectionMatrix();
 		}
-		if (document.global.gameplay.gameStart)
-			processSphereMovement();
-		if (document.global.gameplay.initRotateY)
-			arenaRotateY();
-		if (document.global.gameplay.initRotateX)
-			arenaRotateX();
-		if (document.global.gameplay.rotate90)
-			document.global.arena3D.rotation.y = Math.PI / 2;
+		
+		rotatePowerUp();
+		processSphereMovement();
+		arenaRotateY();
+		arenaRotateX();
+		if (document.global.gameplay.rotate90) {
+			document.global.arena3D.rotation.y = -Math.PI / 2;
+			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
+				document.global.powerUp.mesh[i].children[0].rotation.y += Math.PI / 2 * 2;
+			}
+		}
 		movePaddle();
 		
 		//gamestart shadow issue actions
@@ -224,12 +240,14 @@ function main() {
 			document.global.pointLight.castShadow = true;
 
 		//gamestart delay
-		if (document.global.gameplay.gameStart === 0)
-			document.global.gameplay.gameStartFrame++;
-		if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
-			document.global.gameplay.gameStart = 1;
-			document.global.gameplay.gameStartFrame =0;
-		}
+		// if (document.global.gameplay.gameStart === 0)
+		// 	document.global.gameplay.gameStartFrame++;
+		// if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
+		// 	document.global.gameplay.gameStart = 1;
+		// 	document.global.gameplay.gameStartFrame =0;
+		// }
+
+		
 			
 
 

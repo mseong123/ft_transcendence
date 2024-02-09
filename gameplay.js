@@ -1,3 +1,5 @@
+import * as THREE from 'https://threejs.org/build/three.module.js';
+
 function canvasKeydown(e) {
 	let arrow = e.key;
 	if (e.keyCode === 87)
@@ -81,10 +83,6 @@ export function keyBinding() {
 	canvas.addEventListener("keydown", canvasKeydown);
 	canvas.addEventListener("keyup", canvasKeyup);
 
-	//to change later
-	const gamestart = document.getElementById("gamestart");
-	gamestart.addEventListener("click", ()=>{document.global.gameplay.gameStart = 1});
-
 }
 
 function isBallAlignedWithPaddleX(paddle) {
@@ -158,6 +156,14 @@ function isZCollision() {
 	return sphereZ - radius <= -halfArenaDepth || sphereZ + radius >= halfArenaDepth;
 }
 
+function isPowerUpCollision() {
+	const sphereRadius = document.global.sphere.radius;
+	const powerUpCircleRadius = document.global.powerUp.circleRadius;
+	
+	const distance = document.global.sphereMesh.position.distanceTo(document.global.powerUp.mesh[document.global.powerUp.index].position);
+	return distance <= sphereRadius + powerUpCircleRadius;
+}
+
 function updateSpherePosition() {
 	document.global.sphereMesh.position.x += document.global.sphere.velocityX;
 	document.global.sphereMesh.position.y += document.global.sphere.velocityY;
@@ -165,30 +171,38 @@ function updateSpherePosition() {
 }
 
 export function processSphereMovement() {
-	const sphere = document.global.sphere;
-	
-	updateSpherePosition();
-	
+	if (document.global.gameplay.gameStart) {
+		const sphere = document.global.sphere;
+		updateSpherePosition();
 
-	
-	if(isXCollision()) {
-		sphere.velocityX *= -1;
+		if(isXCollision()) {
+			sphere.velocityX *= -1;
+		}
+		if(isYCollision()) {
+			sphere.velocityY *= -1;
+		}
+		if(isZCollision()) {
+			document.global.pointLight.castShadow = false;
+			document.global.gameplay.shadowFrame = 0;
+			document.global.gameplay.gameStart = 0;
+			document.global.sphereMesh.position.set(0,0,0);
+			sphere.velocityX = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
+			sphere.velocityY = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
+			sphere.velocityZ = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
+		}
+		if (document.global.powerUp.enable && isPowerUpCollision()) {
+			
+			document.global.gameplay.gameStart = 0;
+			// powerUpCollisionEffect();
+			// document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
+			// document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
+			// document.global.powerUp.positionZ = Math.floor(Math.random() * (document.global.arena.depth / 2) - (document.global.arena.depth / 2));
+		}
+		let paddleCollisionIndex = isPaddleCollision(document.global.paddle.paddles);
+		if(paddleCollisionIndex !== false)
+			hitSphereBack(document.global.paddle.paddles[paddleCollisionIndex]);
+		
 	}
-	if(isYCollision()) {
-		sphere.velocityY *= -1;
-	}
-	if(isZCollision()) {
-		document.global.pointLight.castShadow = false;
-		document.global.gameplay.shadowFrame = 0;
-		document.global.gameplay.gameStart = 0;
-		document.global.sphereMesh.position.set(0,0,0);
-		sphere.velocityX = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
-		sphere.velocityY = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
-		sphere.velocityZ = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
-	}
-	let paddleCollisionIndex = isPaddleCollision(document.global.paddle.paddles);
-	if(paddleCollisionIndex !== false)
-		hitSphereBack(document.global.paddle.paddles[paddleCollisionIndex]);
 	
 	
 }
