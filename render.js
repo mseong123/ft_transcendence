@@ -43,7 +43,7 @@ function createCamera() {
 }
 
 function createPaddleMesh(arena3D) {
-	const colorPalette = document.global.paddle.colorEarth;
+	const colorPalette = document.global.paddle.color[document.global.gameplay.backgroundIndex];
 	const paddleGeometry = new THREE.BoxGeometry(document.global.paddle.width, document.global.paddle.height, document.global.paddle.thickness )
 	const paddleMaterialOne = new THREE.MeshPhongMaterial( { color: colorPalette[0], emissive: colorPalette[0], transparent:true, opacity:document.global.paddle.opacity });
 	const paddleMaterialTwo = new THREE.MeshPhongMaterial( { color: colorPalette[1], emissive: colorPalette[1], transparent:true, opacity:document.global.paddle.opacity });

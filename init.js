@@ -13,7 +13,7 @@ function updateGlobal() {
 		document.global.arena.widthDivision = 2.5;
 		document.global.arena.aspect = 4 / 3;
 		document.global.arena.color = "#fff";
-		document.global.arena.thickness = 5;
+		document.global.arena.thickness = 6;
 		document.global.arena.clientWidth = clientWidth;
 		document.global.arena.width = clientWidth / document.global.arena.widthDivision;
 		document.global.arena.height = clientWidth / document.global.arena.aspect / document.global.arena.widthDivision;
@@ -47,9 +47,12 @@ function updateGlobal() {
 
 	//paddle info
 	if (!document.global.paddle) {
+		const colorSpace = ["#0E2954","#1F6E8C","#2E8A99","#84A7A1"];
+		const colorOcean = ["#F6F4EB","#91C8E4","#749BC2","#4682A9"];
+		const colorAlien = ["#635985","#443C68","#393053","#18122B"];
+		const colorDesert = ["#472D2D","#553939","#704F4F","#A77979"];
 		document.global.paddle={};
-		document.global.paddle.colorEarth = ["#472D2D","#553939","#704F4F","#A77979"];
-		document.global.paddle.colorTwo = ["#40A2E3","#FFF6E9","#BBE2EC","#0D9276"];
+		document.global.paddle.color = [colorSpace, colorOcean, colorAlien, colorDesert];
 		document.global.paddle.opacity = 0.9;
 		document.global.paddle.distanceFromEdgeModifier= 2;
 		document.global.paddle.hitBackModifier = 5;
@@ -66,7 +69,7 @@ function updateGlobal() {
 	if (!document.global.directionalLight) {
 		document.global.directionalLight = {};
 		document.global.directionalLight.color = "#FFF";
-		document.global.directionalLight.intensity = 10;
+		document.global.directionalLight.intensity = 20;
 		document.global.directionalLight.positionZ = 0;
 	}
 	document.global.directionalLight.positionX = clientWidth;
@@ -95,6 +98,8 @@ function updateGlobal() {
 	//gameplay
 	if (!document.global.gameplay) {
 		document.global.gameplay = {};
+		document.global.gameplay.backgroundClass = ["canvas-url-space", "canvas-url-ocean", "canvas-url-alien", "canvas-url-desert"];
+		document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); //to change for multiplayer
 		document.global.gameplay.gameStart = 1;
 		document.global.gameplay.initRotateY = 0;
 		document.global.gameplay.initRotateX = 0;
@@ -106,12 +111,14 @@ function updateGlobal() {
 		document.global.gameplay.gameStartFrameLimit = 25;
 		document.global.gameplay.shadowFrame = 0;
 		document.global.gameplay.shadowFrameLimit = 5;
+		document.querySelector(".canvas-background-1").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
+		document.querySelector(".canvas-background-2").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
 
 		//local game
-		document.global.gameplay.local = 1;
+		document.global.gameplay.local = 0;
 		document.global.gameplay.computer = 0;
 		//remote and multiplayer game
-		document.global.gameplay.multi = 0;
+		document.global.gameplay.multi = 1;
 		
 		//other game info
 		document.global.gameplay.playerNum = 0;
