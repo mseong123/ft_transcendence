@@ -220,10 +220,19 @@ function main() {
 		//gamestart shadow issue actions
 		if (document.global.gameplay.gameStart === 1)
 			document.global.gameplay.shadowFrame++;
-
-		if (document.global.gameplay.shadowFrame === document.global.gameplay.shadowFrameLimit) {
+		if (document.global.gameplay.shadowFrame === document.global.gameplay.shadowFrameLimit)
 			document.global.pointLight.castShadow = true;
+
+		//gamestart delay
+		if (document.global.gameplay.gameStart === 0)
+			document.global.gameplay.gameStartFrame++;
+		if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
+			document.global.gameplay.gameStart = 1;
+			document.global.gameplay.gameStartFrame =0;
 		}
+			
+
+
 		renderer.render( scene, camera );
 		requestAnimationFrame(render);
 	}

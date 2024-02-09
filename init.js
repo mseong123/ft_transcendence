@@ -102,21 +102,20 @@ function updateGlobal() {
 		document.global.gameplay.rotationX = 0.005;
 		document.global.gameplay.rotate90 = 0;
 		document.global.gameplay.sphereOutModifier = clientWidth / 15;
+		document.global.gameplay.gameStartFrame = 0;
+		document.global.gameplay.gameStartFrameLimit = 25;
 		document.global.gameplay.shadowFrame = 0;
 		document.global.gameplay.shadowFrameLimit = 5;
 
 		//local game
-		document.global.gameplay.local = 0;
+		document.global.gameplay.local = 1;
+		document.global.gameplay.computer = 0;
 		//remote and multiplayer game
-		document.global.gameplay.multi = 1;
+		document.global.gameplay.multi = 0;
 		
 		//other game info
 		document.global.gameplay.playerNum = 0;
 		document.global.gameplay.playerCount = 4;
-		
-		document.global.gameplay.player = [];//Paddles are rendered based on 1 to 4 in a specific manner yet to be approached and fixed. Player num is sent through from server then attach key and mouse to the specific paddles.
-		document.global.gameplay.player.push({playerNum:1}) //default is 2 players (no computer for now)
-		document.global.gameplay.player.push({playerNum:2})
 	}
 
 	

@@ -62,10 +62,16 @@ function canvasMouseMove(e) {
 	else if (positionY < (-arenaHeight / 2) + (paddleHeight/2))
 		positionY = (-arenaHeight / 2) + (paddleHeight/2);
 	
-	//hardcoded now to change later
-    document.global.paddle.paddles[2].position.x = positionX;
-	document.global.paddle.paddles[2].position.y = positionY;
-	
+	//For local game, mouse is attached to paddle nearest to camera
+	if (document.global.gameplay.local) {
+		document.global.paddle.paddles[0].position.x = positionX;
+		document.global.paddle.paddles[0].position.y = positionY;
+	}
+	//For multi, mouse is attached to player num
+	if (document.global.gameplay.multi) {
+		document.global.paddle.paddles[document.global.gameplay.playerNum].position.x = positionX;
+		document.global.paddle.paddles[document.global.gameplay.playerNum].position.y = positionY;
+	}
 }
 
 //addeventlistener
@@ -103,9 +109,9 @@ function isPaddleCollision(paddles) {
 	for (let i = 0; i < paddles.length; i++) {
 		let paddleZ = paddles[i].position.z;
 		let sphereZ = document.global.sphereMesh.position.z;
-		if (paddleZ <= 0 && sphereZ - sphereRadius <= paddleZ + paddleThickness && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]))
+		if (paddleZ <= 0 && sphereZ - sphereRadius <= paddleZ && sphereZ - sphereRadius >= paddleZ - paddleThickness && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]))
 			return i;
-		else if (paddleZ > 0 && sphereZ + sphereRadius >= paddleZ - paddleThickness && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]))
+		else if (paddleZ > 0 && sphereZ + sphereRadius >= paddleZ - paddleThickness && sphereZ + sphereRadius <= paddleZ && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]))
 			return i;
 	}
 	return false;
@@ -149,7 +155,6 @@ function isZCollision() {
 	const radius = document.global.sphere.radius;
 	const halfArenaDepth = document.global.arena.depth / 2;
 	const sphereOutModifier = document.global.gameplay.sphereOutModifier;
-	// return sphereZ - radius <= -halfArenaDepth - sphereOutModifier || sphereZ + radius >= halfArenaDepth + sphereOutModifier;
 	return sphereZ - radius <= -halfArenaDepth || sphereZ + radius >= halfArenaDepth;
 }
 
@@ -175,7 +180,7 @@ export function processSphereMovement() {
 	if(isZCollision()) {
 		document.global.pointLight.castShadow = false;
 		document.global.gameplay.shadowFrame = 0;
-		// document.global.gameplay.gameStart = 0;
+		document.global.gameplay.gameStart = 0;
 		document.global.sphereMesh.position.set(0,0,0);
 		sphere.velocityX = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
 		sphere.velocityY = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
@@ -220,7 +225,7 @@ export function movePaddle() {
 			paddleTwo.position.x -= document.global.keyboard.left * document.global.keyboard.speed;
 	}
 	if (document.global.gameplay.multi) {
-		const paddleOne = document.global.paddle.paddles[0]; //to change later, now hardcoded
+		const paddleOne = document.global.paddle.paddles[2]; //to change later, now hardcoded
 		const paddleTwo = document.global.paddle.paddles[1];
 		
 		
