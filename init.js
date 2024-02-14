@@ -57,8 +57,8 @@ function updateGlobal() {
 		document.global.paddle.opacity = 0.9;
 		document.global.paddle.distanceFromEdgeModifier= 2;
 		document.global.paddle.hitBackModifier = 5;
-		document.global.paddle.width = clientWidth / document.global.arena.widthDivision / 5;
-		document.global.paddle.height = clientWidth / document.global.arena.aspect / document.global.arena.widthDivision / 7;
+		document.global.paddle.width = clientWidth / document.global.arena.widthDivision / 5; //5
+		document.global.paddle.height = clientWidth / document.global.arena.aspect / document.global.arena.widthDivision / 7 //7;
 		document.global.paddle.thickness = clientWidth / document.global.arena.aspect / 100;
 	}
 	
@@ -132,7 +132,7 @@ function updateGlobal() {
 		document.global.gameplay.initRotateX = 0;
 		document.global.gameplay.rotationY = 0.005;
 		document.global.gameplay.rotationX = 0.005;
-		document.global.gameplay.rotate90 = 1;
+		document.global.gameplay.rotate90 = 0;
 		document.global.gameplay.gameStartFrame = 0;
 		document.global.gameplay.gameStartFrameLimit = 25;
 		document.global.gameplay.shadowFrame = 0;

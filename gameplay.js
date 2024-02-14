@@ -88,6 +88,9 @@ export function keyBinding() {
 	canvas.addEventListener("mousemove", canvasMouseMove);
 	canvas.addEventListener("keydown", canvasKeydown);
 	canvas.addEventListener("keyup", canvasKeyup);
+	
+	//temp bind
+	document.getElementById("powerup").addEventListener("click", (e)=>powerUpCollisionEffect());
 
 }
 

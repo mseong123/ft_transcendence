@@ -233,12 +233,12 @@ function setFrame() {
 		document.global.pointLight.castShadow = true;
 
 	// gamestart delay
-	// if (document.global.gameplay.gameStart === 0)
-	// 	document.global.gameplay.gameStartFrame++;
-	// if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
-	// 	document.global.gameplay.gameStart = 1;
-	// 	document.global.gameplay.gameStartFrame =0;
-	// }
+	if (document.global.gameplay.gameStart === 0)
+		document.global.gameplay.gameStartFrame++;
+	if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
+		document.global.gameplay.gameStart = 1;
+		document.global.gameplay.gameStartFrame =0;
+	}
 
 	// powerup timer
 	if (document.global.powerUp.enable) {
