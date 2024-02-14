@@ -110,9 +110,9 @@ function updateGlobal() {
 		document.global.powerUp.durationFrame = 5000; //miliseconds
 		document.global.powerUp.mesh = [];
 		document.global.powerUp.color = ["#D0312D"];
-		document.global.powerUp.positionX;
-		document.global.powerUp.positionY;
-		document.global.powerUp.positionZ;
+		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
+		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
+		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
 		//largePaddle powerup info
 		if (!document.global.powerUp.largePaddle) {
 			document.global.powerUp.largePaddle = {};

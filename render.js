@@ -210,7 +210,7 @@ function arenaRotateX() {
 function rotatePowerUp() {
 	if (document.global.powerUp.enable) {
 		document.global.powerUp.mesh[document.global.powerUp.index].rotation.z += document.global.powerUp.circleRotation;
-		for (let i = 0; i < document.global.sphere.circleRadius.length; i++) {
+		for (let i = 0; i < document.global.sphere.circleRadius.length * 2; i += 2) {
 			document.global.sphereMesh.children[i].rotation.z += document.global.powerUp.circleRotation;
 			document.global.sphereMesh.children[i + 1].rotation.z += document.global.powerUp.circleRotation;
 		}

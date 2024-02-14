@@ -58,9 +58,6 @@ export function createPowerUp(arena3D) {
 		createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
 
 		//initial render
-		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
-		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
-		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
 		document.global.powerUp.mesh[document.global.powerUp.index].visible = true;
 		document.global.powerUp.mesh[document.global.powerUp.index].position.set(document.global.powerUp.positionX, document.global.powerUp.positionY, document.global.powerUp.positionZ);
 	}
