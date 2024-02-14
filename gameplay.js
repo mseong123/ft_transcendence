@@ -1,5 +1,6 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
 
+
 function canvasKeydown(e) {
 	let arrow = e.key;
 	if (e.keyCode === 87)
@@ -42,14 +43,19 @@ function canvasKeyup(e) {
 
 function canvasMouseMove(e) {
 	const canvas = document.getElementById("c");
-	const paddleWidth = document.global.paddle.width;
-	const paddleHeight = document.global.paddle.height;
+	let paddleWidth = document.global.paddle.width;
+	let paddleHeight = document.global.paddle.height;
 	const canvasWidth = canvas.clientWidth;
 	const canvasHeight = canvas.clientHeight;
 	const arenaWidth = document.global.arena.width;
 	const arenaHeight = document.global.arena.height;
     const mouseX = e.clientX;
 	const mouseY = e.clientY;
+
+	if ((document.global.gameplay.local && document.global.paddle.paddles[0].largePaddle) || (document.global.gameplay.multi && document.global.paddle.paddles[document.global.gameplay.playerNum].largePaddle)) { 
+		paddleWidth = paddleWidth * document.global.powerUp.largePaddle.multiplier;
+		paddleHeight = paddleHeight * document.global.powerUp.largePaddle.multiplier;
+	}
 
 	let positionX = -((canvasWidth - mouseX) / canvasWidth * arenaWidth) + (arenaWidth / 2);
 	if (positionX > (arenaWidth / 2) - (paddleWidth/2))
@@ -86,23 +92,33 @@ export function keyBinding() {
 }
 
 function isBallAlignedWithPaddleX(paddle) {
-	const halfPaddleWidth = document.global.paddle.width / 2;
+	let halfPaddleWidth;
 	const sphereX = document.global.sphereMesh.position.x;
 	const paddleX = paddle.position.x;
+
+	if (paddle.largePaddle)
+		halfPaddleWidth = document.global.paddle.width / 2 * document.global.powerUp.largePaddle.multiplier;
+	else
+		halfPaddleWidth = document.global.paddle.width / 2;
 	return sphereX >= paddleX - halfPaddleWidth && sphereX <= paddleX + halfPaddleWidth;
 }
 
 function isBallAlignedWithPaddleY(paddle) {
-	let halfPaddleHeight = document.global.paddle.height / 2;
-	let sphereY = document.global.sphereMesh.position.y;
-	let paddleY = paddle.position.y;
+	let halfPaddleHeight;
+	const sphereY = document.global.sphereMesh.position.y;
+	const paddleY = paddle.position.y;
+
+	if (paddle.largePaddle)
+		halfPaddleHeight = document.global.paddle.height / 2 * document.global.powerUp.largePaddle.multiplier;
+	else
+		halfPaddleHeight = document.global.paddle.height / 2;
+	
 	return sphereY >= paddleY - halfPaddleHeight && sphereY <= paddleY + halfPaddleHeight;
 }
 
 function isPaddleCollision(paddles) {
 	const sphereRadius =  document.global.sphere.radius;
 	const paddleThickness = document.global.paddle.thickness;
-	const halfArenaDepth = document.global.arena.depth / 2;
 	
 	for (let i = 0; i < paddles.length; i++) {
 		let paddleZ = paddles[i].position.z;
@@ -152,7 +168,6 @@ function isZCollision() {
 	const sphereZ = document.global.sphereMesh.position.z;
 	const radius = document.global.sphere.radius;
 	const halfArenaDepth = document.global.arena.depth / 2;
-	const sphereOutModifier = document.global.gameplay.sphereOutModifier;
 	return sphereZ - radius <= -halfArenaDepth || sphereZ + radius >= halfArenaDepth;
 }
 
@@ -162,6 +177,75 @@ function isPowerUpCollision() {
 	
 	const distance = document.global.sphereMesh.position.distanceTo(document.global.powerUp.mesh[document.global.powerUp.index].position);
 	return distance <= sphereRadius + powerUpCircleRadius;
+}
+
+function powerUpCollisionEffect() {
+	document.global.gameplay.gameStart = 0;
+	document.global.powerUp.mesh[document.global.powerUp.index].visible = false;
+	document.global.powerUp.index = Math.floor(Math.random() * 1);
+	document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
+	document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
+	document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
+	for (let i = 0; i < document.global.sphere.circleRadius.length * 2; i += 2) {
+		document.global.sphereMesh.children[i].visible = true;
+		document.global.sphereMesh.children[i + 1].visible = true;
+	}
+	
+
+
+
+	//individual effects
+	//large paddle
+	if (document.global.powerUp.index === 0) {
+		const powerUpPaddleGeometry = new THREE.BoxGeometry(document.global.paddle.width * document.global.powerUp.largePaddle.multiplier, document.global.paddle.height * document.global.powerUp.largePaddle.multiplier, document.global.paddle.thickness )
+		if (document.global.sphere.velocityZ <= 0) {
+			document.global.paddle.paddles[0].largePaddle = 1;
+			document.global.paddle.paddles[0].geometry.dispose();
+			document.global.paddle.paddles[0].geometry = powerUpPaddleGeometry;
+			if (document.global.paddle.paddles[2]) {
+				document.global.paddle.paddles[2].largePaddle = 1;
+				document.global.paddle.paddles[2].geometry.dispose();
+				document.global.paddle.paddles[2].geometry = powerUpPaddleGeometry;
+			}
+		}
+		else if (document.global.sphere.velocityZ > 0) {
+			document.global.paddle.paddles[1].largePaddle = 1;
+			document.global.paddle.paddles[1].geometry.dispose();
+			document.global.paddle.paddles[1].geometry = powerUpPaddleGeometry;
+			if (document.global.paddle.paddles[3]) {
+				document.global.paddle.paddles[3].largePaddle = 1;
+				document.global.paddle.paddles[3].geometry.dispose();
+				document.global.paddle.paddles[2].geometry = powerUpPaddleGeometry;
+			}
+		}
+		
+	}
+}
+
+export function resetPowerUp() {
+	if (document.global.powerUp.enable) {
+		//reset settings for all powerup and randomise powerup rendering.
+		document.global.powerUp.mesh[document.global.powerUp.index].visible = false;
+		document.global.powerUp.index = Math.floor(Math.random() * 1);
+		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
+		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
+		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
+		document.global.powerUp.mesh[document.global.powerUp.index].position.set(document.global.powerUp.positionX, document.global.powerUp.positionY, document.global.powerUp.positionZ);
+		//reset visibile for sphere circle radius
+		for (let i = 0; i < document.global.sphere.circleRadius.length; i++) {
+			document.global.sphereMesh.children[i].visible = false;
+			document.global.sphereMesh.children[i + 1].visible = false;
+		}
+		document.global.powerUp.mesh[document.global.powerUp.index].visible = true;
+		
+
+		//large paddles reset
+		const paddleGeometry = new THREE.BoxGeometry(document.global.paddle.width, document.global.paddle.height, document.global.paddle.thickness )
+		document.global.paddle.paddles.forEach(paddle=>{
+			paddle.largePaddle = 0;
+			paddle.geometry = paddleGeometry;
+		});
+	}
 }
 
 function updateSpherePosition() {
@@ -189,14 +273,10 @@ export function processSphereMovement() {
 			sphere.velocityX = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
 			sphere.velocityY = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
 			sphere.velocityZ = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
+			resetPowerUp()
 		}
-		if (document.global.powerUp.enable && isPowerUpCollision()) {
-			
-			document.global.gameplay.gameStart = 0;
-			// powerUpCollisionEffect();
-			// document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
-			// document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
-			// document.global.powerUp.positionZ = Math.floor(Math.random() * (document.global.arena.depth / 2) - (document.global.arena.depth / 2));
+		if (document.global.powerUp.enable && document.global.powerUp.mesh[document.global.powerUp.index].visible === true && isPowerUpCollision()) {
+			powerUpCollisionEffect();
 		}
 		let paddleCollisionIndex = isPaddleCollision(document.global.paddle.paddles);
 		if(paddleCollisionIndex !== false)
@@ -213,13 +293,18 @@ export function movePaddle() {
 	let arenaHeight = document.global.arena.height;
 	let paddleWidth = document.global.paddle.width;
 	let paddleHeight = document.global.paddle.height;
+	let largePaddleWidth = paddleWidth * document.global.powerUp.largePaddle.multiplier;
+	let largePaddleHeight = paddleHeight * document.global.powerUp.largePaddle.multiplier; 
 
 	//local game
 	if (document.global.gameplay.local) {
 		const paddleOne = document.global.paddle.paddles[0]; //to change later, now hardcoded
 		const paddleTwo = document.global.paddle.paddles[1];
-		
-		
+
+		if (paddleOne.largePaddle) {
+			paddleWidth = largePaddleWidth;
+			paddleHeight = largePaddleHeight;
+		}
 		if (paddleOne.position.y < (arenaHeight / 2) - (paddleHeight/2))
 			paddleOne.position.y += document.global.keyboard.w * document.global.keyboard.speed;
 		if (paddleOne.position.y > (-arenaHeight / 2) + (paddleHeight/2))
@@ -229,6 +314,10 @@ export function movePaddle() {
 		if (paddleOne.position.x > (-arenaWidth / 2) + (paddleWidth/2))
 			paddleOne.position.x -= document.global.keyboard.a * document.global.keyboard.speed;
 
+		if (!paddleTwo.largePaddle) {
+			paddleWidth = document.global.paddle.width;
+			paddleHeight = document.global.paddle.height;
+		}
 		if (paddleTwo.position.y < (arenaHeight / 2) - (paddleHeight/2))
 			paddleTwo.position.y += document.global.keyboard.up * document.global.keyboard.speed;
 		if (paddleTwo.position.y > (-arenaHeight / 2) + (paddleHeight/2))
@@ -242,7 +331,10 @@ export function movePaddle() {
 		const paddleOne = document.global.paddle.paddles[2]; //to change later, now hardcoded
 		const paddleTwo = document.global.paddle.paddles[1];
 		
-		
+		if (paddleOne.largePaddle) {
+			paddleWidth = largePaddleWidth;
+			paddleHeight = largePaddleHeight;
+		}
 		if (paddleOne.position.y < (arenaHeight / 2) - (paddleHeight/2))
 			paddleOne.position.y += document.global.keyboard.w * document.global.keyboard.speed;
 		if (paddleOne.position.y > (-arenaHeight / 2) + (paddleHeight/2))
@@ -252,6 +344,10 @@ export function movePaddle() {
 		if (paddleOne.position.x > (-arenaWidth / 2) + (paddleWidth/2))
 			paddleOne.position.x -= document.global.keyboard.a * document.global.keyboard.speed;
 
+		if (!paddleTwo.largePaddle) {
+			paddleWidth = document.global.paddle.width;
+			paddleHeight = document.global.paddle.height;
+		}
 		if (paddleTwo.position.y < (arenaHeight / 2) - (paddleHeight/2))
 			paddleTwo.position.y += document.global.keyboard.up * document.global.keyboard.speed;
 		if (paddleTwo.position.y > (-arenaHeight / 2) + (paddleHeight/2))

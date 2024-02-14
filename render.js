@@ -3,6 +3,8 @@ import {processSphereMovement} from './gameplay.js';
 import {movePaddle} from './gameplay.js';
 import {keyBinding} from './gameplay.js';
 import {createPowerUp} from './powerup.js';
+import {createFirstHalfCircleGeometry} from './powerup.js';
+import {createSecondHalfCircleGeometry} from './powerup.js';
 
 function resizeRendererToDisplaySize( renderer ) {
 
@@ -28,11 +30,29 @@ function createArenaMesh(arena3D) {
 	document.global.arenaMesh = arenaMesh;
 }
 
+function createPowerUpCircle(sphereMesh) {
+	for (let i = 0; i < document.global.sphere.circleRadius.length; i++) {
+		const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.sphere.circleRadius[i]);
+		const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.sphere.circleRadius[i]);
+		const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[document.global.powerUp.index]} );
+		const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
+		const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
+		firstHalfCircleMesh.visible = false;
+		secondHalfCircleMesh.visible = false;
+		sphereMesh.add(firstHalfCircleMesh);
+		sphereMesh.add(secondHalfCircleMesh);
+	}
+}
+
 function createSphereMesh(arena3D) {
 	const sphereGeometry = new THREE.SphereGeometry( document.global.sphere.radius, document.global.sphere.widthSegments, document.global.sphere.heightSegments );
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess} );
 	const sphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	sphereMesh.castShadow=true;
+	//create powerup surrounding circle timer
+	if (document.global.powerUp.enable) 
+		createPowerUpCircle(sphereMesh);
+		
 	document.global.sphereMesh = sphereMesh;
 	arena3D.add(sphereMesh);
 }
@@ -92,7 +112,7 @@ function createPaddleMesh(arena3D) {
 					paddleMesh.position.set(0, 0, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
 			}
 				
-			else if (i == 2) {
+			else if (i === 2) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialThree);
 				paddleMesh.receiveShadow = true;
 				paddleMesh.castShadow = true;
@@ -101,12 +121,13 @@ function createPaddleMesh(arena3D) {
 				else 
 					paddleMesh.position.set(0, 0, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
 			}
-			else if (i = 3) {
+			else if (i === 3) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialFour);
 				paddleMesh.receiveShadow = true;
 				paddleMesh.castShadow = true;
 				paddleMesh.position.set(document.global.paddle.width / 4, document.global.paddle.height / 4, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
 			}
+			paddleMesh.largePaddle = 0; //powerup property
 			document.global.paddle.paddles.push(paddleMesh);
 			arena3D.add(paddleMesh);
 		}
@@ -158,7 +179,9 @@ function createShadowPlanes(arena3D) {
 	document.global.shadowPlanes = shadowPlanes;
 }
 
+function processSpherePowerUp(second) {
 
+}
 
 function arenaRotateY() {
 	if (document.global.gameplay.initRotateY) {
@@ -185,9 +208,35 @@ function arenaRotateX() {
 }
 
 function rotatePowerUp() {
-	if (document.global.powerUp.enable)
+	if (document.global.powerUp.enable) {
 		document.global.powerUp.mesh[document.global.powerUp.index].rotation.z += document.global.powerUp.circleRotation;
+		for (let i = 0; i < document.global.sphere.circleRadius.length; i++) {
+			document.global.sphereMesh.children[i].rotation.z += document.global.powerUp.circleRotation;
+			document.global.sphereMesh.children[i + 1].rotation.z += document.global.powerUp.circleRotation;
+		}
+	}
+		
+
+}
+
+function setFrame() {
+	//gamestart shadow issue actions
+	if (document.global.gameplay.gameStart === 1)
+		document.global.gameplay.shadowFrame++;
+	if (document.global.gameplay.shadowFrame === document.global.gameplay.shadowFrameLimit)
+		document.global.pointLight.castShadow = true;
+
+	// gamestart delay
+	// if (document.global.gameplay.gameStart === 0)
+	// 	document.global.gameplay.gameStartFrame++;
+	// if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
+	// 	document.global.gameplay.gameStart = 1;
+	// 	document.global.gameplay.gameStartFrame =0;
+	// }
+
+	// powerup timer
 	
+
 }
 
 function main() {
@@ -220,9 +269,9 @@ function main() {
 			camera.aspect = canvas.clientWidth / canvas.clientHeight;
 			camera.updateProjectionMatrix();
 		}
-		
 		rotatePowerUp();
 		processSphereMovement();
+		processSpherePowerUp();
 		arenaRotateY();
 		arenaRotateX();
 		if (document.global.gameplay.rotate90) {
@@ -232,20 +281,8 @@ function main() {
 			}
 		}
 		movePaddle();
+		setFrame();
 		
-		//gamestart shadow issue actions
-		if (document.global.gameplay.gameStart === 1)
-			document.global.gameplay.shadowFrame++;
-		if (document.global.gameplay.shadowFrame === document.global.gameplay.shadowFrameLimit)
-			document.global.pointLight.castShadow = true;
-
-		//gamestart delay
-		// if (document.global.gameplay.gameStart === 0)
-		// 	document.global.gameplay.gameStartFrame++;
-		// if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
-		// 	document.global.gameplay.gameStart = 1;
-		// 	document.global.gameplay.gameStartFrame =0;
-		// }
 
 		
 			

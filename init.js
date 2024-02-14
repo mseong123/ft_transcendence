@@ -30,7 +30,7 @@ function updateGlobal() {
 		document.global.sphere.color = "#686868";
 		document.global.sphere.velocityDivision = 200;
 		document.global.sphere.radius = clientWidth / document.global.sphere.radiusDivision;
-		document.global.sphere.circleRadius = [document.global.sphere.radius * 2, document.global.sphere.radius * 3,document.global.sphere.radius * 4]
+		document.global.sphere.circleRadius = [document.global.sphere.radius * 1.5, document.global.sphere.radius * 2,document.global.sphere.radius * 2.5]
 	}
 	document.global.sphere.velocityX = clientWidth / document.global.sphere.velocityDivision;
 	document.global.sphere.velocityY = clientWidth / document.global.sphere.velocityDivision;
@@ -101,22 +101,24 @@ function updateGlobal() {
 		document.global.powerUp.enable = 1;
 		document.global.powerUp.widthSegments = 6;
 		document.global.powerUp.heightSegments = 6;
+		document.global.powerUp.index = Math.floor(Math.random() * 1);
 		document.global.powerUp.radius = document.global.sphere.radius;
-		document.global.powerUp.circleRadius = document.global.powerUp.radius * 2;
+		document.global.powerUp.circleRadius = document.global.powerUp.radius * 10;
 		document.global.powerUp.shininess = 30;
 		document.global.powerUp.circleRotation = 0.1;
-		document.global.powerUp.index = Math.floor(Math.random() * 1); //to change for multiplayer
+		document.global.powerUp.index;
+		document.global.powerUp.durationFrame = 5000; //miliseconds
 		document.global.powerUp.mesh = [];
 		document.global.powerUp.color = ["#D0312D"];
-		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
-		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
-		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
-	}
+		document.global.powerUp.positionX;
+		document.global.powerUp.positionY;
+		document.global.powerUp.positionZ;
+		//largePaddle powerup info
+		if (!document.global.powerUp.largePaddle) {
+			document.global.powerUp.largePaddle = {};
+			document.global.powerUp.largePaddle.multiplier = 1.5;
+		}
 
-	//specific powerup info
-	if (!document.global.powerUp.largePaddle) {
-		document.global.powerUp.largePaddle = {};
-		document.global.powerUp.largePaddle.color = "#900603";
 	}
 
 	//gameplay
@@ -138,10 +140,10 @@ function updateGlobal() {
 		document.querySelector(".canvas-background-2").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
 
 		//local game
-		document.global.gameplay.local = 0;
+		document.global.gameplay.local = 1;
 		document.global.gameplay.computer = 0;
 		//remote and multiplayer game
-		document.global.gameplay.multi = 1;
+		document.global.gameplay.multi = 0;
 		
 		//other game info
 		document.global.gameplay.playerNum = 0;

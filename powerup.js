@@ -1,7 +1,7 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
 
-function createFirstHalfCircleGeometry() {
-	const circleRadius = document.global.powerUp.circleRadius;
+export function createFirstHalfCircleGeometry(radius) {
+	const circleRadius = radius;
 	const circleSegments = 32;
 	const circlePoints = [];
 	
@@ -14,12 +14,11 @@ function createFirstHalfCircleGeometry() {
 			circlePoints.push(new THREE.Vector3(x, y, z));
 		}
 	}
-	console.log(circlePoints);
 	return new THREE.BufferGeometry().setFromPoints(circlePoints);
 }
 
-function createSecondHalfCircleGeometry() {
-	const circleRadius = document.global.powerUp.circleRadius;
+export function createSecondHalfCircleGeometry(radius) {
+	const circleRadius = radius;
 	const circleSegments = 32;
 	const circlePoints = [];
 	
@@ -32,11 +31,10 @@ function createSecondHalfCircleGeometry() {
 			circlePoints.push(new THREE.Vector3(x, y, z));
 		}
 	}
-	console.log(circlePoints);
 	return new THREE.BufferGeometry().setFromPoints(circlePoints);
 }
 
-function createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry) {
+export function createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry) {
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.powerUp.color[0], emissive: document.global.powerUp.color[0], shininess:document.global.powerUp.shininess} );
 	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[0]} );
 	const largePaddleSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
@@ -52,19 +50,19 @@ function createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, Sec
 
 export function createPowerUp(arena3D) {
 	const sphereGeometry = new THREE.SphereGeometry( document.global.powerUp.radius, document.global.powerUp.widthSegments, document.global.powerUp.heightSegments );
-	const firstHalfCircleGeometry = createFirstHalfCircleGeometry();
-	const SecondHalfCircleGeometry = createSecondHalfCircleGeometry();
+	const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.powerUp.circleRadius);
+	const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.powerUp.circleRadius);
 	
 	if (document.global.powerUp.enable) {
 		//create all powerUp objects
 		createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
 
-		
-		//first render
+		//initial render
+		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
+		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
+		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
 		document.global.powerUp.mesh[document.global.powerUp.index].visible = true;
 		document.global.powerUp.mesh[document.global.powerUp.index].position.set(document.global.powerUp.positionX, document.global.powerUp.positionY, document.global.powerUp.positionZ);
-		
-
 	}
 
 }
