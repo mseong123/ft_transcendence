@@ -5,7 +5,7 @@ export function createFirstHalfCircleGeometry(radius) {
 	const circleSegments = 32;
 	const circlePoints = [];
 	
-	for (let i = 0; i <= 8; i++) {
+	for (let i = 0; i <= 12; i++) {
 		{
 			const theta = (i / circleSegments) * Math.PI * 2;
 			const x = circleRadius * Math.cos(theta);
@@ -22,7 +22,7 @@ export function createSecondHalfCircleGeometry(radius) {
 	const circleSegments = 32;
 	const circlePoints = [];
 	
-	for (let i = 16; i <= 24; i++) {
+	for (let i = 16; i <= 28; i++) {
 		{
 			const theta = (i / circleSegments) * Math.PI * 2;
 			const x = circleRadius * Math.cos(theta);

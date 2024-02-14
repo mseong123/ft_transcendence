@@ -5,6 +5,7 @@ import {keyBinding} from './gameplay.js';
 import {createPowerUp} from './powerup.js';
 import {createFirstHalfCircleGeometry} from './powerup.js';
 import {createSecondHalfCircleGeometry} from './powerup.js';
+import {resetPowerUp} from './gameplay.js'
 
 function resizeRendererToDisplaySize( renderer ) {
 
@@ -19,7 +20,7 @@ function resizeRendererToDisplaySize( renderer ) {
 }
 
 function createArenaMesh(arena3D) {
-	const arenaMaterial = new THREE.LineBasicMaterial( { color: document.global.arenaColor } );
+	const arenaMaterial = new THREE.LineBasicMaterial( { color: document.global.arena.color } );
 	const arenaMesh = [];
 	for (let i = 0; i < document.global.arena.thickness; i++) {
 		const arenaGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry( (document.global.arena.clientWidth + i) / document.global.arena.widthDivision,
@@ -187,10 +188,12 @@ function arenaRotateY() {
 	if (document.global.gameplay.initRotateY) {
 		document.global.arena3D.position.z += document.global.arena.depth;
 		document.global.arena3D.rotation.y += document.global.gameplay.rotationY;
-		for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
-			document.global.powerUp.mesh[i].rotation.y -= document.global.gameplay.rotationY * 2;
+		if (document.global.powerUp.enable) {
+			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
+				document.global.powerUp.mesh[i].rotation.y -= document.global.gameplay.rotationY;
+			}
+			document.global.sphereMesh.rotation.y -= document.global.gameplay.rotationY;
 		}
-		document.global.arena3D.rotation.y += document.global.gameplay.rotationY;
 		document.global.arena3D.position.z -= document.global.arena.depth;
 	}
 	
@@ -200,8 +203,11 @@ function arenaRotateX() {
 	if (document.global.gameplay.initRotateX) {
 		document.global.arena3D.position.z += document.global.arena.depth;
 		document.global.arena3D.rotation.x += document.global.gameplay.rotationX;
-		for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
-			document.global.powerUp.mesh[i].rotation.x -= document.global.gameplay.rotationX;
+		if (document.global.powerUp.enable) {
+			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
+				document.global.powerUp.mesh[i].rotation.x -= document.global.gameplay.rotationX;
+			}
+			document.global.sphereMesh.rotation.x -= document.global.gameplay.rotationX;
 		}
 		document.global.arena3D.position.z -=document.global.arena.depth;
 	}
@@ -235,6 +241,21 @@ function setFrame() {
 	// }
 
 	// powerup timer
+	if (document.global.powerUp.enable) {
+		for (let i = document.global.sphereMesh.children.length - 1; i >= 0; i-=2) {
+			if (document.global.sphereMesh.children[i].visible && document.global.sphereMesh.children[i - 1].visible && document.global.powerUp.durationFrame >= document.global.powerUp.durationFrameLimit / ((i+1)/2)) {
+				document.global.sphereMesh.children[i].visible = false;
+				document.global.sphereMesh.children[i - 1].visible = false;
+			}
+		}
+		if (!document.global.sphereMesh.children.every(children=>{return children.visible === false}))
+			document.global.powerUp.durationFrame++;
+		else if (document.global.powerUp.durationFrame === document.global.powerUp.durationFrameLimit) {
+			resetPowerUp();
+			document.global.powerUp.durationFrame = 0;
+		}
+		
+	}
 	
 
 }
@@ -277,8 +298,9 @@ function main() {
 		if (document.global.gameplay.rotate90) {
 			document.global.arena3D.rotation.y = -Math.PI / 2;
 			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
-				document.global.powerUp.mesh[i].children[0].rotation.y += Math.PI / 2 * 2;
+				document.global.powerUp.mesh[i].rotation.y = Math.PI / 2;
 			}
+			document.global.sphereMesh.rotation.y = Math.PI / 2;
 		}
 		movePaddle();
 		setFrame();

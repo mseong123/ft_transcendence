@@ -180,19 +180,12 @@ function isPowerUpCollision() {
 }
 
 function powerUpCollisionEffect() {
-	document.global.gameplay.gameStart = 0;
 	document.global.powerUp.mesh[document.global.powerUp.index].visible = false;
-	document.global.powerUp.index = Math.floor(Math.random() * 1);
-	document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
-	document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
-	document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
+	
 	for (let i = 0; i < document.global.sphere.circleRadius.length * 2; i += 2) {
 		document.global.sphereMesh.children[i].visible = true;
 		document.global.sphereMesh.children[i + 1].visible = true;
 	}
-	
-
-
 
 	//individual effects
 	//large paddle
@@ -226,25 +219,29 @@ export function resetPowerUp() {
 	if (document.global.powerUp.enable) {
 		//reset settings for all powerup and randomise powerup rendering.
 		document.global.powerUp.mesh[document.global.powerUp.index].visible = false;
+		
+		//reset visibile for sphere circle radius
+		for (let i = 0; i < document.global.sphere.circleRadius.length * 2; i += 2) {
+			document.global.sphereMesh.children[i].visible = false;
+			document.global.sphereMesh.children[i + 1].visible = false;
+		}
+		//individual RESETS
+		//large paddles reset
+		if (document.global.powerUp.index === 0) {
+			const paddleGeometry = new THREE.BoxGeometry(document.global.paddle.width, document.global.paddle.height, document.global.paddle.thickness )
+			document.global.paddle.paddles.forEach(paddle=>{
+				paddle.largePaddle = 0;
+				paddle.geometry = paddleGeometry;
+			});
+		}
+
+		//set new random powerup and position
 		document.global.powerUp.index = Math.floor(Math.random() * 1);
 		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
 		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
 		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
 		document.global.powerUp.mesh[document.global.powerUp.index].position.set(document.global.powerUp.positionX, document.global.powerUp.positionY, document.global.powerUp.positionZ);
-		//reset visibile for sphere circle radius
-		for (let i = 0; i < document.global.sphere.circleRadius.length; i++) {
-			document.global.sphereMesh.children[i].visible = false;
-			document.global.sphereMesh.children[i + 1].visible = false;
-		}
 		document.global.powerUp.mesh[document.global.powerUp.index].visible = true;
-		
-
-		//large paddles reset
-		const paddleGeometry = new THREE.BoxGeometry(document.global.paddle.width, document.global.paddle.height, document.global.paddle.thickness )
-		document.global.paddle.paddles.forEach(paddle=>{
-			paddle.largePaddle = 0;
-			paddle.geometry = paddleGeometry;
-		});
 	}
 }
 

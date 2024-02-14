@@ -107,7 +107,8 @@ function updateGlobal() {
 		document.global.powerUp.shininess = 30;
 		document.global.powerUp.circleRotation = 0.1;
 		document.global.powerUp.index;
-		document.global.powerUp.durationFrame = 5000; //miliseconds
+		document.global.powerUp.durationFrame = 0; //miliseconds
+		document.global.powerUp.durationFrameLimit = 500; //miliseconds
 		document.global.powerUp.mesh = [];
 		document.global.powerUp.color = ["#D0312D"];
 		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
@@ -131,7 +132,7 @@ function updateGlobal() {
 		document.global.gameplay.initRotateX = 0;
 		document.global.gameplay.rotationY = 0.005;
 		document.global.gameplay.rotationX = 0.005;
-		document.global.gameplay.rotate90 = 0;
+		document.global.gameplay.rotate90 = 1;
 		document.global.gameplay.gameStartFrame = 0;
 		document.global.gameplay.gameStartFrameLimit = 25;
 		document.global.gameplay.shadowFrame = 0;
