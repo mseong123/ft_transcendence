@@ -34,7 +34,7 @@ function createArenaMesh(arena3D) {
 function createPowerUpCircle(sphereMesh) {
 	const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.sphere.circleRadius);
 	const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.sphere.circleRadius);
-	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[document.global.powerUp.index], linewidth: 10});
+	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[document.global.powerUp.index], transparent:true, opacity:1});
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
 	firstHalfCircleMesh.visible = false;
@@ -46,7 +46,8 @@ function createPowerUpCircle(sphereMesh) {
 
 function createSphereMesh(arena3D) {
 	const sphereGeometry = new THREE.SphereGeometry( document.global.sphere.radius, document.global.sphere.widthSegments, document.global.sphere.heightSegments );
-	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess} );
+	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess, transparent:true, opacity:1 } );
+	
 	const sphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	sphereMesh.castShadow=true;
 	//create powerup surrounding circle timer

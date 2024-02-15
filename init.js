@@ -101,16 +101,17 @@ function updateGlobal() {
 		document.global.powerUp.enable = 1;
 		document.global.powerUp.widthSegments = 6;
 		document.global.powerUp.heightSegments = 6;
-		document.global.powerUp.index = Math.floor(Math.random() * 2);
+		// document.global.powerUp.index = Math.floor(Math.random() * 3);
+		document.global.powerUp.index = 2;
 		document.global.powerUp.radius = document.global.sphere.radius;
-		document.global.powerUp.circleRadius = document.global.powerUp.radius * 10;
+		document.global.powerUp.circleRadius = document.global.powerUp.radius * 15;
 		document.global.powerUp.shininess = 30;
 		document.global.powerUp.circleRotation = 0.1;
 		document.global.powerUp.index;
 		document.global.powerUp.durationFrame = 0; //miliseconds
 		document.global.powerUp.durationFrameLimit = 500; //miliseconds
 		document.global.powerUp.mesh = [];
-		document.global.powerUp.color = ["#FFA500", "#088F8F"];
+		document.global.powerUp.color = ["#FFA500", "#088F8F", "#686868"];
 		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
 		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
 		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
@@ -123,6 +124,10 @@ function updateGlobal() {
 			document.global.powerUp.shake = {};
 			document.global.powerUp.shake.multiplier = 4;
 		}
+		if (!document.global.powerUp.invisibility) {
+			document.global.powerUp.invisibility = {};
+			document.global.powerUp.invisibility.opacity = 0.5;
+		}
 
 	}
 
@@ -132,6 +137,7 @@ function updateGlobal() {
 		document.global.gameplay.backgroundClass = ["canvas-url-space", "canvas-url-ocean", "canvas-url-alien", "canvas-url-desert"];
 		document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); //to change for multiplayer
 		document.global.gameplay.gameStart = 1;
+		document.global.gameplay.immortality = 1; //for gameplay debugging purpose
 		document.global.gameplay.initRotateY = 0;
 		document.global.gameplay.initRotateX = 0;
 		document.global.gameplay.rotationY = 0.005;
