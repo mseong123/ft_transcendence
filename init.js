@@ -30,7 +30,7 @@ function updateGlobal() {
 		document.global.sphere.color = "#686868";
 		document.global.sphere.velocityDivision = 200;
 		document.global.sphere.radius = clientWidth / document.global.sphere.radiusDivision;
-		document.global.sphere.circleRadius = [document.global.sphere.radius * 1.5, document.global.sphere.radius * 2,document.global.sphere.radius * 2.5]
+		document.global.sphere.circleRadius = document.global.sphere.radius * 2;
 	}
 	document.global.sphere.velocityX = clientWidth / document.global.sphere.velocityDivision;
 	document.global.sphere.velocityY = clientWidth / document.global.sphere.velocityDivision;
@@ -70,7 +70,7 @@ function updateGlobal() {
 	if (!document.global.directionalLight) {
 		document.global.directionalLight = {};
 		document.global.directionalLight.color = "#FFF";
-		document.global.directionalLight.intensity = 20;
+		document.global.directionalLight.intensity = 15;
 		document.global.directionalLight.positionZ = 0;
 	}
 	document.global.directionalLight.positionX = clientWidth;
@@ -101,7 +101,7 @@ function updateGlobal() {
 		document.global.powerUp.enable = 1;
 		document.global.powerUp.widthSegments = 6;
 		document.global.powerUp.heightSegments = 6;
-		document.global.powerUp.index = Math.floor(Math.random() * 1);
+		document.global.powerUp.index = Math.floor(Math.random() * 2);
 		document.global.powerUp.radius = document.global.sphere.radius;
 		document.global.powerUp.circleRadius = document.global.powerUp.radius * 10;
 		document.global.powerUp.shininess = 30;
@@ -110,14 +110,18 @@ function updateGlobal() {
 		document.global.powerUp.durationFrame = 0; //miliseconds
 		document.global.powerUp.durationFrameLimit = 500; //miliseconds
 		document.global.powerUp.mesh = [];
-		document.global.powerUp.color = ["#D0312D"];
+		document.global.powerUp.color = ["#FFA500", "#088F8F"];
 		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
 		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
 		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
 		//largePaddle powerup info
 		if (!document.global.powerUp.largePaddle) {
 			document.global.powerUp.largePaddle = {};
-			document.global.powerUp.largePaddle.multiplier = 1.5;
+			document.global.powerUp.largePaddle.multiplier = 2;
+		}
+		if (!document.global.powerUp.shake) {
+			document.global.powerUp.shake = {};
+			document.global.powerUp.shake.multiplier = 4;
 		}
 
 	}

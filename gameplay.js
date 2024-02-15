@@ -183,12 +183,17 @@ function isPowerUpCollision() {
 }
 
 function powerUpCollisionEffect() {
+	document.global.gameplay.gameStart = 0;
+	//set visibility of powerup sphere to false;
 	document.global.powerUp.mesh[document.global.powerUp.index].visible = false;
-	
-	for (let i = 0; i < document.global.sphere.circleRadius.length * 2; i += 2) {
-		document.global.sphereMesh.children[i].visible = true;
-		document.global.sphereMesh.children[i + 1].visible = true;
-	}
+	//change color of rotating circle around main sphere to current powerup color and render visible
+	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[document.global.powerUp.index], linewidth: 10});
+	document.global.sphereMesh.children[0].material.dispose();
+	document.global.sphereMesh.children[1].material.dispose();
+	document.global.sphereMesh.children[0].material = circleMaterial;
+	document.global.sphereMesh.children[1].material = circleMaterial;
+	document.global.sphereMesh.children[0].visible = true;
+	document.global.sphereMesh.children[1].visible = true;
 
 	//individual effects
 	//large paddle
@@ -211,11 +216,12 @@ function powerUpCollisionEffect() {
 			if (document.global.paddle.paddles[3]) {
 				document.global.paddle.paddles[3].largePaddle = 1;
 				document.global.paddle.paddles[3].geometry.dispose();
-				document.global.paddle.paddles[2].geometry = powerUpPaddleGeometry;
+				document.global.paddle.paddles[3].geometry = powerUpPaddleGeometry;
 			}
 		}
 		
 	}
+	//no effects here for shake
 }
 
 export function resetPowerUp() {
@@ -224,10 +230,9 @@ export function resetPowerUp() {
 		document.global.powerUp.mesh[document.global.powerUp.index].visible = false;
 		
 		//reset visibile for sphere circle radius
-		for (let i = 0; i < document.global.sphere.circleRadius.length * 2; i += 2) {
-			document.global.sphereMesh.children[i].visible = false;
-			document.global.sphereMesh.children[i + 1].visible = false;
-		}
+		document.global.sphereMesh.children[0].visible = false;
+		document.global.sphereMesh.children[1].visible = false;
+
 		//individual RESETS
 		//large paddles reset
 		if (document.global.powerUp.index === 0) {
@@ -237,9 +242,15 @@ export function resetPowerUp() {
 				paddle.geometry = paddleGeometry;
 			});
 		}
+		//shake reset
+		else if (document.global.powerUp.index === 1) {
+			document.global.arena3D.position.set(0,0,0);
+		}
+
+		
 
 		//set new random powerup and position
-		document.global.powerUp.index = Math.floor(Math.random() * 1);
+		document.global.powerUp.index = Math.floor(Math.random() * 2);
 		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
 		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
 		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));

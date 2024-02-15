@@ -32,17 +32,16 @@ function createArenaMesh(arena3D) {
 }
 
 function createPowerUpCircle(sphereMesh) {
-	for (let i = 0; i < document.global.sphere.circleRadius.length; i++) {
-		const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.sphere.circleRadius[i]);
-		const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.sphere.circleRadius[i]);
-		const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[document.global.powerUp.index]} );
-		const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
-		const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
-		firstHalfCircleMesh.visible = false;
-		secondHalfCircleMesh.visible = false;
-		sphereMesh.add(firstHalfCircleMesh);
-		sphereMesh.add(secondHalfCircleMesh);
-	}
+	const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.sphere.circleRadius);
+	const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.sphere.circleRadius);
+	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[document.global.powerUp.index], linewidth: 10});
+	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
+	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
+	firstHalfCircleMesh.visible = false;
+	secondHalfCircleMesh.visible = false;
+	sphereMesh.add(firstHalfCircleMesh);
+	sphereMesh.add(secondHalfCircleMesh);
+
 }
 
 function createSphereMesh(arena3D) {
@@ -180,10 +179,6 @@ function createShadowPlanes(arena3D) {
 	document.global.shadowPlanes = shadowPlanes;
 }
 
-function processSpherePowerUp(second) {
-
-}
-
 function arenaRotateY() {
 	if (document.global.gameplay.initRotateY) {
 		document.global.arena3D.position.z += document.global.arena.depth;
@@ -216,13 +211,27 @@ function arenaRotateX() {
 function rotatePowerUp() {
 	if (document.global.powerUp.enable) {
 		document.global.powerUp.mesh[document.global.powerUp.index].rotation.z += document.global.powerUp.circleRotation;
-		for (let i = 0; i < document.global.sphere.circleRadius.length * 2; i += 2) {
-			document.global.sphereMesh.children[i].rotation.z += document.global.powerUp.circleRotation;
-			document.global.sphereMesh.children[i + 1].rotation.z += document.global.powerUp.circleRotation;
-		}
+		document.global.sphereMesh.children[0].rotation.z += document.global.powerUp.circleRotation;
+		document.global.sphereMesh.children[1].rotation.z += document.global.powerUp.circleRotation;
 	}
-		
+}
 
+function shakeEffect() {
+	const randomNum = Math.floor(Math.random() * 6);
+	console.log(randomNum)
+	const arena3D = document.global.arena3D;
+	if (randomNum === 0)
+		arena3D.position.x += 1 * document.global.powerUp.shake.multiplier;
+	else if (randomNum === 1)
+		arena3D.position.x -= 1 * document.global.powerUp.shake.multiplier;
+	else if (randomNum === 2)
+		arena3D.position.y += 1 * document.global.powerUp.shake.multiplier;
+	else if (randomNum === 3)
+		arena3D.position.y -= 1 * document.global.powerUp.shake.multiplier;
+	else if (randomNum === 4)
+		arena3D.position.z += 1 * document.global.powerUp.shake.multiplier;
+	else if (randomNum === 5)
+		arena3D.position.z -= 1 * document.global.powerUp.shake.multiplier;
 }
 
 function setFrame() {
@@ -233,24 +242,22 @@ function setFrame() {
 		document.global.pointLight.castShadow = true;
 
 	// gamestart delay
-	if (document.global.gameplay.gameStart === 0)
-		document.global.gameplay.gameStartFrame++;
-	if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
-		document.global.gameplay.gameStart = 1;
-		document.global.gameplay.gameStartFrame =0;
-	}
+	// if (document.global.gameplay.gameStart === 0)
+	// 	document.global.gameplay.gameStartFrame++;
+	// if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
+	// 	document.global.gameplay.gameStart = 1;
+	// 	document.global.gameplay.gameStartFrame =0;
+	// }
 
 	// powerup timer
 	if (document.global.powerUp.enable) {
-		for (let i = document.global.sphereMesh.children.length - 1; i >= 0; i-=2) {
-			if (document.global.sphereMesh.children[i].visible && document.global.sphereMesh.children[i - 1].visible && document.global.powerUp.durationFrame >= document.global.powerUp.durationFrameLimit / ((i+1)/2)) {
-				document.global.sphereMesh.children[i].visible = false;
-				document.global.sphereMesh.children[i - 1].visible = false;
-			}
-		}
-		if (!document.global.sphereMesh.children.every(children=>{return children.visible === false}))
+		if (!document.global.sphereMesh.children.every(children=>{return children.visible === false})) {
 			document.global.powerUp.durationFrame++;
-		else if (document.global.powerUp.durationFrame === document.global.powerUp.durationFrameLimit) {
+			// shake effect
+			if (document.global.powerUp.index === 1)
+				shakeEffect();
+		}
+		if (document.global.powerUp.durationFrame === document.global.powerUp.durationFrameLimit) {
 			resetPowerUp();
 			document.global.powerUp.durationFrame = 0;
 		}
@@ -292,7 +299,6 @@ function main() {
 		}
 		rotatePowerUp();
 		processSphereMovement();
-		processSpherePowerUp();
 		arenaRotateY();
 		arenaRotateX();
 		if (document.global.gameplay.rotate90) {

@@ -47,6 +47,19 @@ export function createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeomet
 	arena3D.add(largePaddleSphereMesh);
 }
 
+export function createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry) {
+	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.powerUp.color[1], emissive: document.global.powerUp.color[1], shininess:document.global.powerUp.shininess} );
+	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[1]} );
+	const shakeSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
+	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
+	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
+	shakeSphereMesh.add(firstHalfCircleMesh);
+	shakeSphereMesh.add(secondHalfCircleMesh);
+	shakeSphereMesh.visible = false;
+	document.global.powerUp.mesh.push(shakeSphereMesh);
+	arena3D.add(shakeSphereMesh);
+}
+
 
 export function createPowerUp(arena3D) {
 	const sphereGeometry = new THREE.SphereGeometry( document.global.powerUp.radius, document.global.powerUp.widthSegments, document.global.powerUp.heightSegments );
@@ -56,6 +69,7 @@ export function createPowerUp(arena3D) {
 	if (document.global.powerUp.enable) {
 		//create all powerUp objects
 		createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
+		createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
 
 		//initial render
 		document.global.powerUp.mesh[document.global.powerUp.index].visible = true;
