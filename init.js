@@ -2,6 +2,12 @@ function windowResize(e) {
 	const canvas = document.querySelector(".canvas-container");
 	canvas.style.height = (canvas.clientWidth / document.global.arena.aspect) + 'px';
 	updateGlobal();
+	//update velocity in each sphereMesh
+	for (let i = 0; i < document.global.sphereMesh.length; i++) {
+		document.global.sphereMesh[i].velocityX = document.global.sphere.velocityX;
+		document.global.sphereMesh[i].velocityY = document.global.sphere.velocityY;
+		document.global.sphereMesh[i].velocityZ = document.global.sphere.velocityZ;
+	}
 }
 
 function updateGlobal() {
@@ -23,10 +29,13 @@ function updateGlobal() {
 	//sphere info
 	if (!document.global.sphere) {
 		document.global.sphere = {};
+		document.global.sphereMesh = [];
 		document.global.sphere.radiusDivision = 100; //to change to be based on clientwidth
 		document.global.sphere.widthSegments = 12;
 		document.global.sphere.heightSegments = 12;
 		document.global.sphere.shininess = 60;
+		document.global.sphere.velocityTopLimit = 3;
+		document.global.sphere.velocityBottomLimit = 1;
 		document.global.sphere.color = "#686868";
 		document.global.sphere.velocityDivision = 200;
 		document.global.sphere.radius = clientWidth / document.global.sphere.radiusDivision;
@@ -101,24 +110,24 @@ function updateGlobal() {
 		document.global.powerUp.enable = 1;
 		document.global.powerUp.widthSegments = 6;
 		document.global.powerUp.heightSegments = 6;
-		// document.global.powerUp.index = Math.floor(Math.random() * 3);
-		document.global.powerUp.index = 2;
+		// document.global.powerUp.index = Math.floor(Math.random() * 5);
+		document.global.powerUp.index = 0;
 		document.global.powerUp.radius = document.global.sphere.radius;
-		document.global.powerUp.circleRadius = document.global.powerUp.radius * 15;
-		document.global.powerUp.shininess = 30;
+		document.global.powerUp.circleRadius = document.global.powerUp.radius * 3;
+		document.global.powerUp.shininess = 60;
 		document.global.powerUp.circleRotation = 0.1;
 		document.global.powerUp.index;
 		document.global.powerUp.durationFrame = 0; //miliseconds
-		document.global.powerUp.durationFrameLimit = 500; //miliseconds
+		document.global.powerUp.durationFrameLimit = 1000; //miliseconds
 		document.global.powerUp.mesh = [];
-		document.global.powerUp.color = ["#FFA500", "#088F8F", "#686868"];
+		document.global.powerUp.color = ["#FFA500", "#088F8F", "#686868", "#B22222", "#123456"];
 		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
 		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
 		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
 		//largePaddle powerup info
 		if (!document.global.powerUp.largePaddle) {
 			document.global.powerUp.largePaddle = {};
-			document.global.powerUp.largePaddle.multiplier = 2;
+			document.global.powerUp.largePaddle.multiplier = 4;
 		}
 		if (!document.global.powerUp.shake) {
 			document.global.powerUp.shake = {};
@@ -127,6 +136,10 @@ function updateGlobal() {
 		if (!document.global.powerUp.invisibility) {
 			document.global.powerUp.invisibility = {};
 			document.global.powerUp.invisibility.opacity = 0.5;
+		}
+		if (!document.global.powerUp.ultimate) {
+			document.global.powerUp.ultimate = {};
+			document.global.powerUp.ultimate.count = 10;
 		}
 
 	}

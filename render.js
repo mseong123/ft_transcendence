@@ -44,7 +44,7 @@ function createPowerUpCircle(sphereMesh) {
 
 }
 
-function createSphereMesh(arena3D) {
+export function createSphereMesh(arena3D, velocityX, velocityY, velocityZ) {
 	const sphereGeometry = new THREE.SphereGeometry( document.global.sphere.radius, document.global.sphere.widthSegments, document.global.sphere.heightSegments );
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess, transparent:true, opacity:1 } );
 	
@@ -53,8 +53,12 @@ function createSphereMesh(arena3D) {
 	//create powerup surrounding circle timer
 	if (document.global.powerUp.enable) 
 		createPowerUpCircle(sphereMesh);
-		
-	document.global.sphereMesh = sphereMesh;
+	
+	//attach global velocity property to each individual sphereMesh;
+	sphereMesh.velocityX = velocityX;
+	sphereMesh.velocityY = velocityY;
+	sphereMesh.velocityZ = velocityZ;
+	document.global.sphereMesh.push(sphereMesh);
 	arena3D.add(sphereMesh);
 }
 
@@ -186,9 +190,11 @@ function arenaRotateY() {
 		document.global.arena3D.rotation.y += document.global.gameplay.rotationY;
 		if (document.global.powerUp.enable) {
 			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
-				document.global.powerUp.mesh[i].rotation.y -= document.global.gameplay.rotationY;
+				document.global.powerUp.mesh[i].rotation.y = -document.global.arena3D.rotation.y;
 			}
-			document.global.sphereMesh.rotation.y -= document.global.gameplay.rotationY;
+			document.global.sphereMesh.forEach(sphereMesh=>{
+				sphereMesh.rotation.y = -document.global.arena3D.rotation.y;
+			})
 		}
 		document.global.arena3D.position.z -= document.global.arena.depth;
 	}
@@ -201,9 +207,11 @@ function arenaRotateX() {
 		document.global.arena3D.rotation.x += document.global.gameplay.rotationX;
 		if (document.global.powerUp.enable) {
 			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
-				document.global.powerUp.mesh[i].rotation.x -= document.global.gameplay.rotationX;
+				document.global.powerUp.mesh[i].rotation.x = -document.global.arena3D.rotation.x;
 			}
-			document.global.sphereMesh.rotation.x -= document.global.gameplay.rotationX;
+			document.global.sphereMesh.forEach(sphereMesh=>{
+				sphereMesh.rotation.x = -document.global.arena3D.rotation.x;
+			})
 		}
 		document.global.arena3D.position.z -=document.global.arena.depth;
 	}
@@ -212,14 +220,15 @@ function arenaRotateX() {
 function rotatePowerUp() {
 	if (document.global.powerUp.enable) {
 		document.global.powerUp.mesh[document.global.powerUp.index].rotation.z += document.global.powerUp.circleRotation;
-		document.global.sphereMesh.children[0].rotation.z += document.global.powerUp.circleRotation;
-		document.global.sphereMesh.children[1].rotation.z += document.global.powerUp.circleRotation;
+		document.global.sphereMesh.forEach(sphereMesh=>{
+			sphereMesh.children[0].rotation.z += document.global.powerUp.circleRotation;
+			sphereMesh.children[1].rotation.z += document.global.powerUp.circleRotation;
+		})
 	}
 }
 
 function shakeEffect() {
 	const randomNum = Math.floor(Math.random() * 6);
-	console.log(randomNum)
 	const arena3D = document.global.arena3D;
 	if (randomNum === 0)
 		arena3D.position.x += 1 * document.global.powerUp.shake.multiplier;
@@ -243,16 +252,18 @@ function setFrame() {
 		document.global.pointLight.castShadow = true;
 
 	// gamestart delay
-	// if (document.global.gameplay.gameStart === 0)
-	// 	document.global.gameplay.gameStartFrame++;
-	// if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
-	// 	document.global.gameplay.gameStart = 1;
-	// 	document.global.gameplay.gameStartFrame =0;
-	// }
+	if (document.global.gameplay.gameStart === 0) {
+		console.log(document.global.gameplay.gameStartFrame)
+		document.global.gameplay.gameStartFrame++;
+	}
+	if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
+		document.global.gameplay.gameStart = 1;
+		document.global.gameplay.gameStartFrame =0;
+	}
 
 	// powerup timer
 	if (document.global.powerUp.enable) {
-		if (!document.global.sphereMesh.children.every(children=>{return children.visible === false})) {
+		if (!document.global.sphereMesh.every(sphereMesh=>{return sphereMesh.children.every(children=>children.visible === false)})) {
 			document.global.powerUp.durationFrame++;
 			// shake effect
 			if (document.global.powerUp.index === 1)
@@ -280,7 +291,7 @@ function main() {
 	const arena3D = new THREE.Object3D();
 
 	createArenaMesh(arena3D);
-	createSphereMesh(arena3D);
+	createSphereMesh(arena3D, document.global.sphere.velocityX, document.global.sphere.velocityY, document.global.sphere.velocityZ);
 	const camera = createCamera();
 	createPaddleMesh(arena3D);
 	createDirectionalLight(arena3D);

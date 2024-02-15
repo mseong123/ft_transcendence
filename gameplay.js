@@ -1,5 +1,5 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
-
+import {createSphereMesh} from './render.js'
 
 function canvasKeydown(e) {
 	let arrow = e.key;
@@ -94,9 +94,9 @@ export function keyBinding() {
 
 }
 
-function isBallAlignedWithPaddleX(paddle) {
+function isBallAlignedWithPaddleX(paddle, sphereMesh) {
 	let halfPaddleWidth;
-	const sphereX = document.global.sphereMesh.position.x;
+	const sphereX = sphereMesh.position.x;
 	const paddleX = paddle.position.x;
 
 	if (paddle.largePaddle)
@@ -106,9 +106,9 @@ function isBallAlignedWithPaddleX(paddle) {
 	return sphereX >= paddleX - halfPaddleWidth && sphereX <= paddleX + halfPaddleWidth;
 }
 
-function isBallAlignedWithPaddleY(paddle) {
+function isBallAlignedWithPaddleY(paddle, sphereMesh) {
 	let halfPaddleHeight;
-	const sphereY = document.global.sphereMesh.position.y;
+	const sphereY = sphereMesh.position.y;
 	const paddleY = paddle.position.y;
 
 	if (paddle.largePaddle)
@@ -119,73 +119,82 @@ function isBallAlignedWithPaddleY(paddle) {
 	return sphereY >= paddleY - halfPaddleHeight && sphereY <= paddleY + halfPaddleHeight;
 }
 
-function isPaddleCollision(paddles) {
+function isPaddleCollision(paddles, sphereMesh) {
 	const sphereRadius =  document.global.sphere.radius;
 	const paddleThickness = document.global.paddle.thickness;
 	
 	for (let i = 0; i < paddles.length; i++) {
 		let paddleZ = paddles[i].position.z;
-		let sphereZ = document.global.sphereMesh.position.z;
-		if (paddleZ <= 0 && sphereZ - sphereRadius <= paddleZ && sphereZ - sphereRadius >= paddleZ - paddleThickness && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]))
+		let sphereZ = sphereMesh.position.z;
+		if (paddleZ <= 0 && sphereZ - sphereRadius <= paddleZ && sphereZ - sphereRadius >= paddleZ - paddleThickness && isBallAlignedWithPaddleX(paddles[i], sphereMesh) && isBallAlignedWithPaddleY(paddles[i], sphereMesh))
 			return i;
-		else if (paddleZ > 0 && sphereZ + sphereRadius >= paddleZ - paddleThickness && sphereZ + sphereRadius <= paddleZ && isBallAlignedWithPaddleX(paddles[i]) && isBallAlignedWithPaddleY(paddles[i]))
+		else if (paddleZ > 0 && sphereZ + sphereRadius >= paddleZ - paddleThickness && sphereZ + sphereRadius <= paddleZ && isBallAlignedWithPaddleX(paddles[i], sphereMesh) && isBallAlignedWithPaddleY(paddles[i], sphereMesh))
 			return i;
 	}
 	return false;
 }
 
-function hitSphereBack(paddle) {
-	const sphereMesh = document.global.sphereMesh;
-	const sphere = document.global.sphere;
-
+function hitSphereBack(paddle, sphereMesh) {
+	const velocityTopLimit = document.global.sphere.velocityTopLimit;
+	const velocityBottomLimit = document.global.sphere.velocityBottomLimit;
 	//invisibility effect
 	if (paddle.invisibility)
-		document.global.sphereMesh.material.opacity = document.global.powerUp.invisibility.opacity;
+		sphereMesh.material.opacity = document.global.powerUp.invisibility.opacity;
 	else
-		document.global.sphereMesh.material.opacity = 1;
+		sphereMesh.material.opacity = 1;
 	
-    sphere.velocityX = (sphereMesh.position.x - paddle.position.x) / document.global.paddle.hitBackModifier; 
-	sphere.velocityY = (sphereMesh.position.y - paddle.position.y) / document.global.paddle.hitBackModifier;
-	if (sphere.velocityY < 1 && sphere.velocityY > 0)
-		sphere.velocityY = 1;
-	if (sphere.velocityY > -1 && sphere.velocityY < 0)
-		sphere.velocityY = -1;
-	if (sphere.velocityX < 1 && sphere.velocityX > 0)
-		sphere.velocityX = 1;
-	if (sphere.velocityX > -1 && sphere.velocityX < 0)
-		sphere.velocityX = -1;
-	sphere.velocityZ *= -1;
+	sphereMesh.velocityX = (sphereMesh.position.x - paddle.position.x) / document.global.paddle.hitBackModifier; 
+	sphereMesh.velocityY = (sphereMesh.position.y - paddle.position.y) / document.global.paddle.hitBackModifier;
+	if (sphereMesh.velocityY < velocityBottomLimit && sphereMesh.velocityY > 0)
+		sphereMesh.velocityY = velocityBottomLimit;
+	if (sphereMesh.velocityY > -velocityBottomLimit && sphereMesh.velocityY < 0)
+		sphereMesh.velocityY = -velocityBottomLimit;
+	if (sphereMesh.velocityX < velocityBottomLimit && sphereMesh.velocityX > 0)
+		sphereMesh.velocityX = velocityBottomLimit;
+	if (sphereMesh.velocityX > -velocityBottomLimit && sphereMesh.velocityX < 0)
+		sphereMesh.velocityX = -velocityBottomLimit;
+	if (sphereMesh.velocityX > velocityTopLimit)
+		sphereMesh.velocityX = velocityTopLimit;
+	if (sphereMesh.velocityX < -velocityTopLimit)
+		sphereMesh.velocityX = -velocityTopLimit;
+	if (sphereMesh.velocityY > velocityTopLimit)
+		sphereMesh.velocityY = velocityTopLimit;
+	if (sphereMesh.velocityY < -velocityTopLimit)
+		sphereMesh.velocityY = -velocityTopLimit;
+	sphereMesh.velocityZ *= -1;
   }
 
-function isXCollision() {
-	const sphereX = document.global.sphereMesh.position.x;
+function isXCollision(sphereMesh) {
 	const radius = document.global.sphere.radius;
 	const halfArenaWidth = document.global.arena.width / 2;
-
+	const sphereX = sphereMesh.position.x;
 	return sphereX - radius <= -halfArenaWidth || sphereX + radius >= halfArenaWidth;
+			
 }
 
-function isYCollision() {
-	const sphereY = document.global.sphereMesh.position.y;
+function isYCollision(sphereMesh) {
 	const radius = document.global.sphere.radius;
 	const halfArenaHeight = document.global.arena.height / 2;
-
+	const sphereY = sphereMesh.position.y;
 	return sphereY - radius <= -halfArenaHeight || sphereY + radius >= halfArenaHeight;
 }
 
-function isZCollision() {
-	const sphereZ = document.global.sphereMesh.position.z;
+function isZCollision(sphereMesh) {
 	const radius = document.global.sphere.radius;
 	const halfArenaDepth = document.global.arena.depth / 2;
-	return sphereZ - radius <= -halfArenaDepth || sphereZ + radius >= halfArenaDepth;
+	const sphereZ = sphereMesh.position.z;
+	return sphereZ - radius <= -halfArenaDepth || sphereZ + radius >= halfArenaDepth
 }
 
 function isPowerUpCollision() {
 	const sphereRadius = document.global.sphere.radius;
 	const powerUpCircleRadius = document.global.powerUp.circleRadius;
-	
-	const distance = document.global.sphereMesh.position.distanceTo(document.global.powerUp.mesh[document.global.powerUp.index].position);
-	return distance <= sphereRadius + powerUpCircleRadius;
+	for (let i = 0; i < document.global.sphereMesh.length; i++) {
+		const distance = document.global.sphereMesh[i].position.distanceTo(document.global.powerUp.mesh[document.global.powerUp.index].position);
+		if (distance <= sphereRadius + powerUpCircleRadius)
+			return true;
+	}
+	return false;
 }
 
 function powerUpCollisionEffect() {
@@ -194,24 +203,26 @@ function powerUpCollisionEffect() {
 	document.global.powerUp.mesh[document.global.powerUp.index].visible = false;
 	//change color of rotating circle around main sphere to current powerup color and render visible
 	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[document.global.powerUp.index], transparent:true, opacity:1});
-	document.global.sphereMesh.children[0].material.dispose();
-	document.global.sphereMesh.children[1].material.dispose();
-	document.global.sphereMesh.children[0].material = circleMaterial;
-	document.global.sphereMesh.children[1].material = circleMaterial;
-	//if invisibility power, change opacity
-	if (document.global.powerUp.index == 2) {
-		document.global.sphereMesh.children[0].material.opacity = document.global.powerUp.invisibility.opacity;
-		document.global.sphereMesh.children[1].material.opacity = document.global.powerUp.invisibility.opacity;
-	}
-	document.global.sphereMesh.children[0].visible = true;
-	document.global.sphereMesh.children[1].visible = true;
+	document.global.sphereMesh.forEach(sphereMesh=>{
+		sphereMesh.children[0].material.dispose();
+		sphereMesh.children[1].material.dispose();
+		sphereMesh.children[0].material = circleMaterial;
+		sphereMesh.children[1].material = circleMaterial;
+		//if invisibility power, change opacity
+		if (document.global.powerUp.index == 2) {
+			sphereMesh.children[0].material.opacity = document.global.powerUp.invisibility.opacity;
+			sphereMesh.children[1].material.opacity = document.global.powerUp.invisibility.opacity;
+		}
+		sphereMesh.children[0].visible = true;
+		sphereMesh.children[1].visible = true;
+	})
 	
-
 	//individual effects
 	//large paddle
 	if (document.global.powerUp.index === 0) {
 		const powerUpPaddleGeometry = new THREE.BoxGeometry(document.global.paddle.width * document.global.powerUp.largePaddle.multiplier, document.global.paddle.height * document.global.powerUp.largePaddle.multiplier, document.global.paddle.thickness )
-		if (document.global.sphere.velocityZ <= 0) {
+		//only one sphere when this powerup occur, so hardcode
+		if (document.global.sphereMesh[0].velocityZ <= 0) {
 			document.global.paddle.paddles[0].largePaddle = 1;
 			document.global.paddle.paddles[0].geometry.dispose();
 			document.global.paddle.paddles[0].geometry = powerUpPaddleGeometry;
@@ -221,7 +232,7 @@ function powerUpCollisionEffect() {
 				document.global.paddle.paddles[2].geometry = powerUpPaddleGeometry;
 			}
 		}
-		else if (document.global.sphere.velocityZ > 0) {
+		else if (document.global.sphereMesh[0].velocityZ > 0) {
 			document.global.paddle.paddles[1].largePaddle = 1;
 			document.global.paddle.paddles[1].geometry.dispose();
 			document.global.paddle.paddles[1].geometry = powerUpPaddleGeometry;
@@ -233,24 +244,57 @@ function powerUpCollisionEffect() {
 		}
 		
 	}
-
 	//no effects here for shake
+
 	//invisibility
 	else if (document.global.powerUp.index === 2) {
-		if (document.global.sphere.velocityZ <= 0) {
+		if (document.global.sphereMesh[0].velocityZ <= 0) {
 			document.global.paddle.paddles[0].invisibility = 1;
 			if (document.global.paddle.paddles[2])
 				document.global.paddle.paddles[2].invisibility = 1;
 		}
-		else if (document.global.sphere.velocityZ > 0) {
+		else if (document.global.sphereMesh[0].velocityZ > 0) {
 			document.global.paddle.paddles[1].invisibility = 1;
 			if (document.global.paddle.paddles[3]) {
 				document.global.paddle.paddles[3].largePaddle = 1;
 			}
 		}
-		document.global.sphereMesh.material.opacity = document.global.powerUp.invisibility.opacity;
+		document.global.sphereMesh[0].material.opacity = document.global.powerUp.invisibility.opacity;
 	}
-	
+
+	//double 
+	else if (document.global.powerUp.index === 3) {
+		createSphereMesh(document.global.arena3D, -document.global.sphereMesh[0].velocityX, -document.global.sphereMesh[0].velocityY, document.global.sphereMesh[0].velocityZ);
+		document.global.sphereMesh.forEach(sphereMesh=>{
+			sphereMesh.children[0].material.dispose();
+			sphereMesh.children[1].material.dispose();
+			sphereMesh.children[0].material = circleMaterial;
+			sphereMesh.children[1].material = circleMaterial;
+			sphereMesh.children[0].visible = true;
+			sphereMesh.children[1].visible = true;
+		})
+	}
+	//ultimate
+	else if (document.global.powerUp.index === 4) {
+		for (let i = 0; i < document.global.powerUp.ultimate.count; i++) {
+			if (i < document.global.powerUp.ultimate.count / 4)
+				createSphereMesh(document.global.arena3D, -document.global.sphereMesh[0].velocityX / (i * 4), -document.global.sphereMesh[0].velocityY / (i * 4), document.global.sphereMesh[0].velocityZ);
+			else if (i < document.global.powerUp.ultimate.count / 2)
+				createSphereMesh(document.global.arena3D, document.global.sphereMesh[0].velocityX / (i * 2), document.global.sphereMesh[0].velocityY / (i * 2), document.global.sphereMesh[0].velocityZ);
+			else if (i < document.global.powerUp.ultimate.count * 3 / 4)
+				createSphereMesh(document.global.arena3D, -document.global.sphereMesh[0].velocityX / (i * 3 / 4), document.global.sphereMesh[0].velocityY / (i * 3 / 4), document.global.sphereMesh[0].velocityZ);
+			else
+				createSphereMesh(document.global.arena3D, document.global.sphereMesh[0].velocityX / i, -document.global.sphereMesh[0].velocityY / i, document.global.sphereMesh[0].velocityZ);
+			document.global.sphereMesh.forEach(sphereMesh=>{
+				sphereMesh.children[0].material.dispose();
+				sphereMesh.children[1].material.dispose();
+				sphereMesh.children[0].material = circleMaterial;
+				sphereMesh.children[1].material = circleMaterial;
+				sphereMesh.children[0].visible = true;
+				sphereMesh.children[1].visible = true;
+			})
+		}
+	}
 }
 
 export function resetPowerUp() {
@@ -259,8 +303,10 @@ export function resetPowerUp() {
 		document.global.powerUp.mesh[document.global.powerUp.index].visible = false;
 		
 		//reset visibile for sphere circle radius
-		document.global.sphereMesh.children[0].visible = false;
-		document.global.sphereMesh.children[1].visible = false;
+		document.global.sphereMesh.forEach(sphereMesh=>{
+			sphereMesh.children[0].visible = false;
+			sphereMesh.children[1].visible = false;
+		})
 
 		//individual RESETS
 		//large paddles reset
@@ -277,17 +323,32 @@ export function resetPowerUp() {
 		}
 		//invisibility reset
 		else if (document.global.powerUp.index === 2) {
-			document.global.sphereMesh.material.opacity = 1;
+			document.global.sphereMesh.forEach(sphereMesh=>{
+				sphereMesh.material.opacity = 1;
+			});
 			document.global.paddle.paddles.forEach(paddle=>{
 				if (paddle.invisibility) 
 					paddle.invisibility = 0;
 			});
 		}
-
-		
-
+		//double reset
+		else if (document.global.powerUp.index === 3) {
+			if (document.global.sphereMesh.length > 1) {
+				document.global.arena3D.children.pop();
+				document.global.sphereMesh.pop();
+			}
+		}
+		//ultimate reset
+		else if (document.global.powerUp.index === 4) {
+			if (document.global.sphereMesh.length > 1) {
+				for (let i = 0; i < document.global.powerUp.ultimate.count; i++) {
+					document.global.arena3D.children.pop();
+					document.global.sphereMesh.pop();
+				}
+			}
+		}
 		//set new random powerup and position
-		document.global.powerUp.index = Math.floor(Math.random() * 3);
+		document.global.powerUp.index = Math.floor(Math.random() * 5);
 		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
 		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
 		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
@@ -296,49 +357,46 @@ export function resetPowerUp() {
 	}
 }
 
-function updateSpherePosition() {
-	document.global.sphereMesh.position.x += document.global.sphere.velocityX;
-	document.global.sphereMesh.position.y += document.global.sphere.velocityY;
-	document.global.sphereMesh.position.z += document.global.sphere.velocityZ;
+function updateSpherePosition(sphereMesh) {
+	sphereMesh.position.x += sphereMesh.velocityX;
+	sphereMesh.position.y += sphereMesh.velocityY;
+	sphereMesh.position.z += sphereMesh.velocityZ;
 }
 
 export function processSphereMovement() {
 	if (document.global.gameplay.gameStart) {
-		const sphere = document.global.sphere;
-		updateSpherePosition();
-
-		if(isXCollision()) {
-			sphere.velocityX *= -1;
-		}
-		if(isYCollision()) {
-			sphere.velocityY *= -1;
-		}
-		if(isZCollision()) {
-			//for gameplay debugging
-			if (document.global.gameplay.immortality) {
-				sphere.velocityZ *= -1;
+		document.global.sphereMesh.forEach(sphereMesh=>{
+			updateSpherePosition(sphereMesh);
+			if(isXCollision(sphereMesh)) {
+				sphereMesh.velocityX *= -1;
 			}
-			else {
-				document.global.pointLight.castShadow = false;
-				document.global.gameplay.shadowFrame = 0;
-				document.global.gameplay.gameStart = 0;
-				document.global.sphereMesh.position.set(0,0,0);
-				sphere.velocityX = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
-				sphere.velocityY = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
-				sphere.velocityZ = document.global.arena.clientWidth / document.global.sphere.velocityDivision;
-				resetPowerUp()
+			if(isYCollision(sphereMesh)) {
+				sphereMesh.velocityY *= -1;
 			}
-		}
-		if (document.global.powerUp.enable && document.global.powerUp.mesh[document.global.powerUp.index].visible === true && isPowerUpCollision()) {
-			powerUpCollisionEffect();
-		}
-		let paddleCollisionIndex = isPaddleCollision(document.global.paddle.paddles);
-		if(paddleCollisionIndex !== false)
-			hitSphereBack(document.global.paddle.paddles[paddleCollisionIndex]);
-		
+			if(isZCollision(sphereMesh)) {
+				//for gameplay debugging
+				if (document.global.gameplay.immortality) {
+					sphereMesh.velocityZ *= -1;
+				}
+				else {
+					document.global.pointLight.castShadow = false;
+					document.global.gameplay.shadowFrame = 0;
+					document.global.gameplay.gameStart = 0;
+					sphereMesh.position.set(0,0,0);
+					sphereMesh.velocityX = document.global.sphere.velocityX;
+					sphereMesh.velocityY = document.global.sphere.velocityY;
+					sphereMesh.velocityZ = document.global.sphere.velocityZ;
+					resetPowerUp();
+				}
+			}
+			if (document.global.powerUp.enable && document.global.powerUp.mesh[document.global.powerUp.index].visible === true && isPowerUpCollision()) {
+				powerUpCollisionEffect();
+			}
+			let paddleCollisionIndex = isPaddleCollision(document.global.paddle.paddles, sphereMesh);
+			if(paddleCollisionIndex !== false)
+				hitSphereBack(document.global.paddle.paddles[paddleCollisionIndex], sphereMesh);
+		})
 	}
-	
-	
 }
 
 
