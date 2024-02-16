@@ -40,10 +40,19 @@ function createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, Sec
 	const largePaddleSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
+	const meshProperty = {
+		positionX:0,
+		positionY:0,
+		positionZ:0,
+		visible:false,
+	}
+
+	
 	largePaddleSphereMesh.add(firstHalfCircleMesh);
 	largePaddleSphereMesh.add(secondHalfCircleMesh);
 	largePaddleSphereMesh.visible = false;
 	document.global.powerUp.mesh.push(largePaddleSphereMesh);
+	document.global.powerUp.meshProperty.push(meshProperty);
 	arena3D.add(largePaddleSphereMesh);
 }
 
@@ -53,23 +62,39 @@ function createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHal
 	const shakeSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
+	const meshProperty = {
+		positionX:0,
+		positionY:0,
+		positionZ:0,
+		visible:false
+	}
+
 	shakeSphereMesh.add(firstHalfCircleMesh);
 	shakeSphereMesh.add(secondHalfCircleMesh);
 	shakeSphereMesh.visible = false;
 	document.global.powerUp.mesh.push(shakeSphereMesh);
+	document.global.powerUp.meshProperty.push(meshProperty);
 	arena3D.add(shakeSphereMesh);
 }
 
 function createInvisibility(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry) {
-	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.powerUp.color[2], emissive: document.global.powerUp.color[2], shininess:document.global.powerUp.shininess, transparent:true, opacity:document.global.powerUp.invisibility.opacity} );
-	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[2], transparent:true, opacity:document.global.powerUp.invisibility.opacity} );
+	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.powerUp.color[2], emissive: document.global.powerUp.color[2], shininess:document.global.powerUp.shininess });
+	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[2], transparent:true, opacity:1 } );
 	const invisibilitySphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
-	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
-	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
+	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial );
+	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial );
+	const meshProperty = {
+		positionX:0,
+		positionY:0,
+		positionZ:0,
+		visible:false
+	}
+
 	invisibilitySphereMesh.add(firstHalfCircleMesh);
 	invisibilitySphereMesh.add(secondHalfCircleMesh);
 	invisibilitySphereMesh.visible = false;
 	document.global.powerUp.mesh.push(invisibilitySphereMesh);
+	document.global.powerUp.meshProperty.push(meshProperty);
 	arena3D.add(invisibilitySphereMesh);
 }
 
@@ -79,10 +104,18 @@ function createDouble(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHa
 	const doubleSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
+	const meshProperty = {
+		positionX:0,
+		positionY:0,
+		positionZ:0,
+		visible:false
+	}
+
 	doubleSphereMesh.add(firstHalfCircleMesh);
 	doubleSphereMesh.add(secondHalfCircleMesh);
 	doubleSphereMesh.visible = false;
 	document.global.powerUp.mesh.push(doubleSphereMesh);
+	document.global.powerUp.meshProperty.push(meshProperty);
 	arena3D.add(doubleSphereMesh);
 }
 
@@ -92,24 +125,32 @@ function createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, Second
 	const ultimateSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
+	const meshProperty = {
+		positionX:0,
+		positionY:0,
+		positionZ:0,
+		visible:false
+	}
+
 	ultimateSphereMesh.add(firstHalfCircleMesh);
 	ultimateSphereMesh.add(secondHalfCircleMesh);
 	ultimateSphereMesh.visible = false;
 	document.global.powerUp.mesh.push(ultimateSphereMesh);
+	document.global.powerUp.meshProperty.push(meshProperty);
 	arena3D.add(ultimateSphereMesh);
 }
 
 export function createPowerUp(arena3D) {
-	if (document.global.powerUp.enable) {
-		const sphereGeometry = new THREE.SphereGeometry( document.global.powerUp.radius, document.global.powerUp.widthSegments, document.global.powerUp.heightSegments );
-		const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.powerUp.circleRadius);
-		const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.powerUp.circleRadius);
+	
+	const sphereGeometry = new THREE.SphereGeometry( document.global.powerUp.radius, document.global.powerUp.widthSegments, document.global.powerUp.heightSegments );
+	const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.powerUp.circleRadius);
+	const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.powerUp.circleRadius);
 
-		//create all powerUp objects
-		createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
-		createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
-		createInvisibility(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
-		createDouble(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
-		createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
-	}
+	//create all powerUp objects
+	createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty);
+	createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
+	createInvisibility(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
+	createDouble(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
+	createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
+
 }
