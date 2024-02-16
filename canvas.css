@@ -1,8 +1,5 @@
 .canvas-container {
 	position:relative;
-	min-width:500px;
-	max-width:1280px;
-	width:70%;
 	overflow-x:hidden;
 	left:20px;
 }
@@ -22,19 +19,19 @@
 }
 
 .canvas-url-space {
-	background-image:url("./space.jpg");
+	background-image:url("./assets/space.jpg");
 }
 
 .canvas-url-desert {
-	background-image:url("./desert.jpg");
+	background-image:url("./assets/desert.jpg");
 }
 
 .canvas-url-alien {
-	background-image:url("./alien.jpg");
+	background-image:url("./assets/alien.jpg");
 }
 
 .canvas-url-ocean {
-	background-image:url("./ocean.jpg");
+	background-image:url("./assets/ocean.jpg");
 }
 
 .canvas-background {
@@ -64,4 +61,22 @@ canvas {
 
 canvas:focus {
 	outline:none;
+}
+
+@media(max-width:576px) {
+	.canvas-container {
+		width:500px;
+	}
+}
+
+@media (min-width:577px) and (max-width:768px) {
+	.canvas-container {
+		width:700px;
+	}
+}
+
+@media (min-width:769px) {
+	.canvas-container {
+		width:900px;
+	}
 }

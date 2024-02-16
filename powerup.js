@@ -100,21 +100,16 @@ function createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, Second
 }
 
 export function createPowerUp(arena3D) {
-	const sphereGeometry = new THREE.SphereGeometry( document.global.powerUp.radius, document.global.powerUp.widthSegments, document.global.powerUp.heightSegments );
-	const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.powerUp.circleRadius);
-	const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.powerUp.circleRadius);
-	
 	if (document.global.powerUp.enable) {
+		const sphereGeometry = new THREE.SphereGeometry( document.global.powerUp.radius, document.global.powerUp.widthSegments, document.global.powerUp.heightSegments );
+		const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.powerUp.circleRadius);
+		const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.powerUp.circleRadius);
+
 		//create all powerUp objects
 		createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
 		createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
 		createInvisibility(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
 		createDouble(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
 		createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
-
-		//initial render
-		document.global.powerUp.mesh[document.global.powerUp.index].visible = true;
-		document.global.powerUp.mesh[document.global.powerUp.index].position.set(document.global.powerUp.positionX, document.global.powerUp.positionY, document.global.powerUp.positionZ);
 	}
-
 }

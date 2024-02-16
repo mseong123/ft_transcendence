@@ -23,8 +23,8 @@ function createArenaMesh(arena3D) {
 	const arenaMaterial = new THREE.LineBasicMaterial( { color: document.global.arena.color } );
 	const arenaMesh = [];
 	for (let i = 0; i < document.global.arena.thickness; i++) {
-		const arenaGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry( (document.global.arena.clientWidth + i) / document.global.arena.widthDivision,
-		(document.global.arena.clientWidth + i) / document.global.arena.aspect / document.global.arena.widthDivision , (document.global.arena.clientWidth + 1) / document.global.arena.aspect));
+		const arenaGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry( (document.global.clientWidth + i) / document.global.arena.widthDivision,
+		(document.global.clientWidth + i) / document.global.arena.aspect / document.global.arena.widthDivision , (document.global.clientWidth + 1) / document.global.arena.aspect));
 		arenaMesh.push(new THREE.LineSegments( arenaGeometry, arenaMaterial ));
 		arena3D.add(arenaMesh[i]);
 	}
@@ -48,9 +48,19 @@ export function createSphereMesh(arena3D, velocityX, velocityY, velocityZ) {
 	const sphereGeometry = new THREE.SphereGeometry( document.global.sphere.radius, document.global.sphere.widthSegments, document.global.sphere.heightSegments );
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess, transparent:true, opacity:1 } );
 	
-	const sphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
-	sphereMesh.castShadow=true;
-	//create powerup surrounding circle timer
+	if (document.global.powerUp.enable) {
+		for (let i = 0; i < document.global.powerUp.ultimate.count; i++) {
+			const sphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
+			//create powerup surrounding circle timer
+			createPowerUpCircle(sphereMesh);
+			sphereMesh.castShadow=true;
+		}
+	}
+	else {
+		const sphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
+		sphereMesh.castShadow = true;
+	}
+	
 	if (document.global.powerUp.enable) 
 		createPowerUpCircle(sphereMesh);
 	
@@ -82,57 +92,49 @@ function createPaddleMesh(arena3D) {
 			if (i === 0) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialOne);
 				paddleMesh.castShadow = true;
-				paddleMesh.receiveShadow = true;
-				paddleMesh.position.set(0, 0, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+				paddleMesh.position.set(0, 0, (document.global.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
 			}
 			else {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialTwo);
 				paddleMesh.castShadow = true;
-				paddleMesh.receiveShadow = true;
-				paddleMesh.position.set(0, 0, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+				paddleMesh.position.set(0, 0, -(document.global.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
 			}
 			document.global.paddle.paddles.push(paddleMesh);
 			arena3D.add(paddleMesh);
 		}
 	}
-	if (document.global.gameplay.multi) {
+	if (!document.global.gameplay.local) {
 		for (let i = 0; i < document.global.gameplay.playerCount; i++) {
 			let paddleMesh;
 			if (i == 0) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialOne);
-				paddleMesh.receiveShadow = true;
 				paddleMesh.castShadow = true;
 				if (document.global.gameplay.playerCount > 2) 
-					paddleMesh.position.set( -document.global.paddle.width / 4, -document.global.paddle.height / 4, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+					paddleMesh.position.set( -document.global.paddle.width / 4, -document.global.paddle.height / 4, (document.global.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
 				else
-					paddleMesh.position.set(0, 0, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+					paddleMesh.position.set(0, 0, (document.global.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
 			}
 			else if (i == 1) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialTwo);
-				paddleMesh.receiveShadow = true;
 				paddleMesh.castShadow = true;
 				if (document.global.gameplay.playerCount == 4) 
-					paddleMesh.position.set(-document.global.paddle.width / 4, -document.global.paddle.height / 4, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+					paddleMesh.position.set(-document.global.paddle.width / 4, -document.global.paddle.height / 4, -(document.global.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
 				else
-					paddleMesh.position.set(0, 0, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
+					paddleMesh.position.set(0, 0, -(document.global.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier));
 			}
-				
 			else if (i === 2) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialThree);
-				paddleMesh.receiveShadow = true;
 				paddleMesh.castShadow = true;
 				if (document.global.gameplay.playerCount > 2)
-					paddleMesh.position.set(document.global.paddle.width / 4, document.global.paddle.height / 4, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
+					paddleMesh.position.set(document.global.paddle.width / 4, document.global.paddle.height / 4, (document.global.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
 				else 
-					paddleMesh.position.set(0, 0, (document.global.arena.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
+					paddleMesh.position.set(0, 0, (document.global.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
 			}
 			else if (i === 3) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialFour);
-				paddleMesh.receiveShadow = true;
 				paddleMesh.castShadow = true;
-				paddleMesh.position.set(document.global.paddle.width / 4, document.global.paddle.height / 4, -(document.global.arena.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
+				paddleMesh.position.set(document.global.paddle.width / 4, document.global.paddle.height / 4, -(document.global.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4));
 			}
-			paddleMesh.largePaddle = 0; //powerup property
 			document.global.paddle.paddles.push(paddleMesh);
 			arena3D.add(paddleMesh);
 		}
@@ -169,8 +171,8 @@ function createShadowPlanes(arena3D) {
 		arena3D.add( plane );
 		shadowPlanes[i] = plane;
 	}
-	shadowPlanes[0].position.set(-document.global.arena.clientWidth / document.global.arena.widthDivision / 2, 0, 0);
-	shadowPlanes[1].position.set(document.global.arena.clientWidth / document.global.arena.widthDivision / 2, 0, 0);
+	shadowPlanes[0].position.set(-document.global.clientWidth / document.global.arena.widthDivision / 2, 0, 0);
+	shadowPlanes[1].position.set(document.global.clientWidth / document.global.arena.widthDivision / 2, 0, 0);
 	//top bottom
 	for (let i = 2; i < 4; i++) {
 		const plane = new THREE.Mesh( geometryTopBottom, material );
@@ -179,8 +181,8 @@ function createShadowPlanes(arena3D) {
 		arena3D.add( plane );
 		shadowPlanes[i] = plane;
 	}
-	shadowPlanes[2].position.set(0, document.global.arena.clientWidth / document.global.arena.aspect/ document.global.arena.widthDivision / 2, 0);
-	shadowPlanes[3].position.set(0,-document.global.arena.clientWidth / document.global.arena.aspect/ document.global.arena.widthDivision / 2, 0);
+	shadowPlanes[2].position.set(0, document.global.clientWidth / document.global.arena.aspect/ document.global.arena.widthDivision / 2, 0);
+	shadowPlanes[3].position.set(0,-document.global.clientWidth / document.global.arena.aspect/ document.global.arena.widthDivision / 2, 0);
 	document.global.shadowPlanes = shadowPlanes;
 }
 
@@ -263,7 +265,7 @@ function setFrame() {
 
 	// powerup timer
 	if (document.global.powerUp.enable) {
-		if (!document.global.sphereMesh.every(sphereMesh=>{return sphereMesh.children.every(children=>children.visible === false)})) {
+		if (!document.global.powerUp.visible) {
 			document.global.powerUp.durationFrame++;
 			// shake effect
 			if (document.global.powerUp.index === 1)
@@ -273,23 +275,24 @@ function setFrame() {
 			resetPowerUp();
 			document.global.powerUp.durationFrame = 0;
 		}
-		
 	}
-	
-
 }
 
 function main() {
+	//render background
+	document.querySelector(".canvas-background-1").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
+	document.querySelector(".canvas-background-2").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
+
 	const canvas = document.querySelector( '#c' );
 	const renderer = new THREE.WebGLRenderer( { antialias: true, canvas } );
 	const scene = new THREE.Scene();
 	renderer.setClearColor( 0x000000, 0 );
 	renderer.shadowMap.enabled = true;
-	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 	//create arena scenegraph
 	const arena3D = new THREE.Object3D();
 
+	//create all other Pong objects
 	createArenaMesh(arena3D);
 	createSphereMesh(arena3D, document.global.sphere.velocityX, document.global.sphere.velocityY, document.global.sphere.velocityZ);
 	const camera = createCamera();
@@ -311,6 +314,7 @@ function main() {
 		}
 		rotatePowerUp();
 		processSphereMovement();
+		processPowerUp();
 		arenaRotateY();
 		arenaRotateX();
 		if (document.global.gameplay.rotate90) {

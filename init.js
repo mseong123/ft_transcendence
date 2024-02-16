@@ -8,11 +8,19 @@ function windowResize(e) {
 		document.global.sphereMesh[i].velocityY = document.global.sphere.velocityY;
 		document.global.sphereMesh[i].velocityZ = document.global.sphere.velocityZ;
 	}
+	
 }
 
 function updateGlobal() {
 	const canvas = document.querySelector(".canvas-container");
 	const clientWidth = canvas.clientWidth;
+
+	//initiate global variable
+	if (!document.global) {
+		document.global = {};
+		document.global.clientWidth = clientWidth;
+	}
+
 	//arena info
 	if (!document.global.arena) {
 		document.global.arena = {};
@@ -20,7 +28,6 @@ function updateGlobal() {
 		document.global.arena.aspect = 4 / 3;
 		document.global.arena.color = "#fff";
 		document.global.arena.thickness = 6;
-		document.global.arena.clientWidth = clientWidth;
 		document.global.arena.width = clientWidth / document.global.arena.widthDivision;
 		document.global.arena.height = clientWidth / document.global.arena.aspect / document.global.arena.widthDivision;
 		document.global.arena.depth = clientWidth / document.global.arena.aspect;
@@ -108,10 +115,11 @@ function updateGlobal() {
 	if (!document.global.powerUp) {
 		document.global.powerUp = {};
 		document.global.powerUp.enable = 1;
+		document.global.powerUp.visible = false;
 		document.global.powerUp.widthSegments = 6;
 		document.global.powerUp.heightSegments = 6;
-		// document.global.powerUp.index = Math.floor(Math.random() * 5);
-		document.global.powerUp.index = 0;
+		document.global.powerUp.index = Math.floor(Math.random() * 5);
+		// document.global.powerUp.index = 3;
 		document.global.powerUp.radius = document.global.sphere.radius;
 		document.global.powerUp.circleRadius = document.global.powerUp.radius * 3;
 		document.global.powerUp.shininess = 60;
@@ -148,10 +156,10 @@ function updateGlobal() {
 	if (!document.global.gameplay) {
 		document.global.gameplay = {};
 		document.global.gameplay.backgroundClass = ["canvas-url-space", "canvas-url-ocean", "canvas-url-alien", "canvas-url-desert"];
-		document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); //to change for multiplayer
+		document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); 
 		document.global.gameplay.gameStart = 1;
 		document.global.gameplay.immortality = 1; //for gameplay debugging purpose
-		document.global.gameplay.initRotateY = 0;
+		document.global.gameplay.initRotateY = 1;
 		document.global.gameplay.initRotateX = 0;
 		document.global.gameplay.rotationY = 0.005;
 		document.global.gameplay.rotationX = 0.005;
@@ -160,14 +168,11 @@ function updateGlobal() {
 		document.global.gameplay.gameStartFrameLimit = 25;
 		document.global.gameplay.shadowFrame = 0;
 		document.global.gameplay.shadowFrameLimit = 5;
-		document.querySelector(".canvas-background-1").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
-		document.querySelector(".canvas-background-2").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
 
-		//local game
+		//local or multiplayer game
 		document.global.gameplay.local = 1;
 		document.global.gameplay.computer = 0;
-		//remote and multiplayer game
-		document.global.gameplay.multi = 0;
+		document.global.gameplay.mainClient = 0;
 		
 		//other game info
 		document.global.gameplay.playerNum = 0;
@@ -193,7 +198,6 @@ function updateGlobal() {
 
 function init() {
 	window.addEventListener("resize", windowResize);
-	document.global = {};
 	updateGlobal();
 	windowResize();
 }

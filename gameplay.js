@@ -52,11 +52,15 @@ function canvasMouseMove(e) {
     const mouseX = e.clientX;
 	const mouseY = e.clientY;
 
-	if ((document.global.gameplay.local && document.global.paddle.paddles[0].largePaddle) || (document.global.gameplay.multi && document.global.paddle.paddles[document.global.gameplay.playerNum].largePaddle)) { 
-		paddleWidth = paddleWidth * document.global.powerUp.largePaddle.multiplier;
-		paddleHeight = paddleHeight * document.global.powerUp.largePaddle.multiplier;
+	//large paddle power up modification
+	if (document.global.powerUp.enable) {
+		if ((document.global.gameplay.local && document.global.paddle.paddles[0].largePaddle) || (!document.global.gameplay.local && document.global.paddle.paddles[document.global.gameplay.playerNum].largePaddle)) { 
+			paddleWidth = paddleWidth * document.global.powerUp.largePaddle.multiplier;
+			paddleHeight = paddleHeight * document.global.powerUp.largePaddle.multiplier;
+		}
 	}
 
+	//calculation of positionX and positionY for paddle
 	let positionX = -((canvasWidth - mouseX) / canvasWidth * arenaWidth) + (arenaWidth / 2);
 	if (positionX > (arenaWidth / 2) - (paddleWidth/2))
 		positionX = (arenaWidth / 2) - (paddleWidth/2);
@@ -64,7 +68,6 @@ function canvasMouseMove(e) {
 		positionX = (-arenaWidth / 2) + (paddleWidth/2)
 
 	let positionY = -(-((canvasHeight - mouseY) / canvasHeight * arenaHeight) + (arenaHeight / 2));
-	
 	if (positionY > (arenaHeight / 2) - (paddleHeight/2))
 		positionY = (arenaHeight / 2) - (paddleHeight/2);
 	else if (positionY < (-arenaHeight / 2) + (paddleHeight/2))
@@ -76,7 +79,7 @@ function canvasMouseMove(e) {
 		document.global.paddle.paddles[0].position.y = positionY;
 	}
 	//For multi, mouse is attached to player num
-	if (document.global.gameplay.multi) {
+	if (!document.global.gameplay.local) {
 		document.global.paddle.paddles[document.global.gameplay.playerNum].position.x = positionX;
 		document.global.paddle.paddles[document.global.gameplay.playerNum].position.y = positionY;
 	}
@@ -299,8 +302,7 @@ function powerUpCollisionEffect() {
 
 export function resetPowerUp() {
 	if (document.global.powerUp.enable) {
-		//reset settings for all powerup and randomise powerup rendering.
-		document.global.powerUp.mesh[document.global.powerUp.index].visible = false;
+		
 		
 		//reset visibile for sphere circle radius
 		document.global.sphereMesh.forEach(sphereMesh=>{
@@ -399,6 +401,20 @@ export function processSphereMovement() {
 	}
 }
 
+function processPowerUp() {
+	if (document.global.powerUp.visible) {
+		document.global.powerUp.mesh.forEach((mesh,idx)=>{
+			if (idx !== document.global.powerUp.index)
+				mesh.visible = false;
+			else
+				mesh.visible = true;
+		});
+		document.global.powerUp.mesh[document.global.powerUp.index].position.set(document.global.powerUp.positionX, document.global.powerUp.positionY, document.global.powerUp.positionZ);
+	}
+	
+	
+}
+
 
 export function movePaddle() {
 	let arenaWidth = document.global.arena.width;
@@ -406,57 +422,36 @@ export function movePaddle() {
 	let paddleWidth = document.global.paddle.width;
 	let paddleHeight = document.global.paddle.height;
 	let largePaddleWidth = paddleWidth * document.global.powerUp.largePaddle.multiplier;
-	let largePaddleHeight = paddleHeight * document.global.powerUp.largePaddle.multiplier; 
+	let largePaddleHeight = paddleHeight * document.global.powerUp.largePaddle.multiplier;
+	let paddleOne;
+	let paddleTwo;
 
-	//local game
+	//local game or multiplayer
 	if (document.global.gameplay.local) {
-		const paddleOne = document.global.paddle.paddles[0]; //to change later, now hardcoded
-		const paddleTwo = document.global.paddle.paddles[1];
-
-		if (paddleOne.largePaddle) {
-			paddleWidth = largePaddleWidth;
-			paddleHeight = largePaddleHeight;
-		}
-		if (paddleOne.position.y < (arenaHeight / 2) - (paddleHeight/2))
-			paddleOne.position.y += document.global.keyboard.w * document.global.keyboard.speed;
-		if (paddleOne.position.y > (-arenaHeight / 2) + (paddleHeight/2))
-			paddleOne.position.y -= document.global.keyboard.s * document.global.keyboard.speed;
-		if (paddleOne.position.x < (arenaWidth / 2) - (paddleWidth/2))
-			paddleOne.position.x += document.global.keyboard.d * document.global.keyboard.speed;
-		if (paddleOne.position.x > (-arenaWidth / 2) + (paddleWidth/2))
-			paddleOne.position.x -= document.global.keyboard.a * document.global.keyboard.speed;
-
-		if (!paddleTwo.largePaddle) {
-			paddleWidth = document.global.paddle.width;
-			paddleHeight = document.global.paddle.height;
-		}
-		if (paddleTwo.position.y < (arenaHeight / 2) - (paddleHeight/2))
-			paddleTwo.position.y += document.global.keyboard.up * document.global.keyboard.speed;
-		if (paddleTwo.position.y > (-arenaHeight / 2) + (paddleHeight/2))
-			paddleTwo.position.y -= document.global.keyboard.down * document.global.keyboard.speed;
-		if (paddleTwo.position.x < (arenaWidth / 2) - (paddleWidth/2))
-			paddleTwo.position.x += document.global.keyboard.right * document.global.keyboard.speed;
-		if (paddleTwo.position.x > (-arenaWidth / 2) + (paddleWidth/2))
-			paddleTwo.position.x -= document.global.keyboard.left * document.global.keyboard.speed;
+		paddleOne = document.global.paddle.paddles[0];
+		paddleTwo = document.global.paddle.paddles[1];
 	}
-	if (document.global.gameplay.multi) {
-		const paddleOne = document.global.paddle.paddles[2]; //to change later, now hardcoded
-		const paddleTwo = document.global.paddle.paddles[1];
-		
-		if (paddleOne.largePaddle) {
-			paddleWidth = largePaddleWidth;
-			paddleHeight = largePaddleHeight;
-		}
-		if (paddleOne.position.y < (arenaHeight / 2) - (paddleHeight/2))
-			paddleOne.position.y += document.global.keyboard.w * document.global.keyboard.speed;
-		if (paddleOne.position.y > (-arenaHeight / 2) + (paddleHeight/2))
-			paddleOne.position.y -= document.global.keyboard.s * document.global.keyboard.speed;
-		if (paddleOne.position.x < (arenaWidth / 2) - (paddleWidth/2))
-			paddleOne.position.x += document.global.keyboard.d * document.global.keyboard.speed;
-		if (paddleOne.position.x > (-arenaWidth / 2) + (paddleWidth/2))
-			paddleOne.position.x -= document.global.keyboard.a * document.global.keyboard.speed;
+	else if (!document.global.gameplay.local)
+		paddleOne = document.global.paddle.paddles[document.global.gameplay.playerNum];
 
-		if (!paddleTwo.largePaddle) {
+	//modification for large paddle powerup
+	if (document.global.powerUp.enable && paddleOne.largePaddle) {
+		paddleWidth = largePaddleWidth;
+		paddleHeight = largePaddleHeight;
+	}
+	if (paddleOne.position.y < (arenaHeight / 2) - (paddleHeight/2))
+		paddleOne.position.y += document.global.keyboard.w * document.global.keyboard.speed;
+	if (paddleOne.position.y > (-arenaHeight / 2) + (paddleHeight/2))
+		paddleOne.position.y -= document.global.keyboard.s * document.global.keyboard.speed;
+	if (paddleOne.position.x < (arenaWidth / 2) - (paddleWidth/2))
+		paddleOne.position.x += document.global.keyboard.d * document.global.keyboard.speed;
+	if (paddleOne.position.x > (-arenaWidth / 2) + (paddleWidth/2))
+		paddleOne.position.x -= document.global.keyboard.a * document.global.keyboard.speed;
+
+	
+	if (document.global.gameplay.local && !document.global.gameplay.computer) {
+		//modification for large paddle powerup
+		if (document.global.powerUp.enable && !paddleTwo.largePaddle) {
 			paddleWidth = document.global.paddle.width;
 			paddleHeight = document.global.paddle.height;
 		}
