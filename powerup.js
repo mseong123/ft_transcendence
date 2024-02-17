@@ -34,109 +34,79 @@ export function createSecondHalfCircleGeometry(radius) {
 	return new THREE.BufferGeometry().setFromPoints(circlePoints);
 }
 
-function createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry) {
+function createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty) {
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.powerUp.color[0], emissive: document.global.powerUp.color[0], shininess:document.global.powerUp.shininess} );
 	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[0]} );
 	const largePaddleSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
-	const meshProperty = {
-		positionX:0,
-		positionY:0,
-		positionZ:0,
-		visible:false,
-	}
-
 	
 	largePaddleSphereMesh.add(firstHalfCircleMesh);
 	largePaddleSphereMesh.add(secondHalfCircleMesh);
 	largePaddleSphereMesh.visible = false;
 	document.global.powerUp.mesh.push(largePaddleSphereMesh);
-	document.global.powerUp.meshProperty.push(meshProperty);
+	document.global.powerUp.meshProperty.push({...meshProperty});
 	arena3D.add(largePaddleSphereMesh);
 }
 
-function createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry) {
+function createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty) {
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.powerUp.color[1], emissive: document.global.powerUp.color[1], shininess:document.global.powerUp.shininess} );
 	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[1]} );
 	const shakeSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
-	const meshProperty = {
-		positionX:0,
-		positionY:0,
-		positionZ:0,
-		visible:false
-	}
 
 	shakeSphereMesh.add(firstHalfCircleMesh);
 	shakeSphereMesh.add(secondHalfCircleMesh);
 	shakeSphereMesh.visible = false;
 	document.global.powerUp.mesh.push(shakeSphereMesh);
-	document.global.powerUp.meshProperty.push(meshProperty);
+	document.global.powerUp.meshProperty.push({...meshProperty});
 	arena3D.add(shakeSphereMesh);
 }
 
-function createInvisibility(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry) {
+function createInvisibility(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty) {
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.powerUp.color[2], emissive: document.global.powerUp.color[2], shininess:document.global.powerUp.shininess });
 	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[2], transparent:true, opacity:1 } );
 	const invisibilitySphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial );
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial );
-	const meshProperty = {
-		positionX:0,
-		positionY:0,
-		positionZ:0,
-		visible:false
-	}
 
 	invisibilitySphereMesh.add(firstHalfCircleMesh);
 	invisibilitySphereMesh.add(secondHalfCircleMesh);
 	invisibilitySphereMesh.visible = false;
 	document.global.powerUp.mesh.push(invisibilitySphereMesh);
-	document.global.powerUp.meshProperty.push(meshProperty);
+	document.global.powerUp.meshProperty.push({...meshProperty});
 	arena3D.add(invisibilitySphereMesh);
 }
 
-function createDouble(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry) {
+function createDouble(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty) {
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.powerUp.color[3], emissive: document.global.powerUp.color[3], shininess:document.global.powerUp.shininess} );
 	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[3]} );
 	const doubleSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
-	const meshProperty = {
-		positionX:0,
-		positionY:0,
-		positionZ:0,
-		visible:false
-	}
 
 	doubleSphereMesh.add(firstHalfCircleMesh);
 	doubleSphereMesh.add(secondHalfCircleMesh);
 	doubleSphereMesh.visible = false;
 	document.global.powerUp.mesh.push(doubleSphereMesh);
-	document.global.powerUp.meshProperty.push(meshProperty);
+	document.global.powerUp.meshProperty.push({...meshProperty});
 	arena3D.add(doubleSphereMesh);
 }
 
-function createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry) {
+function createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty) {
 	const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.powerUp.color[4], emissive: document.global.powerUp.color[4], shininess:document.global.powerUp.shininess} );
 	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[4]} );
 	const ultimateSphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
-	const meshProperty = {
-		positionX:0,
-		positionY:0,
-		positionZ:0,
-		visible:false
-	}
+	
 
 	ultimateSphereMesh.add(firstHalfCircleMesh);
 	ultimateSphereMesh.add(secondHalfCircleMesh);
 	ultimateSphereMesh.visible = false;
 	document.global.powerUp.mesh.push(ultimateSphereMesh);
-	document.global.powerUp.meshProperty.push(meshProperty);
+	document.global.powerUp.meshProperty.push({...meshProperty});
 	arena3D.add(ultimateSphereMesh);
 }
 
@@ -145,12 +115,25 @@ export function createPowerUp(arena3D) {
 	const sphereGeometry = new THREE.SphereGeometry( document.global.powerUp.radius, document.global.powerUp.widthSegments, document.global.powerUp.heightSegments );
 	const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.powerUp.circleRadius);
 	const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.powerUp.circleRadius);
+	const meshProperty = {
+		positionX:0,
+		positionY:0,
+		positionZ:0,
+		visible:false
+	}
 
 	//create all powerUp objects
 	createLargePaddle(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty);
-	createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
-	createInvisibility(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
-	createDouble(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
-	createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry);
+	createShake(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty);
+	createInvisibility(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty);
+	createDouble(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty);
+	createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty);
 
+	if (document.global.powerUp.enable && (document.global.gameplay.local || !document.global.gameplay.local && document.global.gameplay.mainClient)) {
+		const random = Math.floor(Math.random() * 5);
+		document.global.powerUp.meshProperty[random].visible = true;
+		document.global.powerUp.meshProperty[random].positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
+		document.global.powerUp.meshProperty[random].positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
+		document.global.powerUp.meshProperty[random].positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
+	}
 }

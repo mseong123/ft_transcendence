@@ -106,24 +106,19 @@ function updateGlobal() {
 	//overall powerup info
 	if (!document.global.powerUp) {
 		document.global.powerUp = {};
-		document.global.powerUp.visible = false;
+		document.global.powerUp.enable = 1;
 		document.global.powerUp.widthSegments = 6;
 		document.global.powerUp.heightSegments = 6;
-		document.global.powerUp.index = Math.floor(Math.random() * 5);
-		// document.global.powerUp.index = 3;
 		document.global.powerUp.radius = document.global.sphere.radius;
 		document.global.powerUp.circleRadius = document.global.powerUp.radius * 3;
 		document.global.powerUp.shininess = 60;
 		document.global.powerUp.circleRotation = 0.1;
 		document.global.powerUp.index;
 		document.global.powerUp.durationFrame = 0; //miliseconds
-		document.global.powerUp.durationFrameLimit = 1000; //miliseconds
+		document.global.powerUp.durationFrameLimit = 500; //miliseconds
 		document.global.powerUp.mesh = [];
 		document.global.powerUp.meshProperty = [];
-		document.global.powerUp.color = ["#FFA500", "#088F8F", "#686868", "#B22222", "#123456"];
-		document.global.powerUp.positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
-		document.global.powerUp.positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
-		document.global.powerUp.positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
+		document.global.powerUp.color = ["#FFA500", "#088F8F", "#7F7F7F", "#B22222", "#123456"];
 		
 		if (!document.global.powerUp.largePaddle) {
 			document.global.powerUp.largePaddle = {};
@@ -136,7 +131,7 @@ function updateGlobal() {
 		}
 		if (!document.global.powerUp.invisibility) {
 			document.global.powerUp.invisibility = {};
-			document.global.powerUp.invisibility.opacity = 0.5;
+			document.global.powerUp.invisibility.opacity = 0.1;
 		}
 		if (!document.global.powerUp.ultimate) {
 			document.global.powerUp.ultimate = {};
@@ -152,7 +147,7 @@ function updateGlobal() {
 		document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); 
 		document.global.gameplay.gameStart = 1;
 		document.global.gameplay.immortality = 1; //for gameplay debugging purpose
-		document.global.gameplay.initRotateY = 1;
+		document.global.gameplay.initRotateY = 0;
 		document.global.gameplay.initRotateX = 0;
 		document.global.gameplay.rotationY = 0.005;
 		document.global.gameplay.rotationX = 0.005;

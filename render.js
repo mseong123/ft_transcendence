@@ -34,7 +34,7 @@ function createArenaMesh(arena3D) {
 function createPowerUpCircle(sphereMesh) {
 	const firstHalfCircleGeometry = createFirstHalfCircleGeometry(document.global.sphere.circleRadius);
 	const SecondHalfCircleGeometry = createSecondHalfCircleGeometry(document.global.sphere.circleRadius);
-	const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.powerUp.color[document.global.powerUp.index], transparent:true, opacity:1});
+	const circleMaterial = new THREE.LineBasicMaterial( { color: "#fff", transparent:true, opacity:1});
 	const firstHalfCircleMesh = new THREE.Line( firstHalfCircleGeometry, circleMaterial);
 	const secondHalfCircleMesh = new THREE.Line( SecondHalfCircleGeometry, circleMaterial);
 	firstHalfCircleMesh.visible = false;
@@ -59,7 +59,9 @@ export function createSphereMesh(arena3D) {
 			velocityZ:document.global.sphere.velocityZ,
 			opacity:1,
 			visible:false,
-			circleVisible:false
+			circleVisible:false,
+			circleColor:"#fff",
+			circleOpacity:1,
 		}
 		if (i === 0)
 			sphereMeshProperty.visible = true;
@@ -85,17 +87,17 @@ function createPaddleMesh(arena3D) {
 	const paddleMaterialTwo = new THREE.MeshPhongMaterial( { color: colorPalette[1], emissive: colorPalette[1], transparent:true, opacity:document.global.paddle.opacity });
 	const paddleMaterialThree = new THREE.MeshPhongMaterial( { color: colorPalette[2], emissive: colorPalette[2], transparent:true, opacity:document.global.paddle.opacity });
 	const paddleMaterialFour = new THREE.MeshPhongMaterial( { color: colorPalette[3], emissive: colorPalette[3], transparent:true, opacity:document.global.paddle.opacity });
-
+	const paddleMeshPropertyTemplate = {
+		largePaddle:0,
+		invisibility:0,
+		width:document.global.paddle.defaultWidth,
+		height:document.global.paddle.defaultHeight
+	}
 	
 	if (document.global.gameplay.local) {
 		for (let i = 0; i < 2; i++) {
 			let paddleMesh;
-			const paddleMeshProperty = {};
-			paddleMeshProperty.largePaddle = 0;
-			paddleMeshProperty.width = document.global.paddle.defaultWidth;
-			paddleMeshProperty.height = document.global.paddle.defaultHeight;
-			paddleMeshProperty.invisibility = 0;
-
+			const paddleMeshProperty = {...paddleMeshPropertyTemplate};
 			if (i === 0) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialOne);
 				paddleMesh.castShadow = true;
@@ -118,11 +120,7 @@ function createPaddleMesh(arena3D) {
 	else if (!document.global.gameplay.local) {
 		for (let i = 0; i < document.global.gameplay.playerCount; i++) {
 			let paddleMesh;
-			const paddleMeshProperty = {};
-			paddleMeshProperty.largePaddle = 0;
-			paddleMeshProperty.width = document.global.paddle.defaultWidth;
-			paddleMeshProperty.height = document.global.paddle.defaultHeight;
-			paddleMeshProperty.invisibility = 0;
+			const paddleMeshProperty = {...paddleMeshPropertyTemplate};
 
 			if (i == 0) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialOne);
@@ -232,12 +230,17 @@ function processSphere() {
 			sphereMesh.position.set(document.global.sphere.sphereMeshProperty[idx].positionX, document.global.sphere.sphereMeshProperty[idx].positionY, document.global.sphere.sphereMeshProperty[idx].positionZ)
 		})
 	}
-	//render visibility,opacity of sphere and surrounding cicle around each sphere
+	else
+		document.global.sphere.sphereMesh.forEach((sphereMesh,idx)=>{
+			sphereMesh.position.set(0,0,0)
+		})
 	document.global.sphere.sphereMesh.forEach((sphereMesh,idx)=>{
+		//render visibility
 		if (document.global.sphere.sphereMeshProperty[idx].visible)
 			sphereMesh.visible = true;
 		else
 			sphereMesh.visible = false;
+		//render surrounding circle visibility
 		if (document.global.sphere.sphereMeshProperty[idx].circleVisible) {
 			sphereMesh.children[0].visible = true;
 			sphereMesh.children[1].visible = true;
@@ -246,7 +249,19 @@ function processSphere() {
 			sphereMesh.children[0].visible = false;
 			sphereMesh.children[1].visible = false;
 		}
-		sphereMesh.material.opacity = document.global.sphere.sphereMeshProperty[idx].opacity
+		//render surrounding circle color and opacity
+		const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.sphere.sphereMeshProperty[idx].circleColor, transparent:true, opacity:document.global.sphere.sphereMeshProperty[idx].circleOpacity});
+		sphereMesh.children[0].material.dispose();
+		sphereMesh.children[1].material.dispose();
+		sphereMesh.children[0].material = circleMaterial;
+		sphereMesh.children[1].material = circleMaterial;
+		
+		const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess, transparent:true, opacity:document.global.sphere.sphereMeshProperty[idx].opacity } );
+		//render opacity
+		sphereMesh.material.dispose();
+		sphereMesh.material = sphereMaterial;
+		
+		console.log(sphereMesh)
 	})
 }
 
@@ -291,13 +306,12 @@ function arenaRotateY() {
 			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
 				document.global.powerUp.mesh[i].rotation.y = -document.global.arena3D.rotation.y;
 			}
-			document.global.sphereMesh.forEach(sphereMesh=>{
+			document.global.sphere.sphereMesh.forEach(sphereMesh=>{
 				sphereMesh.rotation.y = -document.global.arena3D.rotation.y;
 			})
 		}
 		document.global.arena3D.position.z -= document.global.arena.depth;
 	}
-	
 }
 
 function arenaRotateX() {
@@ -308,7 +322,7 @@ function arenaRotateX() {
 			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
 				document.global.powerUp.mesh[i].rotation.x = -document.global.arena3D.rotation.x;
 			}
-			document.global.sphereMesh.forEach(sphereMesh=>{
+			document.global.sphere.sphereMesh.forEach(sphereMesh=>{
 				sphereMesh.rotation.x = -document.global.arena3D.rotation.x;
 			})
 		}
@@ -340,35 +354,34 @@ function shakeEffect() {
 }
 
 function setFrame() {
-	//gamestart shadow issue actions
+	//gamestart shadow issue actions for ALL CLIENTS
 	if (document.global.gameplay.gameStart === 1)
 		document.global.gameplay.shadowFrame++;
 	if (document.global.gameplay.shadowFrame === document.global.gameplay.shadowFrameLimit)
 		document.global.pointLight.castShadow = true;
 
-	// gamestart delay
-	if (document.global.gameplay.gameStart === 0) {
-		console.log(document.global.gameplay.gameStartFrame)
-		document.global.gameplay.gameStartFrame++;
-	}
-	if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
-		document.global.gameplay.gameStart = 1;
-		document.global.gameplay.gameStartFrame =0;
-	}
-
-	// powerup timer
-	if (document.global.powerUp.enable) {
-		if (!document.global.powerUp.visible) {
-			document.global.powerUp.durationFrame++;
-			// shake effect
-			if (document.global.powerUp.index === 1)
-				shakeEffect();
+	// Below gameplay delay and powerup executed by mainClient
+	if (document.global.gameplay.local || !document.global.gameplay.local && document.global.gameplay.mainClient) {
+		if (document.global.gameplay.gameStart === 0) 
+			document.global.gameplay.gameStartFrame++;
+		
+		if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
+			document.global.gameplay.gameStart = 1;
+			document.global.gameplay.gameStartFrame =0;
 		}
-		if (document.global.powerUp.durationFrame === document.global.powerUp.durationFrameLimit) {
-			resetPowerUp();
-			document.global.powerUp.durationFrame = 0;
+		// powerup timer
+		if (document.global.powerUp.enable) {
+			if (document.global.powerUp.meshProperty.every(meshProperty=>{
+				return !meshProperty.visible;
+			}))
+				document.global.powerUp.durationFrame++;
+			if (document.global.powerUp.durationFrame === document.global.powerUp.durationFrameLimit) {
+				resetPowerUp();
+				document.global.powerUp.durationFrame = 0;
+			}
 		}
 	}
+	
 }
 
 function main() {
@@ -417,7 +430,9 @@ function main() {
 			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
 				document.global.powerUp.mesh[i].rotation.y = Math.PI / 2;
 			}
-			document.global.sphereMesh.rotation.y = Math.PI / 2;
+			document.global.sphere.sphereMesh.forEach(sphereMesh=>{
+				sphereMesh.rotation.y = Math.PI / 2;
+			})
 		}
 		movePaddle();
 		setFrame();
