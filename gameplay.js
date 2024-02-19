@@ -1,4 +1,5 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
+import {main} from './render.js'
 
 
 function canvasKeydown(e) {
@@ -108,6 +109,10 @@ export function keyBinding() {
 	document.getElementById("powerup").addEventListener("click", (e)=>{
 		if (document.global.powerUp.meshProperty.some(meshProperty=>meshProperty.visible))
 			powerUpCollisionEffect(document.global.sphere.sphereMeshProperty[0])
+	});
+	document.getElementById("restart").addEventListener("click", (e)=>{
+		cancelAnimationFrame(document.global.requestID);
+		main();
 	});
 }
 

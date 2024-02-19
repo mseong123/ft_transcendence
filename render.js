@@ -6,6 +6,7 @@ import {createPowerUp} from './powerup.js';
 import {createFirstHalfCircleGeometry} from './powerup.js';
 import {createSecondHalfCircleGeometry} from './powerup.js';
 import {resetPowerUp} from './gameplay.js'
+import {init} from './init.js'
 
 function resizeRendererToDisplaySize( renderer ) {
 
@@ -88,6 +89,9 @@ function createPaddleMesh(arena3D) {
 	const paddleMaterialThree = new THREE.MeshPhongMaterial( { color: colorPalette[2], emissive: colorPalette[2], transparent:true, opacity:document.global.paddle.opacity });
 	const paddleMaterialFour = new THREE.MeshPhongMaterial( { color: colorPalette[3], emissive: colorPalette[3], transparent:true, opacity:document.global.paddle.opacity });
 	const paddleMeshPropertyTemplate = {
+		positionX:0,
+		positionY:0,
+		positionZ:0,
 		largePaddle:0,
 		invisibility:0,
 		width:document.global.paddle.defaultWidth,
@@ -122,12 +126,12 @@ function createPaddleMesh(arena3D) {
 			let paddleMesh;
 			const paddleMeshProperty = {...paddleMeshPropertyTemplate};
 
-			if (i == 0) {
+			if (i === 0) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialOne);
 				paddleMesh.castShadow = true;
 				if (document.global.gameplay.playerCount > 2) {
-					paddleMeshProperty.positionX = -document.global.paddle.width / 4;
-					paddleMeshProperty.positionY = -document.global.paddle.height / 4;
+					paddleMeshProperty.positionX = -document.global.paddle.defaultWidth / 4;
+					paddleMeshProperty.positionY = -document.global.paddle.defaultHeight / 4;
 					paddleMeshProperty.positionZ = (document.global.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier)
 				}
 				else {
@@ -136,12 +140,12 @@ function createPaddleMesh(arena3D) {
 					paddleMeshProperty.positionZ = (document.global.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier)
 				}
 			}
-			else if (i == 1) {
+			else if (i === 1) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialTwo);
 				paddleMesh.castShadow = true;
 				if (document.global.gameplay.playerCount == 4) {
-					paddleMeshProperty.positionX = -document.global.paddle.width / 4;
-					paddleMeshProperty.positionY = -document.global.paddle.height / 4;
+					paddleMeshProperty.positionX = -document.global.paddle.defaultWidth / 4;
+					paddleMeshProperty.positionY = -document.global.paddle.defaultHeight / 4;
 					paddleMeshProperty.positionZ = -(document.global.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier)
 				}
 				else {
@@ -154,8 +158,8 @@ function createPaddleMesh(arena3D) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialThree);
 				paddleMesh.castShadow = true;
 				if (document.global.gameplay.playerCount > 2) {
-					paddleMeshProperty.positionX = document.global.paddle.width / 4;
-					paddleMeshProperty.positionY = document.global.paddle.height / 4;
+					paddleMeshProperty.positionX = document.global.paddle.defaultWidth / 4;
+					paddleMeshProperty.positionY = document.global.paddle.defaultHeight / 4;
 					paddleMeshProperty.positionZ = (document.global.clientWidth / document.global.arena.aspect / 2) - (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4)
 				}
 				else {
@@ -167,8 +171,8 @@ function createPaddleMesh(arena3D) {
 			else if (i === 3) {
 				paddleMesh = new THREE.Mesh(paddleGeometry, paddleMaterialFour);
 				paddleMesh.castShadow = true;
-				paddleMeshProperty.positionX = document.global.paddle.width / 4;
-				paddleMeshProperty.positionY = document.global.paddle.height / 4;
+				paddleMeshProperty.positionX = document.global.paddle.defaultWidth / 4;
+				paddleMeshProperty.positionY = document.global.paddle.defaultHeight / 4;
 				paddleMeshProperty.positionZ = -(document.global.clientWidth / document.global.arena.aspect / 2) + (document.global.paddle.thickness * document.global.paddle.distanceFromEdgeModifier * 4)
 			}
 			document.global.paddle.paddles.push(paddleMesh);
@@ -382,8 +386,9 @@ function setTimer() {
 	
 }
 
-function main() {
+export function main() {
 	//render background
+	init();
 	document.querySelector(".canvas-background-1").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
 	document.querySelector(".canvas-background-2").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
 	keyBinding();
@@ -441,9 +446,9 @@ function main() {
 
 
 		renderer.render( scene, camera );
-		requestAnimationFrame(render);
+		document.global.requestID = requestAnimationFrame(render);
 	}
-	requestAnimationFrame(render);
+	document.global.requestID = requestAnimationFrame(render);
 }
 
 main();
