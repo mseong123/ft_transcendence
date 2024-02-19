@@ -54,6 +54,9 @@ function initGlobal() {
 	document.global.camera.near = 0.1;
 	document.global.camera.far = 3000;
 	document.global.camera.positionZ = clientWidth / document.global.arena.aspect;
+	document.global.camera.initPositionY = document.global.arena.width;
+	document.global.camera.initRotationX = -Math.PI / 6.5;
+
 
 	const colorSpace = ["#0E2954","#1F6E8C","#2E8A99","#84A7A1"];
 	const colorOcean = ["#F6F4EB","#91C8E4","#749BC2","#4682A9"];
@@ -98,7 +101,7 @@ function initGlobal() {
 	//overall powerup info
 	
 	document.global.powerUp = {};
-	document.global.powerUp.enable = 1;
+	document.global.powerUp.enable = 0;
 	document.global.powerUp.widthSegments = 6;
 	document.global.powerUp.heightSegments = 6;
 	document.global.powerUp.radius = document.global.sphere.radius;
@@ -133,15 +136,16 @@ function initGlobal() {
 	document.global.gameplay = {};
 	document.global.gameplay.backgroundClass = ["canvas-url-space", "canvas-url-ocean", "canvas-url-alien", "canvas-url-desert"];
 	document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); 
-	document.global.gameplay.gameStart = 1;
+	document.global.gameplay.roundStart = 0;
+	document.global.gameplay.gameStart = 0;
 	document.global.gameplay.immortality = 1; //for gameplay debugging purpose
-	document.global.gameplay.initRotateY = 0;
+	document.global.gameplay.initRotateY = 1;
 	document.global.gameplay.initRotateX = 0;
 	document.global.gameplay.rotationY = 0.005;
 	document.global.gameplay.rotationX = 0.005;
 	document.global.gameplay.rotate90 = 0;
-	document.global.gameplay.gameStartFrame = 0;
-	document.global.gameplay.gameStartFrameLimit = 25;
+	document.global.gameplay.roundStartFrame = 0;
+	document.global.gameplay.roundStartFrameLimit = 25;
 	document.global.gameplay.shadowFrame = 0;
 	document.global.gameplay.shadowFrameLimit = 5;
 

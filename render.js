@@ -78,6 +78,8 @@ export function createSphereMesh(arena3D) {
 function createCamera() {
 	const camera = new THREE.PerspectiveCamera( document.global.camera.fov, document.global.arena.aspect, document.global.camera.near, document.global.camera.far );
 	camera.position.z = document.global.camera.positionZ;
+	// camera.position.y = document.global.arena.width;
+	// 	camera.rotation.x = -Math.PI/5
 	return camera;
 }
 
@@ -227,12 +229,19 @@ function createShadowPlanes(arena3D) {
 	document.global.shadowPlanes = shadowPlanes;
 }
 
+function processCamera(camera) {
+	if (!document.global.gameplay.gameStart) {
+		camera.position.y = document.global.camera.initPositionY;
+		camera.rotation.x = document.global.camera.initRotationX;
+	}
+	else {
+		camera.position.y = 0;
+		camera.rotation.x = 0;
+	}
+	camera.updateProjectionMatrix();
+}
+
 function processSphere() {
-	document.global.sphere.sphereMesh.forEach((sphereMesh,idx)=>{
-		
-	})
-	
-	
 	document.global.sphere.sphereMesh.forEach((sphereMesh,idx)=>{
 		//update position
 		sphereMesh.position.set(document.global.sphere.sphereMeshProperty[idx].positionX, document.global.sphere.sphereMeshProperty[idx].positionY, document.global.sphere.sphereMeshProperty[idx].positionZ)
@@ -352,47 +361,50 @@ function shakeEffect() {
 }
 
 function setTimer() {
-	//gamestart shadow issue actions for ALL CLIENTS
-	if (document.global.gameplay.gameStart === 0) {
-		document.global.pointLight.castShadow = false;
-		document.global.gameplay.shadowFrame = 0;
-	}
-	if (document.global.gameplay.gameStart === 1)
-		document.global.gameplay.shadowFrame++;
-	if (document.global.gameplay.shadowFrame === document.global.gameplay.shadowFrameLimit)
-		document.global.pointLight.castShadow = true;
-
-	// Below gameplay delay and powerup executed by mainClient
-	if (document.global.gameplay.local || !document.global.gameplay.local && document.global.gameplay.mainClient) {
-		if (document.global.gameplay.gameStart === 0) 
-			document.global.gameplay.gameStartFrame++;
-		
-		if (document.global.gameplay.gameStartFrame === document.global.gameplay.gameStartFrameLimit) {
-			document.global.gameplay.gameStart = 1;
-			document.global.gameplay.gameStartFrame =0;
+	if (document.global.gameplay.gameStart) {
+		//roundStart shadow issue actions for ALL CLIENTS
+		if (document.global.gameplay.roundStart === 0) {
+			document.global.pointLight.castShadow = false;
+			document.global.gameplay.shadowFrame = 0;
 		}
-		// powerup timer
-		if (document.global.powerUp.enable) {
-			if (document.global.powerUp.meshProperty.every(meshProperty=>{
-				return !meshProperty.visible;
-			}))
-				document.global.powerUp.durationFrame++;
-			if (document.global.powerUp.durationFrame === document.global.powerUp.durationFrameLimit) {
-				resetPowerUp();
-				document.global.powerUp.durationFrame = 0;
+		if (document.global.gameplay.roundStart === 1)
+			document.global.gameplay.shadowFrame++;
+		if (document.global.gameplay.shadowFrame === document.global.gameplay.shadowFrameLimit)
+			document.global.pointLight.castShadow = true;
+	
+		// Below gameplay delay and powerup executed by mainClient
+		if (document.global.gameplay.local || !document.global.gameplay.local && document.global.gameplay.mainClient) {
+			if (document.global.gameplay.roundStart === 0) 
+				document.global.gameplay.roundStartFrame++;
+			
+			if (document.global.gameplay.roundStartFrame === document.global.gameplay.roundStartFrameLimit) {
+				document.global.gameplay.roundStart = 1;
+				document.global.gameplay.roundStartFrame =0;
+			}
+			// powerup timer
+			if (document.global.powerUp.enable) {
+				if (document.global.powerUp.meshProperty.every(meshProperty=>{
+					return !meshProperty.visible;
+				}))
+					document.global.powerUp.durationFrame++;
+				if (document.global.powerUp.durationFrame === document.global.powerUp.durationFrameLimit) {
+					resetPowerUp();
+					document.global.powerUp.durationFrame = 0;
+				}
 			}
 		}
 	}
 	
+	
 }
 
 export function main() {
-	//render background
 	init();
+	//render background
 	document.querySelector(".canvas-background-1").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
 	document.querySelector(".canvas-background-2").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
 	keyBinding();
-
+	
 	const canvas = document.querySelector( '#c' );
 	const renderer = new THREE.WebGLRenderer( { antialias: true, canvas } );
 	const scene = new THREE.Scene();
@@ -414,13 +426,14 @@ export function main() {
 	//attach arena and add to scene
 	document.global.arena3D = arena3D;
 	scene.add(arena3D);
-	
+
 	function render( time ) {
 		if ( resizeRendererToDisplaySize( renderer ) ) {
 			const canvas = renderer.domElement;
 			camera.aspect = canvas.clientWidth / canvas.clientHeight;
 			camera.updateProjectionMatrix();
 		}
+		processCamera(camera);
 		processSphere();
 		processPaddle();
 		processPowerUp();

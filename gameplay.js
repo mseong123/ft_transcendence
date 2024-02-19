@@ -110,9 +110,16 @@ export function keyBinding() {
 		if (document.global.powerUp.meshProperty.some(meshProperty=>meshProperty.visible))
 			powerUpCollisionEffect(document.global.sphere.sphereMeshProperty[0])
 	});
-	document.getElementById("restart").addEventListener("click", (e)=>{
-		cancelAnimationFrame(document.global.requestID);
-		main();
+	document.getElementById("gamestart").addEventListener("click", (e)=>{
+		if (document.global.gameplay.gameStart === 1) {
+			document.global.gameplay.initRotateY = 1;
+			document.global.gameplay.gameStart = 0;
+		}
+		else {
+			document.global.gameplay.gameStart = 1;
+			document.global.gameplay.initRotateY = 0;
+			document.global.arena3D.rotation.y = 0;
+		}
 	});
 }
 
@@ -237,7 +244,6 @@ function adjustPaddles(paddlesProperty) {
 }
 
 function powerUpCollisionEffect(sphereMeshProperty) {
-	// document.global.gameplay.gameStart = 0;
 	let index;
 	
 	//set visibility of powerup sphere to false;
@@ -399,7 +405,7 @@ function updateSpherePosition(sphereMeshProperty) {
 
 export function processGame() {
 	if (document.global.gameplay.local || !document.global.gameplay.local && document.global.gameplay.mainClient) {
-		if (document.global.gameplay.gameStart) {
+		if (document.global.gameplay.roundStart && document.global.gameplay.gameStart) {
 			document.global.sphere.sphereMeshProperty.forEach(sphereMeshProperty=>{
 				if (sphereMeshProperty.visible) {
 					updateSpherePosition(sphereMeshProperty)
@@ -415,7 +421,7 @@ export function processGame() {
 							sphereMeshProperty.velocityZ *= -1;
 						}
 						else {
-							document.global.gameplay.gameStart = 0;
+							document.global.gameplay.roundStart = 0;
 							sphereMeshProperty.positionX = 0;
 							sphereMeshProperty.positionY = 0;
 							sphereMeshProperty.positionZ = 0;

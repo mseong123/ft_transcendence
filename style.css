@@ -1,0 +1,51 @@
+.inter-pong {
+	font-family: "Inter", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	font-variation-settings:
+	  "slnt" 0;
+  }
+
+.banner {
+	position:absolute;
+	z-index: 2;
+	font-size: 2rem;
+	/* letter-spacing: 1px; */
+	color:white;
+	margin-left:0.5rem;
+	margin-top:2rem;
+	
+}
+
+.icon {
+	font-size: 2rem;
+	margin-right:0.5rem;
+	vertical-align:text-bottom;
+}
+
+.underline {
+	text-decoration:underline;
+}
+
+@media (min-width:577px) and (max-width:768px) {
+	.banner {
+		margin-top:3rem;
+		margin-left:2rem;
+		font-size: 3rem;
+	}
+	.icon {
+		font-size: 3rem;
+	}
+}
+
+@media (min-width:769px) {
+	.banner {
+		margin-top:4rem;
+		margin-left:3rem;
+		font-size: 4rem;
+	}
+	.icon {
+		font-size: 4rem;
+	}
+}

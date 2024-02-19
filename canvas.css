@@ -1,7 +1,8 @@
 .canvas-container {
 	position:relative;
 	overflow-x:hidden;
-	left:20px;
+	margin:0 auto;
+	width:500px;
 }
 
 .canvas-background-1 {
@@ -61,12 +62,6 @@ canvas {
 
 canvas:focus {
 	outline:none;
-}
-
-@media(max-width:576px) {
-	.canvas-container {
-		width:500px;
-	}
 }
 
 @media (min-width:577px) and (max-width:768px) {
