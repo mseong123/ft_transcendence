@@ -147,7 +147,7 @@ function updateGlobal() {
 		document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); 
 		document.global.gameplay.gameStart = 1;
 		document.global.gameplay.immortality = 1; //for gameplay debugging purpose
-		document.global.gameplay.initRotateY = 0;
+		document.global.gameplay.initRotateY = 1;
 		document.global.gameplay.initRotateX = 0;
 		document.global.gameplay.rotationY = 0.005;
 		document.global.gameplay.rotationX = 0.005;

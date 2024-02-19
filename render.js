@@ -224,22 +224,27 @@ function createShadowPlanes(arena3D) {
 }
 
 function processSphere() {
-	if (document.global.gameplay.gameStart) {
-		//Update position each sphere only if gameStart is true
-		document.global.sphere.sphereMesh.forEach((sphereMesh,idx)=>{
-			sphereMesh.position.set(document.global.sphere.sphereMeshProperty[idx].positionX, document.global.sphere.sphereMeshProperty[idx].positionY, document.global.sphere.sphereMeshProperty[idx].positionZ)
-		})
-	}
-	else
-		document.global.sphere.sphereMesh.forEach((sphereMesh,idx)=>{
-			sphereMesh.position.set(0,0,0)
-		})
 	document.global.sphere.sphereMesh.forEach((sphereMesh,idx)=>{
+		
+	})
+	
+	
+	document.global.sphere.sphereMesh.forEach((sphereMesh,idx)=>{
+		//update position
+		sphereMesh.position.set(document.global.sphere.sphereMeshProperty[idx].positionX, document.global.sphere.sphereMeshProperty[idx].positionY, document.global.sphere.sphereMeshProperty[idx].positionZ)
 		//render visibility
 		if (document.global.sphere.sphereMeshProperty[idx].visible)
 			sphereMesh.visible = true;
 		else
 			sphereMesh.visible = false;
+		
+		//render surrounding circle color and opacity
+		const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.sphere.sphereMeshProperty[idx].circleColor, transparent:true, opacity:document.global.sphere.sphereMeshProperty[idx].circleOpacity});
+		sphereMesh.children[0].material.dispose();
+		sphereMesh.children[1].material.dispose();
+		sphereMesh.children[0].material = circleMaterial;
+		sphereMesh.children[1].material = circleMaterial;
+
 		//render surrounding circle visibility
 		if (document.global.sphere.sphereMeshProperty[idx].circleVisible) {
 			sphereMesh.children[0].visible = true;
@@ -249,19 +254,10 @@ function processSphere() {
 			sphereMesh.children[0].visible = false;
 			sphereMesh.children[1].visible = false;
 		}
-		//render surrounding circle color and opacity
-		const circleMaterial = new THREE.LineBasicMaterial( { color: document.global.sphere.sphereMeshProperty[idx].circleColor, transparent:true, opacity:document.global.sphere.sphereMeshProperty[idx].circleOpacity});
-		sphereMesh.children[0].material.dispose();
-		sphereMesh.children[1].material.dispose();
-		sphereMesh.children[0].material = circleMaterial;
-		sphereMesh.children[1].material = circleMaterial;
-		
-		const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess, transparent:true, opacity:document.global.sphere.sphereMeshProperty[idx].opacity } );
 		//render opacity
+		const sphereMaterial = new THREE.MeshPhongMaterial( { color: document.global.sphere.color, emissive: document.global.sphere.color, shininess:document.global.sphere.shininess, transparent:true, opacity:document.global.sphere.sphereMeshProperty[idx].opacity } );
 		sphereMesh.material.dispose();
 		sphereMesh.material = sphereMaterial;
-		
-		console.log(sphereMesh)
 	})
 }
 
@@ -279,22 +275,22 @@ function processPaddle() {
 }
 
 function processPowerUp() {
-	//rotate circle around each powerup
-	document.global.powerUp.mesh.forEach(mesh=>{
+	
+	document.global.powerUp.mesh.forEach((mesh, idx)=>{
+		//rotate circle around each powerup
 		mesh.rotation.z += document.global.powerUp.circleRotation;
+		//render visible 
+		if (document.global.powerUp.meshProperty[idx].visible)
+			mesh.visible = true;
+		else
+			mesh.visible = false;
+		//update position
+		mesh.position.set(document.global.powerUp.meshProperty[idx].positionX, document.global.powerUp.meshProperty[idx].positionY, document.global.powerUp.meshProperty[idx].positionZ)
 	})
 	//rotate circle around each sphere
 	document.global.sphere.sphereMesh.forEach(sphereMesh=>{
 		sphereMesh.children[0].rotation.z += document.global.powerUp.circleRotation;
 		sphereMesh.children[1].rotation.z += document.global.powerUp.circleRotation;
-	})
-	//render visible and update position each powerup sphere
-	document.global.powerUp.mesh.forEach((mesh, idx)=>{
-		if (document.global.powerUp.meshProperty[idx].visible)
-			mesh.visible = true;
-		else
-			mesh.visible = false;
-		mesh.position.set(document.global.powerUp.meshProperty[idx].positionX, document.global.powerUp.meshProperty[idx].positionY, document.global.powerUp.meshProperty[idx].positionZ)
 	})
 }
 
@@ -302,14 +298,13 @@ function arenaRotateY() {
 	if (document.global.gameplay.initRotateY) {
 		document.global.arena3D.position.z += document.global.arena.depth;
 		document.global.arena3D.rotation.y += document.global.gameplay.rotationY;
-		if (document.global.powerUp.enable) {
-			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
-				document.global.powerUp.mesh[i].rotation.y = -document.global.arena3D.rotation.y;
-			}
-			document.global.sphere.sphereMesh.forEach(sphereMesh=>{
-				sphereMesh.rotation.y = -document.global.arena3D.rotation.y;
-			})
-		}
+		document.global.powerUp.mesh.forEach(mesh=>{
+			mesh.rotation.y = -document.global.arena3D.rotation.y;
+		})
+		document.global.sphere.sphereMesh.forEach(sphereMesh=>{
+			sphereMesh.rotation.y = -document.global.arena3D.rotation.y;
+		})
+		
 		document.global.arena3D.position.z -= document.global.arena.depth;
 	}
 }
@@ -318,14 +313,13 @@ function arenaRotateX() {
 	if (document.global.gameplay.initRotateX) {
 		document.global.arena3D.position.z += document.global.arena.depth;
 		document.global.arena3D.rotation.x += document.global.gameplay.rotationX;
-		if (document.global.powerUp.enable) {
-			for (let i = 0; i < document.global.powerUp.mesh.length; i++) {
-				document.global.powerUp.mesh[i].rotation.x = -document.global.arena3D.rotation.x;
-			}
-			document.global.sphere.sphereMesh.forEach(sphereMesh=>{
-				sphereMesh.rotation.x = -document.global.arena3D.rotation.x;
-			})
-		}
+		document.global.powerUp.mesh.forEach(mesh=>{
+			mesh.rotation.x = -document.global.arena3D.rotation.x;
+		})
+		document.global.sphere.sphereMesh.forEach(sphereMesh=>{
+			sphereMesh.rotation.x = -document.global.arena3D.rotation.x;
+		})
+		
 		document.global.arena3D.position.z -=document.global.arena.depth;
 	}
 }
@@ -353,8 +347,12 @@ function shakeEffect() {
 		arena3D.position.set(0,0,0);
 }
 
-function setFrame() {
+function setTimer() {
 	//gamestart shadow issue actions for ALL CLIENTS
+	if (document.global.gameplay.gameStart === 0) {
+		document.global.pointLight.castShadow = false;
+		document.global.gameplay.shadowFrame = 0;
+	}
 	if (document.global.gameplay.gameStart === 1)
 		document.global.gameplay.shadowFrame++;
 	if (document.global.gameplay.shadowFrame === document.global.gameplay.shadowFrameLimit)
@@ -435,7 +433,7 @@ function main() {
 			})
 		}
 		movePaddle();
-		setFrame();
+		setTimer();
 		
 
 		
