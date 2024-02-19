@@ -28,7 +28,29 @@
 	text-decoration:underline;
 }
 
-@media (min-width:577px) and (max-width:768px) {
+.start {
+	position:absolute;
+	background-color:#00CED1;
+	text-align:right;
+	bottom:-1.2rem;
+	right:0;
+	z-index: 2;
+	border:0;
+	border-radius:0.2rem;
+	color:white;
+}
+
+.start:focus, .start:hover {
+	outline:none;
+	background-color:#AFEEEE;
+	cursor: pointer;
+}
+
+.menu {
+
+}
+
+@media (min-width:577px) {
 	.banner {
 		margin-top:3rem;
 		margin-left:2rem;
@@ -36,6 +58,11 @@
 	}
 	.icon {
 		font-size: 3rem;
+	}
+	.start {
+		bottom:-2rem;
+		font-size: 1rem;
+		padding:0.5rem;
 	}
 }
 
@@ -47,5 +74,9 @@
 	}
 	.icon {
 		font-size: 4rem;
+	}
+	.start {
+		bottom:-2.5rem;
+		font-size: 1.2rem;
 	}
 }
