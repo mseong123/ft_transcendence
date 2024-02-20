@@ -43,7 +43,7 @@ function canvasKeyup(e) {
 }
 
 function canvasMouseMove(e) {
-	const canvas = document.getElementById("c");
+	const canvas = document.querySelector(".canvas");
 	let paddleWidth = document.global.paddle.defaultWidth;
 	let paddleHeight = document.global.paddle.defaultHeight;
 	const canvasWidth = canvas.clientWidth;
@@ -100,16 +100,42 @@ function canvasMouseMove(e) {
 
 //addeventlistener
 export function keyBinding() {
-	const canvas = document.getElementById("c");
+	const canvas = document.querySelector(".canvas");
 	canvas.addEventListener("mousemove", canvasMouseMove);
 	canvas.addEventListener("keydown", canvasKeydown);
 	canvas.addEventListener("keyup", canvasKeyup);
 	
+	const toggleCanvas = document.querySelector(".toggle-canvas");
+	toggleCanvas.addEventListener("click", (e)=>{
+		document.global.ui.toggleCanvas? document.global.ui.toggleCanvas = 0:document.global.ui.toggleCanvas = 1;
+	})
+	const toggleChat = document.querySelector(".toggle-chat");
+	toggleChat.addEventListener("click", (e)=>{
+		document.global.ui.toggleChat? document.global.ui.toggleChat = 0:document.global.ui.toggleChat = 1;
+	})
+	const navChat = document.querySelector(".nav-chat");
+	navChat.addEventListener("click", (e)=>{
+		document.global.ui.chat? document.global.ui.chat = 0:document.global.ui.chat = 1;
+	})
+	const navCanvas = document.querySelector(".nav-canvas");
+	navCanvas.addEventListener("click", (e)=>{
+		document.global.ui.chat? document.global.ui.chat = 0:document.global.ui.chat = 1;
+	})
+	const local = document.querySelector(".nav-local");
+	local.addEventListener("click", (e)=>{
+		document.global.ui.local? document.global.ui.local = 0:document.global.ui.local = 1;
+	})
+
+	
+	
+
 	//temp bind
 	document.getElementById("powerup").addEventListener("click", (e)=>{
 		if (document.global.powerUp.meshProperty.some(meshProperty=>meshProperty.visible))
 			powerUpCollisionEffect(document.global.sphere.sphereMeshProperty[0])
 	});
+
+
 	document.getElementById("gamestart").addEventListener("click", (e)=>{
 		if (document.global.gameplay.gameStart === 1) {
 			document.global.gameplay.initRotateY = 1;

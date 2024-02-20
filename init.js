@@ -101,7 +101,7 @@ function initGlobal() {
 	//overall powerup info
 	
 	document.global.powerUp = {};
-	document.global.powerUp.enable = 0;
+	document.global.powerUp.enable = 1;
 	document.global.powerUp.widthSegments = 6;
 	document.global.powerUp.heightSegments = 6;
 	document.global.powerUp.radius = document.global.sphere.radius;
@@ -170,6 +170,14 @@ function initGlobal() {
 	document.global.keyboard.left = 0;
 	document.global.keyboard.right = 0;
 	document.global.keyboard.speed = 5;
+
+	//UI
+	document.global.ui = {}
+	document.global.ui.toggleCanvas = 0;
+	document.global.ui.toggleChat = 0;
+	document.global.ui.chat = 0;
+	document.global.ui.local = 0;
+
 	
 }
 

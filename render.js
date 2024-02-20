@@ -307,6 +307,33 @@ function processPowerUp() {
 	})
 }
 
+function processUI() {
+	if (document.global.ui.toggleCanvas)
+		document.querySelector(".menu-canvas").classList.remove("display-none");
+	else
+		document.querySelector(".menu-canvas").classList.add("display-none");
+	if (document.global.ui.toggleChat)
+		document.querySelector(".menu-chat").classList.remove("display-none");
+	else
+		document.querySelector(".menu-chat").classList.add("display-none");
+	if (document.global.ui.chat) {
+		document.querySelector(".chat-container").classList.add("display-block");
+		document.querySelector(".canvas-container").classList.add("display-none");
+	}
+	else {
+		document.querySelector(".chat-container").classList.remove("display-block");
+		document.querySelector(".canvas-container").classList.remove("display-none");
+	}
+	if (document.global.ui.local) {
+		document.querySelector(".local-menu-canvas").classList.add("display-block");
+		document.querySelector(".main-menu-canvas").classList.add("display-none");
+	}
+	else {
+		document.querySelector(".local-menu-canvas").classList.remove("display-block");
+		document.querySelector(".main-menu-canvas").classList.remove("display-none");
+	}
+}
+
 function arenaRotateY() {
 	if (document.global.gameplay.initRotateY) {
 		document.global.arena3D.position.z += document.global.arena.depth;
@@ -405,7 +432,7 @@ export function main() {
 	document.querySelector(".canvas-background-2").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
 	keyBinding();
 	
-	const canvas = document.querySelector( '#c' );
+	const canvas = document.querySelector( '.canvas' );
 	const renderer = new THREE.WebGLRenderer( { antialias: true, canvas } );
 	const scene = new THREE.Scene();
 	renderer.setClearColor( 0x000000, 0 );
@@ -438,6 +465,7 @@ export function main() {
 		processPaddle();
 		processPowerUp();
 		processGame();
+		processUI();
 		shakeEffect();
 		arenaRotateY();
 		arenaRotateX();
