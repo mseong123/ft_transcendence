@@ -324,14 +324,52 @@ function processUI() {
 		document.querySelector(".chat-container").classList.remove("display-block");
 		document.querySelector(".canvas-container").classList.remove("display-none");
 	}
-	if (document.global.ui.local) {
-		document.querySelector(".local-menu-canvas").classList.add("display-block");
-		document.querySelector(".main-menu-canvas").classList.add("display-none");
-	}
-	else {
-		document.querySelector(".local-menu-canvas").classList.remove("display-block");
-		document.querySelector(".main-menu-canvas").classList.remove("display-none");
-	}
+	document.global.ui.mainMenu?
+		document.querySelector(".main-menu").classList.add("display-block"):document.querySelector(".main-menu").classList.remove("display-block");
+	document.global.ui.local?
+		document.querySelector(".local-menu").classList.add("display-block"):document.querySelector(".local-menu").classList.remove("display-block");
+	document.global.ui.single?
+		document.querySelector(".single-menu").classList.add("display-block"):document.querySelector(".single-menu").classList.remove("display-block");
+
+	document.getElementById("single-duration").value = document.global.gameplay.localInfo.duration;
+	document.global.gameplay.localInfo.player.forEach(player=>{
+		const parent = document.querySelector(".single-alias-display-inside");
+		const target = document.querySelector(".single-" + player.alias)
+		if (!target) {
+			const element = document.createElement('p');
+			const button = document.createElement('button');
+			const xmark = document.createElement('i');
+			xmark.classList.add("fa", "fa-xmark");
+			xmark.setAttribute("identifier",player.alias);
+			button.addEventListener("click", (e)=>{
+				
+				document.global.gameplay.localInfo.player.forEach((player,idx)=>{
+					if (player.alias===e.target.getAttribute("identifier"))
+						document.global.gameplay.localInfo.player.splice(idx, 1);
+				})
+			})
+			element.classList.add("single-" + player.alias)
+			element.textContent = player.alias;
+			parent.appendChild(element).appendChild(button).appendChild(xmark);
+		}
+	})
+	
+	const parent = document.querySelector(".single-alias-display-inside")
+	Array.from(parent.children).forEach(child=>{
+		if (!document.global.gameplay.localInfo.player.length || document.global.gameplay.localInfo.player.every(player=>{
+			"single-" + player.alias !== child.classList[0]
+		}))
+		{
+			console.log(document.global.gameplay.localInfo.player);
+			parent.removeChild(child);
+		}
+	})
+	
+	
+
+	document.global.gameplay.gameStart? 
+		document.querySelector(".banner").classList.add("display-none"):document.querySelector(".banner").classList.remove("display-none");
+	
 }
 
 function arenaRotateY() {

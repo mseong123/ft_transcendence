@@ -106,10 +106,17 @@ export function keyBinding() {
 	canvas.addEventListener("keyup", canvasKeyup);
 	
 	document.addEventListener("click", (e)=>{
-		if (!e.target.classList.contains("toggle-canvas"))
-			document.global.ui.toggleCanvas = 0;
-		if (!e.target.classList.contains("toggle-chat"))
-			document.global.ui.toggleChat = 0;
+		if (!e.target.classList.contains("toggle-canvas")) {
+			const menuCanvasChild = document.querySelector(".menu-canvas").querySelectorAll("*");
+			if (Array.from(menuCanvasChild).every(child=>e.target !== child) && e.target !== document.querySelector(".menu-canvas"))
+				document.global.ui.toggleCanvas = 0;
+		}
+			
+		if (!e.target.classList.contains("toggle-chat")) {
+			const menuChatChild = document.querySelector(".menu-chat").querySelectorAll("*");
+			if (Array.from(menuChatChild).every(child=>e.target !== child) && e.target !== document.querySelector(".menu-chat"))
+				document.global.ui.toggleChat = 0;
+		}
 	})
 
 	const toggleCanvas = document.querySelector(".toggle-canvas");
@@ -132,7 +139,47 @@ export function keyBinding() {
 	})
 	const local = document.querySelector(".nav-local");
 	local.addEventListener("click", (e)=>{
-		document.global.ui.local? document.global.ui.local = 0:document.global.ui.local = 1;
+		document.global.ui.mainMenu = 0;
+		document.global.ui.local = 1;
+	})
+	const localBack = document.querySelector(".local-back");
+	localBack.addEventListener("click", (e)=>{
+		document.global.ui.mainMenu = 1;
+		document.global.ui.local = 0;
+	})
+	const single = document.querySelector(".nav-single");
+	single.addEventListener("click", (e)=>{
+		document.global.ui.local = 0;
+		document.global.ui.single = 1;
+		document.global.gameplay.localInfo.single = 1;
+		document.global.gameplay.localInfo.duration = document.global.gameplay.defaultDuration;
+		document.global.gameplay.localInfo.ludicrious = 0;
+		document.global.gameplay.localInfo.powerUp = 0;
+		
+	})
+	const singleBack = document.querySelector(".single-back");
+	singleBack.addEventListener("click", (e)=>{
+		document.global.ui.local = 1;
+		document.global.ui.single = 0;
+	})
+	const singleAlias = document.querySelector(".single-alias");
+	singleAlias.addEventListener("submit", (e)=>{
+		e.preventDefault();
+		const player = {
+			alias:document.getElementById("single-alias-text").value,
+			score:0,
+		}
+		document.global.gameplay.localInfo.player.push(player);
+	})
+	const singleDuration = document.getElementById("single-duration");
+	singleDuration.addEventListener("change", (e)=>{
+		document.global.gameplay.localInfo.duration = e.target.value;
+	})
+	const menuHome = document.querySelector(".menu-home");
+	menuHome.addEventListener("click", (e)=>{
+		document.global.ui.mainMenu = 1;
+		document.global.ui.local = 0;
+		document.global.ui.single = 0;
 	})
 
 	

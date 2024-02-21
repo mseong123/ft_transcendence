@@ -2,6 +2,15 @@ body {
 	margin:0;
 }
 
+i {
+	padding:0 0.5rem;
+}
+
+p {
+	margin:0;
+}
+
+
 button:hover, button:focus {
 	outline:none;
 	cursor:pointer;
@@ -56,21 +65,25 @@ button:hover, button:focus {
   }
 
 .menu-canvas {
+	font-size: 0.75rem;
 	margin-top:0.5rem;
 	position:absolute;
+	color:rgb(177,177,177);
 	background-color:rgb(49,49,49);
 	right:0;
 	border-radius:0.25rem;
-	padding:0.25rem;
+	padding:0.5rem;
 }
 
 .menu-chat {
+	font-size: 0.75rem;
 	margin-top:0.5rem;
 	position:absolute;
+	color:rgb(177,177,177);
 	background-color:rgb(49,49,49);
 	left:0;
 	border-radius:0.25rem;
-	padding:0.25rem;
+	padding:0.5rem;
 	width:80%;
 	border:1px solid rgb(177,177,177);
 }
@@ -85,33 +98,29 @@ hr {
 .menu-canvas button, .menu-chat button{
 	border:0;
 	background-color:transparent;
-	display:flex;
 	align-items:baseline;
 	color:rgb(177,177,177);
+	padding:1px 1px;
+}
+
+.menu-canvas .nav, .menu-chat .nav{
+	width:100%;
 	font-size: 0.75rem;
 	margin:0.25rem 0;
-	width:100%;
+	display:flex;
 }
 
 .menu-canvas button:hover, .menu-canvas button:focus, .menu-chat button:hover, .menu-chat button:focus  {
 	color:white;
 }
 
-.menu-canvas button i:nth-child(1), .menu-chat button i:nth-child(1) {
-	margin-right:1rem;
-}
-
-.menu-canvas button i:nth-child(2), .menu-chat button i:nth-child(2){
+.menu-canvas .nav i:nth-child(2), .menu-chat .nav i:nth-child(2){
 	margin-left: auto;
 }
 
 .profile h4 {
 	padding:1px 6px;
 	margin:0;
-	font-size: 0.75rem;
-}
-.profile i {
-	margin-right:1rem;
 }
 
 .display-none {
@@ -144,11 +153,35 @@ hr {
 	position:relative;
 }
 
+.local-menu {
+	font-weight:normal;
+}
+
+.local-menu form {
+	background-color:rgb(49,44,44);
+	border-radius:0.25rem;
+	padding:0.25rem;
+}
+
+.local-menu form div {
+	margin:0.25rem 0;
+}
+
+.single-alias {
+	background-color:rgb(28,28,28);
+	border-radius:0.25rem;
+	padding:0.25rem;
+}
+.single-alias-display {
+	display:grid;
+	grid-template-columns: auto auto;
+}
+
+
 @media (min-width:577px) {
 	.banner {
 		margin-top:3rem;
 		margin-left:2rem;
-		font-size: 3rem;
 	}
 	.icon {
 		font-size: 3rem;
@@ -159,13 +192,7 @@ hr {
 	.toggle-canvas .icon-bar, .toggle-chat .icon-bar{
 		width:22px;
 	}
-	.menu-canvas, .menu-chat {
-		padding:1rem;
-	}
-	.menu-canvas button, .profile h4, .menu-chat button {
-		font-size: 1rem;
-		margin:0.5rem 0;
-	}
+	
 	hr {
 		margin-top: 1rem;
 		margin-bottom: 1rem;
@@ -189,6 +216,16 @@ hr {
 		width:500px;
 		display:block;
 	}
+
+	.menu-canvas, .menu-chat {
+		padding:1rem;
+		font-size: 1rem;
+	}
+
+	.menu-canvas .nav, .menu-chat .nav{
+		margin:0.5rem 0;
+		font-size: 1rem;
+	}
 	.main-container {
 		display:grid;
 		grid-template-columns: auto auto;
@@ -200,6 +237,16 @@ hr {
 	}
 	.toggle-chat {
 		display:none;
+	}
+	.menu-back, .menu-home {
+		font-size: 1.5rem;
+		margin: 1px 3px;
+	}
+	.local-menu form div {
+		margin:0.5rem 0;
+	}
+	.single-alias {
+		padding:0.5rem;
 	}
 	
 }

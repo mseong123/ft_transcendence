@@ -152,9 +152,12 @@ function initGlobal() {
 	document.global.gameplay.roundStartFrameLimit = 25;
 	document.global.gameplay.shadowFrame = 0;
 	document.global.gameplay.shadowFrameLimit = 5;
+	document.global.gameplay.defaultDuration = "02:00";
 
 	//local or multiplayer game
 	document.global.gameplay.local = 1;
+	document.global.gameplay.localInfo = {};
+	document.global.gameplay.localInfo.player = [];
 	document.global.gameplay.computer = 0;
 	document.global.gameplay.mainClient = 1;
 	
@@ -180,7 +183,9 @@ function initGlobal() {
 	document.global.ui.toggleCanvas = 0;
 	document.global.ui.toggleChat = 0;
 	document.global.ui.chat = 0;
+	document.global.ui.mainMenu = 1;
 	document.global.ui.local = 0;
+	document.global.ui.single = 0;
 
 	
 }

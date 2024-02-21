@@ -8,8 +8,6 @@
 	<link rel="stylesheet" href="./style.css">
 	<body class="inter-pong">
 		<div class="main-container">
-
-		
 			<div class="canvas-container">
 				<h2 class="banner">
 					<i class="fas fa-ping-pong-paddle-ball"></i>
@@ -24,18 +22,50 @@
 							<h4><i class="fas fa-user"></i>Profile</h4>
 						</div>
 						<hr></hr>
-						<div class="main-menu-canvas">
-							<button type="button" class="nav"><i class="fa fa-sign-in"></i>Login &nbsp;<i class="fa fa-caret-right"></i></button>
-							<button type="button" class="nav-local"><i class="fas fa-location-dot"></i>Local &nbsp;<i class="fa fa-caret-right"></i></button>
-							<button type="button" class="nav-multi"><i class="fas fa-network-wired"></i>Multiplayer &nbsp;<i class="fa fa-caret-right"></i></button>
+						<div class="main-menu display-none">
+							<button type="button" class="nav nav-signin"><i class="fa fa-sign-in"></i>Login &nbsp;<i class="fa fa-caret-right"></i></button>
+							<button type="button" class="nav nav-local"><i class="fas fa-location-dot"></i>Local &nbsp;<i class="fa fa-caret-right"></i></button>
+							<button type="button" class="nav nav-multi"><i class="fas fa-network-wired"></i>Multiplayer &nbsp;<i class="fa fa-caret-right"></i></button>
 						</div>
-						<div class="local-menu-canvas display-none">
-							<p>Local Game</p>
+						<div class="local-menu display-none">
+							<button type="button" class="menu-back local-back"><i class="fa fa-square-caret-left"></i></button>
+							<button type="button" class="menu-home"><i class="fa fa-home"></i></button>
+							<h4><i class="fas fa-location-dot"></i>LOCAL GAME</h4>
+							<button type="button" class="nav nav-single">Single Player (vs A.I.) &nbsp;<i class="fa fa-caret-right"></i></button>
+							<button type="button" class="nav nav-two">Two Player &nbsp;<i class="fa fa-caret-right"></i></button>
+							<button type="button" class="nav nav-Tournament">Tournament &nbsp;<i class="fa fa-caret-right"></i></button>
+						</div>
+						<div class="single-menu display-none">
+								<button type="button" class="menu-back single-back"><i class="fa fa-square-caret-left"></i></button>
+								<button type="button" class="menu-home"><i class="fa fa-home"></i></button>
+								<h4>SINGLE PLAYER (V.S. A.I.) CUSTOMIZATION</h4>
+								<form class="single-alias">
+									<div class="single-alias-display">
+										<p>Player: &nbsp;</p>
+										<div class="single-alias-display-inside"></div>
+									</div>
+									<hr>
+									
+									<div>
+										<label for="single-alias-text">Enter Alias</label>
+										<input type="text" id="single-alias-text" pattern="^[A-Za-z][A-Za-z0-9]*$">
+										<button type="submit" class="single-alias-submit"><i class="fa fa-caret-right"></i></button>
+									</div>
+								</form>
+								<form class="single-submit">
+									<div>
+										<label for="single-duration">Duration</label>
+										<input type="time" id="single-duration" required>
+									</div>
+									
+								</form>
+								
+								
 						</div>
 						
 						<div class="chat-menu">
 							<hr class="chat-divider"></hr>
-							<button type="button" class="nav-chat"><i class="fas fa-comment"></i>Live Chat &nbsp;<i class="fa fa-caret-right"></i></button>
+							<button type="button" class="nav nav-chat"><i class="fas fa-comment"></i>Live Chat &nbsp;<i class="fa fa-caret-right"></i></button>
 								
 						</div>
 
@@ -59,7 +89,7 @@
 						</div>
 						<div class="canvas-menu">
 							<hr class="chat-divider"></hr>
-							<button type="button" class="nav-canvas"><i class="fas fa-comment"></i>Game &nbsp;<i class="fa fa-caret-right"></i></button>
+							<button type="button" class="nav nav-canvas"><i class="fas fa-comment"></i>Game &nbsp;<i class="fa fa-caret-right"></i></button>
 						</div>
 
 						
