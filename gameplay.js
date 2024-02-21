@@ -105,13 +105,22 @@ export function keyBinding() {
 	canvas.addEventListener("keydown", canvasKeydown);
 	canvas.addEventListener("keyup", canvasKeyup);
 	
+	document.addEventListener("click", (e)=>{
+		if (!e.target.classList.contains("toggle-canvas"))
+			document.global.ui.toggleCanvas = 0;
+		if (!e.target.classList.contains("toggle-chat"))
+			document.global.ui.toggleChat = 0;
+	})
+
 	const toggleCanvas = document.querySelector(".toggle-canvas");
 	toggleCanvas.addEventListener("click", (e)=>{
 		document.global.ui.toggleCanvas? document.global.ui.toggleCanvas = 0:document.global.ui.toggleCanvas = 1;
+		e.stopPropagation();
 	})
 	const toggleChat = document.querySelector(".toggle-chat");
 	toggleChat.addEventListener("click", (e)=>{
 		document.global.ui.toggleChat? document.global.ui.toggleChat = 0:document.global.ui.toggleChat = 1;
+		e.stopPropagation();
 	})
 	const navChat = document.querySelector(".nav-chat");
 	navChat.addEventListener("click", (e)=>{

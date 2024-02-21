@@ -4,6 +4,10 @@ function windowResize(e) {
 	//for each individual client
 	document.global.directionalLight.positionX = canvas.clientWidth;
 	document.global.directionalLight.positionY = canvas.clientWidth;
+	//for canvas/chat responsive effect when screenwidth changes
+	if (window.innerWidth >= 769) 
+		document.global.ui.chat = 0;
+
 	//for local  or multiplayer mainClient
 	if (document.global.gameplay.local || !document.global.gameplay.local && document.global.gameplay.mainClient) {
 		document.global.sphere.velocityX = canvas.clientWidth / document.global.sphere.velocityDivision;

@@ -38,7 +38,6 @@ button:hover, button:focus {
 }
 
 .toggle-canvas, .toggle-chat {
-	position: relative;
 	padding: 5px 6px;
 	background-color: transparent;
 	border: 1px solid white;
@@ -194,7 +193,7 @@ hr {
 		display:grid;
 		grid-template-columns: auto auto;
 		grid-gap:0;
-		justify-content:start;
+		justify-content:center;
 	}
 	.chat-menu, .canvas-menu, .menu-chat {
 		display:none;
