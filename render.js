@@ -316,6 +316,14 @@ function processUI() {
 		document.querySelector(".menu-chat").classList.remove("display-none");
 	else
 		document.querySelector(".menu-chat").classList.add("display-none");
+	if (document.global.ui.toggleGame)
+		document.querySelector(".menu-game").classList.remove("display-none");
+	else
+		document.querySelector(".menu-game").classList.add("display-none");
+	if (document.global.gameplay.cheat)
+		document.querySelector(".toggle-cheat").classList.remove("display-none");
+	else
+		document.querySelector(".toggle-cheat").classList.add("display-none");
 	if (document.global.ui.chat) {
 		document.querySelector(".chat-container").classList.add("display-block");
 		document.querySelector(".canvas-container").classList.add("display-none");
@@ -365,10 +373,24 @@ function processUI() {
 			parent.removeChild(child);
 	})
 	
-	
-
-	document.global.gameplay.gameStart? 
-		document.querySelector(".banner").classList.add("display-none"):document.querySelector(".banner").classList.remove("display-none");
+	if (document.global.gameplay.gameStart) {
+		document.querySelector(".banner").classList.add("display-none");
+		document.querySelector(".scoreboard").classList.remove("display-none");
+		document.querySelector(".toggle-game").classList.remove("display-none");
+		if (document.global.gameplay.local && document.global.gameplay.single) {
+			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localInfo.player[0].alias;
+			document.querySelector(".scoreboard-one-score").textContent = document.global.gameplay.localInfo.player[0].score;
+			document.querySelector(".scoreboard-two-name").textContent = "A.I.";
+			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.computerScore;
+			
+		}
+	}
+	else {
+		document.querySelector(".banner").classList.remove("display-none");
+		document.querySelector(".scoreboard").classList.add("display-none");
+		document.querySelector(".toggle-game").classList.add("display-none");
+	}
+		
 	
 }
 

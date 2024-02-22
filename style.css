@@ -37,7 +37,6 @@ button:hover, button:focus {
 	color:white;
 	margin-left:0.5rem;
 	margin-top:2rem;
-	
 }
 
 .icon {
@@ -50,21 +49,25 @@ button:hover, button:focus {
 	text-decoration:underline;
 }
 
-.toggle-canvas, .toggle-chat {
+.toggle-canvas, .toggle-chat, .toggle-game, .toggle-cheat {
 	padding: 5px 6px;
 	background-color: transparent;
 	border: 1px solid white;
 	border-radius: 4px;
   }
 
-.toggle-canvas .icon-bar, .toggle-chat .icon-bar {
+.toggle-cheat {
+	background-color:red;
+}
+
+.toggle-canvas .icon-bar, .toggle-chat .icon-bar, .toggle-game .icon-bar, .toggle-cheat .icon-bar{
 	display: block;
 	width: 18px;
 	height: 2px;
 	border-radius: 1px;
 	background-color:white;
   }
-.toggle-canvas .icon-bar + .icon-bar, .toggle-chat .icon-bar + .icon-bar{
+.toggle-canvas .icon-bar + .icon-bar, .toggle-chat .icon-bar + .icon-bar, .toggle-game .icon-bar + .icon-bar, .toggle-cheat .icon-bar + .icon-bar{
 	margin-top: 4px;
   }
 
@@ -92,6 +95,19 @@ button:hover, button:focus {
 	border:1px solid rgb(177,177,177);
 }
 
+.menu-game {
+	font-size: 0.75rem;
+	margin-top:0.5rem;
+	position:absolute;
+	z-index: 3;
+	color:rgb(177,177,177);
+	background-color:rgb(49,49,49);
+	top:30px;
+	right:0;
+	border-radius:0.25rem;
+	padding:0.5rem;
+}
+
 hr {
 	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
@@ -99,26 +115,27 @@ hr {
 	border-top: 1px solid rgb(177,177,177);
 }
 
-.menu-canvas button, .menu-chat button{
+.menu-canvas button, .menu-chat button, .menu-game button{
 	border:0;
 	background-color:transparent;
 	align-items:baseline;
 	color:rgb(177,177,177);
 	padding:1px 1px;
+	white-space:nowrap;
 }
 
-.menu-canvas .nav, .menu-chat .nav{
+.menu-canvas .nav, .menu-chat .nav, .menu-game .nav{
 	width:100%;
 	font-size: 0.75rem;
 	margin:0.25rem 0;
 	display:flex;
 }
 
-.menu-canvas button:hover, .menu-canvas button:focus, .menu-chat button:hover, .menu-chat button:focus  {
+.menu-canvas button:hover, .menu-canvas button:focus, .menu-chat button:hover, .menu-chat button:focus, .menu-game button:hover, .menu-game button:focus {
 	color:white;
 }
 
-.menu-canvas .nav i:nth-child(2), .menu-chat .nav i:nth-child(2){
+.menu-canvas .nav i:nth-child(2), .menu-chat .nav i:nth-child(2), .menu-game .nav i:nth-child(2){
 	margin-left: auto;
 }
 
@@ -218,6 +235,40 @@ hr {
 	border:1px solid white!important;
 }
 
+.scoreboard {
+	box-sizing: border-box;
+	position:absolute;
+	width:100%;
+	top:0;
+	color:white;
+	font-size: 1rem;
+	padding:1rem 1.5rem;
+	z-index: 2;
+	display: grid;
+	grid-template-columns: auto auto;
+	justify-content:space-between;
+}
+
+.scoreboard-one p, .scoreboard-two p{
+	display:inline-block;
+	margin:0 1rem;
+}
+.next-one, .next-two {
+	margin:0 1rem;
+	color:rgb(177,177,177);
+	font-size: 0.75rem;
+}
+
+.toggle-game-container, .toggle-cheat-container {
+	display:flex;
+	justify-content:flex-end;
+	padding-top:0.5rem;
+	position:relative;
+}
+
+
+
+
 
 @media (min-width:577px) {
 	.banner {
@@ -227,16 +278,25 @@ hr {
 	.icon {
 		font-size: 3rem;
 	}
-	.toggle-canvas, .toggle-chat {
+	.toggle-canvas, .toggle-chat, .toggle-game, .toggle-cheat {
 		padding: 9px 10px;
 	}
-	.toggle-canvas .icon-bar, .toggle-chat .icon-bar{
+	.toggle-canvas .icon-bar, .toggle-chat .icon-bar, .toggle-game .icon-bar, .toggle-cheat .icon-bar{
 		width:22px;
 	}
-	
+	.menu-game {
+		top:40px;
+	}
 	hr {
 		margin-top: 1rem;
 		margin-bottom: 1rem;
+	}
+	.scoreboard {
+		font-size: 1.5rem;
+		padding:1.5rem;
+	}
+	.next-one, .next-two {
+		font-size: 1.25rem;
 	}
 }
 
@@ -258,12 +318,12 @@ hr {
 		display:block;
 	}
 
-	.menu-canvas, .menu-chat {
+	.menu-canvas, .menu-chat, .menu-game {
 		padding:1rem;
 		font-size: 1rem;
 	}
 
-	.menu-canvas .nav, .menu-chat .nav{
+	.menu-canvas .nav, .menu-chat .nav, .menu-game .nav{
 		margin:0.5rem 0;
 		font-size: 1rem;
 	}
@@ -296,6 +356,12 @@ hr {
 	}
 	.single-submit div {
 		margin:0.25rem 0;
+	}
+	.scoreboard {
+		font-size: 1.75rem;
+	}
+	.next-one, .next-two {
+		font-size: 1.25rem;
 	}
 	
 }

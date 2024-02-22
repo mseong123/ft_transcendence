@@ -98,6 +98,21 @@ function canvasMouseMove(e) {
 	}
 }
 
+function gameStart() {
+	document.global.gameplay.gameStart = 1;
+	document.global.gameplay.initRotateY = 0;
+	document.global.arena3D.rotation.y = 0;
+	document.global.powerUp.mesh.forEach(mesh=>{
+		mesh.rotation.y = 0;
+		mesh.rotation.x = 0;
+	})
+	document.global.sphere.sphereMesh.forEach(sphereMesh=>{
+		sphereMesh.rotation.y = 0;
+		sphereMesh.rotation.x = 0;
+	})
+
+}
+
 //addeventlistener
 export function keyBinding() {
 	const canvas = document.querySelector(".canvas");
@@ -117,6 +132,11 @@ export function keyBinding() {
 			if (Array.from(menuChatChild).every(child=>e.target !== child) && e.target !== document.querySelector(".menu-chat"))
 				document.global.ui.toggleChat = 0;
 		}
+		if (!e.target.classList.contains("toggle-game")) {
+			const menuGameChild = document.querySelector(".menu-game").querySelectorAll("*");
+			if (Array.from(menuGameChild).every(child=>e.target !== child) && e.target !== document.querySelector(".menu-game"))
+				document.global.ui.toggleGame = 0;
+		}
 	})
 
 	const toggleCanvas = document.querySelector(".toggle-canvas");
@@ -129,10 +149,20 @@ export function keyBinding() {
 		document.global.ui.toggleChat? document.global.ui.toggleChat = 0:document.global.ui.toggleChat = 1;
 		e.stopPropagation();
 	})
-	const navChat = document.querySelector(".nav-chat");
-	navChat.addEventListener("click", (e)=>{
-		document.global.ui.chat? document.global.ui.chat = 0:document.global.ui.chat = 1;
+	const toggleGame = document.querySelector(".toggle-game");
+	toggleGame.addEventListener("click", (e)=>{
+		document.global.ui.toggleGame? document.global.ui.toggleGame = 0:document.global.ui.toggleGame = 1;
+		e.stopPropagation();
 	})
+	const toggleCheat = document.querySelector(".toggle-cheat");
+	toggleCheat.addEventListener("click", (e)=>{
+		if (document.global.powerUp.meshProperty.some(meshProperty=>meshProperty.visible))
+			powerUpCollisionEffect(document.global.sphere.sphereMeshProperty[0])
+	})
+	const navChat = document.querySelectorAll(".nav-chat");
+	navChat.forEach(navchat=>navchat.addEventListener("click", (e)=>{
+		document.global.ui.chat? document.global.ui.chat = 0:document.global.ui.chat = 1;
+	}))
 	const navCanvas = document.querySelector(".nav-canvas");
 	navCanvas.addEventListener("click", (e)=>{
 		document.global.ui.chat? document.global.ui.chat = 0:document.global.ui.chat = 1;
@@ -183,41 +213,26 @@ export function keyBinding() {
 	singleLudicrious.addEventListener("change", (e)=>{
 		document.global.gameplay.localInfo.ludicrious ? document.global.gameplay.localInfo.ludicrious = 0:document.global.gameplay.localInfo.ludicrious = 1;
 	})
+	const singleStart = document.querySelector(".single-start");
+	singleStart.addEventListener("click", (e)=>{
+		document.global.gameplay.local = 1;
+		document.global.gameplay.single = 1;
+		gameStart()
+		
+	})
 	const menuHome = document.querySelectorAll(".menu-home");
 		menuHome.forEach(menuHome=>menuHome.addEventListener("click", (e)=>{
 			document.global.gameplay.localInfo = {
 				player:[],
 				ludicrious:1,
 				powerUp:1,
-				duration:"03:00"
+				duration:"02:00"
 			};
 			document.global.ui.mainMenu = 1;
 			document.global.ui.local = 0;
 			document.global.ui.single = 0;
 		})
 	)
-
-	
-	
-
-	//temp bind
-	document.getElementById("powerup").addEventListener("click", (e)=>{
-		if (document.global.powerUp.meshProperty.some(meshProperty=>meshProperty.visible))
-			powerUpCollisionEffect(document.global.sphere.sphereMeshProperty[0])
-	});
-
-
-	document.getElementById("gamestart").addEventListener("click", (e)=>{
-		if (document.global.gameplay.gameStart === 1) {
-			document.global.gameplay.initRotateY = 1;
-			document.global.gameplay.gameStart = 0;
-		}
-		else {
-			document.global.gameplay.gameStart = 1;
-			document.global.gameplay.initRotateY = 0;
-			document.global.arena3D.rotation.y = 0;
-		}
-	});
 }
 
 function isBallAlignedWithPaddleX(paddlesProperty, sphereMeshProperty) {
@@ -519,12 +534,21 @@ export function processGame() {
 						}
 						else {
 							document.global.gameplay.roundStart = 0;
-							sphereMeshProperty.positionX = 0;
-							sphereMeshProperty.positionY = 0;
-							sphereMeshProperty.positionZ = 0;
-							sphereMeshProperty.velocityX = document.global.sphere.velocityX;
-							sphereMeshProperty.velocityY = document.global.sphere.velocityY;
-							sphereMeshProperty.velocityZ = document.global.sphere.velocityZ;
+							if (document.global.gameplay.single) {
+								if (sphereMeshProperty.positionZ > 0)
+									document.global.gameplay.computerScore += 1;
+								else {
+									document.global.gameplay.localInfo.player[0].score += 1;
+								}
+							}
+							document.global.sphere.sphereMeshProperty.forEach(sphereMeshProperty=>{
+								sphereMeshProperty.positionX = 0;
+								sphereMeshProperty.positionY = 0;
+								sphereMeshProperty.positionZ = 0;
+								sphereMeshProperty.velocityX = document.global.sphere.velocityX;
+								sphereMeshProperty.velocityY = document.global.sphere.velocityY;
+								sphereMeshProperty.velocityZ = document.global.sphere.velocityZ;
+							})
 							resetPowerUp();
 						}
 					}

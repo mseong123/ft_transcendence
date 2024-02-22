@@ -10,9 +10,11 @@ function windowResize(e) {
 
 	//for local  or multiplayer mainClient
 	if (document.global.gameplay.local || !document.global.gameplay.local && document.global.gameplay.mainClient) {
-		document.global.sphere.velocityX = canvas.clientWidth / document.global.sphere.velocityDivision;
-		document.global.sphere.velocityY = canvas.clientWidth / document.global.sphere.velocityDivision;
-		document.global.sphere.velocityZ = canvas.clientWidth / document.global.sphere.velocityDivision;
+		document.global.sphere.sphereMesh.forEach(sphereMesh=>{
+			sphereMesh.velocityX = canvas.clientWidth / document.global.sphere.velocityDivision;
+			sphereMesh.velocityY = canvas.clientWidth / document.global.sphere.velocityDivision;
+			sphereMesh.velocityZ = canvas.clientWidth / document.global.sphere.velocityDivision;
+		})
 	}
 }
 
@@ -142,28 +144,31 @@ function initGlobal() {
 	document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); 
 	document.global.gameplay.roundStart = 0;
 	document.global.gameplay.gameStart = 0;
-	document.global.gameplay.immortality = 1; //for gameplay debugging purpose
+	document.global.gameplay.single = 0;
+	document.global.gameplay.playerIndex = []; 
+	document.global.gameplay.immortality = 0; //for gameplay debugging purpose
+	document.global.gameplay.cheat = 1; // for show purpose
 	document.global.gameplay.initRotateY = 1;
 	document.global.gameplay.initRotateX = 0;
 	document.global.gameplay.rotationY = 0.005;
 	document.global.gameplay.rotationX = 0.005;
 	document.global.gameplay.rotate90 = 0;
 	document.global.gameplay.roundStartFrame = 0;
-	document.global.gameplay.roundStartFrameLimit = 25;
+	document.global.gameplay.roundStartFrameLimit = 30;
 	document.global.gameplay.shadowFrame = 0;
 	document.global.gameplay.shadowFrameLimit = 5;
-	document.global.gameplay.defaultDuration = "02:00";
 
 	//local or multiplayer game
 	document.global.gameplay.local = 1;
 	document.global.gameplay.localInfo = { 
-		player:[],
+		player:[{alias:"Player", score:0}],
 		ludicrious:1,
 		powerUp:1,
-		duration:"03:00"
+		duration:"02:00"
 	};
 	
 	document.global.gameplay.computer = 0;
+	document.global.gameplay.computerScore = 0;
 	document.global.gameplay.mainClient = 1;
 	
 	//other game info
@@ -187,6 +192,7 @@ function initGlobal() {
 	document.global.ui = {}
 	document.global.ui.toggleCanvas = 0;
 	document.global.ui.toggleChat = 0;
+	document.global.ui.toggleGame = 0;
 	document.global.ui.chat = 0;
 	document.global.ui.mainMenu = 1;
 	document.global.ui.local = 0;
