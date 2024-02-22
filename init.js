@@ -156,8 +156,13 @@ function initGlobal() {
 
 	//local or multiplayer game
 	document.global.gameplay.local = 1;
-	document.global.gameplay.localInfo = {};
-	document.global.gameplay.localInfo.player = [];
+	document.global.gameplay.localInfo = { 
+		player:[],
+		ludicrious:1,
+		powerUp:1,
+		duration:"03:00"
+	};
+	
 	document.global.gameplay.computer = 0;
 	document.global.gameplay.mainClient = 1;
 	

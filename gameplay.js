@@ -151,10 +151,6 @@ export function keyBinding() {
 	single.addEventListener("click", (e)=>{
 		document.global.ui.local = 0;
 		document.global.ui.single = 1;
-		document.global.gameplay.localInfo.single = 1;
-		document.global.gameplay.localInfo.duration = document.global.gameplay.defaultDuration;
-		document.global.gameplay.localInfo.ludicrious = 0;
-		document.global.gameplay.localInfo.powerUp = 0;
 		
 	})
 	const singleBack = document.querySelector(".single-back");
@@ -169,21 +165,37 @@ export function keyBinding() {
 			alias:document.getElementById("single-alias-text").value,
 			score:0,
 		}
+		document.getElementById("single-alias-text").value = "";
 		if (document.global.gameplay.localInfo.player.every(player=>{
 			return player.alias !== newPlayer.alias;
-		}))
+		}) && document.global.gameplay.localInfo.player.length < 1)
 			document.global.gameplay.localInfo.player.push(newPlayer);
 	})
 	const singleDuration = document.getElementById("single-duration");
 	singleDuration.addEventListener("change", (e)=>{
 		document.global.gameplay.localInfo.duration = e.target.value;
 	})
-	const menuHome = document.querySelector(".menu-home");
-	menuHome.addEventListener("click", (e)=>{
-		document.global.ui.mainMenu = 1;
-		document.global.ui.local = 0;
-		document.global.ui.single = 0;
+	const singlePowerup = document.getElementById("single-powerup");
+	singlePowerup.addEventListener("change", (e)=>{
+		document.global.gameplay.localInfo.powerUp ? document.global.gameplay.localInfo.powerUp = 0:document.global.gameplay.localInfo.powerUp = 1;
 	})
+	const singleLudicrious = document.getElementById("single-ludicrious");
+	singleLudicrious.addEventListener("change", (e)=>{
+		document.global.gameplay.localInfo.ludicrious ? document.global.gameplay.localInfo.ludicrious = 0:document.global.gameplay.localInfo.ludicrious = 1;
+	})
+	const menuHome = document.querySelectorAll(".menu-home");
+		menuHome.forEach(menuHome=>menuHome.addEventListener("click", (e)=>{
+			document.global.gameplay.localInfo = {
+				player:[],
+				ludicrious:1,
+				powerUp:1,
+				duration:"03:00"
+			};
+			document.global.ui.mainMenu = 1;
+			document.global.ui.local = 0;
+			document.global.ui.single = 0;
+		})
+	)
 
 	
 	

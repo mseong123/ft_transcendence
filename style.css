@@ -10,6 +10,10 @@ p {
 	margin:0;
 }
 
+input:focus {
+	outline:none;
+}
+
 
 button:hover, button:focus {
 	outline:none;
@@ -153,7 +157,7 @@ hr {
 	position:relative;
 }
 
-.local-menu {
+.main-menu, .local-menu, .single-menu {
 	font-weight:normal;
 }
 
@@ -171,10 +175,47 @@ hr {
 	background-color:rgb(28,28,28);
 	border-radius:0.25rem;
 	padding:0.25rem;
+	margin-bottom:0.1rem;
 }
 .single-alias-display {
 	display:grid;
 	grid-template-columns: auto auto;
+}
+
+.single-alias-display-inside {
+	display:grid;
+	grid-template-columns: auto auto auto;
+}
+.single-alias-display-warning {
+	color:red;
+	font-size: 0.5rem;
+}
+
+#single-alias-text {
+	margin-left:0.25rem;
+}
+
+.single-submit {
+	display:grid;
+	grid-template-columns: auto auto;
+	margin:0;
+}
+
+.single-submit div {
+	margin:0.1rem 0;
+}
+
+.single-ludicrious {
+	color:rgb(2,238,139);
+}
+.single-start {
+	border-radius:0.25rem;
+	border:1px solid rgb(2,238,139)!important;
+	color:rgb(2,238,139)!important;
+}
+.single-start:focus, .single-start:hover {
+	color:white!important;
+	border:1px solid white!important;
 }
 
 
@@ -247,6 +288,14 @@ hr {
 	}
 	.single-alias {
 		padding:0.5rem;
+		margin-bottom:0.25rem;
+	}
+	.single-alias-display-warning {
+		color:red;
+		font-size: 0.75rem;
+	}
+	.single-submit div {
+		margin:0.25rem 0;
 	}
 	
 }

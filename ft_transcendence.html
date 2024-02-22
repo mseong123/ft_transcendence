@@ -38,12 +38,13 @@
 						<div class="single-menu display-none">
 								<button type="button" class="menu-back single-back"><i class="fa fa-square-caret-left"></i></button>
 								<button type="button" class="menu-home"><i class="fa fa-home"></i></button>
-								<h4>SINGLE PLAYER (V.S. A.I.) CUSTOMIZATION</h4>
+								<h4>SINGLE PLAYER (V.S. A.I.)</h4>
 								<form class="single-alias">
 									<div class="single-alias-display">
-										<p>Player: &nbsp;</p>
+										<p>Player(s): &nbsp;</p>
 										<div class="single-alias-display-inside"></div>
 									</div>
+									<p class="single-alias-display-warning">Enter only 1 alias</p>
 									<hr>
 									
 									<div>
@@ -55,9 +56,17 @@
 								<form class="single-submit">
 									<div>
 										<label for="single-duration">Duration</label>
-										<input type="time" id="single-duration" required>
+										<input type="time" id="single-duration">
 									</div>
-									
+									<div>
+										<label for="single-powerup">Power Up</label>
+										<input type="checkbox" id="single-powerup" checked>
+									</div>
+									<div>
+										<label for="single-ludicrious" class="single-ludicrious">Ludicious Mode</label>
+										<input type="checkbox" id="single-ludicrious" checked>
+									</div>
+									<button type="submit" class="single-start"><i class="fa fa-play"></i>Play</button>
 								</form>
 								
 								
