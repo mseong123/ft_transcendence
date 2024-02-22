@@ -165,11 +165,14 @@ export function keyBinding() {
 	const singleAlias = document.querySelector(".single-alias");
 	singleAlias.addEventListener("submit", (e)=>{
 		e.preventDefault();
-		const player = {
+		const newPlayer = {
 			alias:document.getElementById("single-alias-text").value,
 			score:0,
 		}
-		document.global.gameplay.localInfo.player.push(player);
+		if (document.global.gameplay.localInfo.player.every(player=>{
+			return player.alias !== newPlayer.alias;
+		}))
+			document.global.gameplay.localInfo.player.push(newPlayer);
 	})
 	const singleDuration = document.getElementById("single-duration");
 	singleDuration.addEventListener("change", (e)=>{
