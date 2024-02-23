@@ -320,7 +320,7 @@ function processUI() {
 		document.querySelector(".menu-game").classList.remove("display-none");
 	else
 		document.querySelector(".menu-game").classList.add("display-none");
-	if (document.global.gameplay.cheat)
+	if (document.global.gameplay.cheat && document.global.gameplay.gameStart)
 		document.querySelector(".toggle-cheat").classList.remove("display-none");
 	else
 		document.querySelector(".toggle-cheat").classList.add("display-none");
@@ -377,6 +377,8 @@ function processUI() {
 		document.querySelector(".banner").classList.add("display-none");
 		document.querySelector(".scoreboard").classList.remove("display-none");
 		document.querySelector(".toggle-game").classList.remove("display-none");
+		document.querySelector(".toggle-game").classList.remove("display-none");
+		document.querySelector(".toggle-cheat").classList.remove("display-none");
 		if (document.global.gameplay.local && document.global.gameplay.single) {
 			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localInfo.player[0].alias;
 			document.querySelector(".scoreboard-one-score").textContent = document.global.gameplay.localInfo.player[0].score;
@@ -389,7 +391,13 @@ function processUI() {
 		document.querySelector(".banner").classList.remove("display-none");
 		document.querySelector(".scoreboard").classList.add("display-none");
 		document.querySelector(".toggle-game").classList.add("display-none");
+		document.querySelector(".toggle-cheat").classList.add("display-none");
 	}
+	if (document.global.gameplay.pause) 
+		document.querySelector(".pause").classList.remove("display-none");
+	else 
+		document.querySelector(".pause").classList.add("display-none");
+	
 		
 	
 }

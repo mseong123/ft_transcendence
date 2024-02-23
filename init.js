@@ -144,6 +144,7 @@ function initGlobal() {
 	document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); 
 	document.global.gameplay.roundStart = 0;
 	document.global.gameplay.gameStart = 0;
+	document.global.gameplay.pause = 0;
 	document.global.gameplay.single = 0;
 	document.global.gameplay.playerIndex = []; 
 	document.global.gameplay.immortality = 0; //for gameplay debugging purpose
