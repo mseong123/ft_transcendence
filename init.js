@@ -144,11 +144,25 @@ function initGlobal() {
 	document.global.gameplay.backgroundIndex = Math.floor(Math.random() * 4); 
 	document.global.gameplay.roundStart = 0;
 	document.global.gameplay.gameStart = 0;
+	document.global.gameplay.gameEnd = 0;
 	document.global.gameplay.pause = 0;
 	document.global.gameplay.single = 0;
 	document.global.gameplay.playerIndex = []; 
 	document.global.gameplay.immortality = 0; //for gameplay debugging purpose
 	document.global.gameplay.cheat = 1; // for show purpose
+	document.global.gameplay.ludicrious = 0;
+	document.global.gameplay.ludicriousYminuteUpper = 1;
+	document.global.gameplay.ludicriousYminuteLower = 0;
+	document.global.gameplay.ludicriousYsecondUpper = 60;
+	document.global.gameplay.ludicriousYsecondLower = 30;
+	document.global.gameplay.ludicriousXminuteUpper = 1;
+	document.global.gameplay.ludicriousXminuteLower = 0;
+	document.global.gameplay.ludicriousXsecondUpper = 30;
+	document.global.gameplay.ludicriousXsecondLower = 10;
+	document.global.gameplay.ludicriousYXminuteUpper = 1;
+	document.global.gameplay.ludicriousYXminuteLower = 0;
+	document.global.gameplay.ludicriousYXsecondUpper = 10;
+	document.global.gameplay.ludicriousYXsecondLower = 0;
 	document.global.gameplay.initRotateY = 1;
 	document.global.gameplay.initRotateX = 0;
 	document.global.gameplay.rotationY = 0.005;
@@ -158,7 +172,7 @@ function initGlobal() {
 	document.global.gameplay.roundStartFrameLimit = 30;
 	document.global.gameplay.shadowFrame = 0;
 	document.global.gameplay.shadowFrameLimit = 5;
-	document.global.gameplay.defaultDuration = "02:00";
+	document.global.gameplay.defaultDuration = "00:01";
 
 	//local or multiplayer game
 	document.global.gameplay.local = 1;

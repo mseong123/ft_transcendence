@@ -125,7 +125,7 @@ export function keyBinding() {
 	canvas.addEventListener("keydown", canvasKeydown);
 	canvas.addEventListener("keyup", canvasKeyup);
 	document.addEventListener("keydown", (e)=>{
-		if (e.keyCode === 27 && document.global.gameplay.gameStart) 
+		if (e.keyCode === 27 && document.global.gameplay.gameStart && !document.global.gameplay.gameEnd)
 			document.global.gameplay.pause? document.global.gameplay.pause = 0 :document.global.gameplay.pause = 1;
 	})
 	
@@ -235,8 +235,10 @@ export function keyBinding() {
 
 	const navPause = document.querySelector(".nav-pause");
 	navPause.addEventListener("click", (e)=>{
-		document.global.gameplay.pause? document.global.gameplay.pause = 0:document.global.gameplay.pause = 1;
-		document.global.ui.toggleGame = 0;
+		if (!document.global.gameplay.gameEnd) {
+			document.global.gameplay.pause? document.global.gameplay.pause = 0:document.global.gameplay.pause = 1;
+			document.global.ui.toggleGame = 0;
+		}
 	})
 	const menuHome = document.querySelectorAll(".menu-home");
 		menuHome.forEach(menuHome=>menuHome.addEventListener("click", (e)=>{
@@ -536,7 +538,7 @@ function updateSpherePosition(sphereMeshProperty) {
 
 export function processGame() {
 	if (document.global.gameplay.local || !document.global.gameplay.local && document.global.gameplay.mainClient) {
-		if (document.global.gameplay.roundStart && document.global.gameplay.gameStart && !document.global.gameplay.pause) {
+		if (document.global.gameplay.roundStart && document.global.gameplay.gameStart && !document.global.gameplay.pause && !document.global.gameplay.gameEnd) {
 			document.global.sphere.sphereMeshProperty.forEach(sphereMeshProperty=>{
 				if (sphereMeshProperty.visible) {
 					updateSpherePosition(sphereMeshProperty)
@@ -611,7 +613,7 @@ export function movePaddle() {
 		paddleWidth = largePaddleWidth;
 		paddleHeight = largePaddleHeight;
 	}
-	if (!document.global.gameplay.pause) {
+	if (!document.global.gameplay.pause && !document.global.gameplay.gameEnd) {
 		if ((document.global.arena3D.rotation.x - Math.PI / 2) % (Math.PI * 2) > 0 && (document.global.arena3D.rotation.x - Math.PI/2) % (Math.PI * 2) < Math.PI) {
 			if (paddleOne.positionY < (arenaHeight / 2) - (paddleHeight/2))
 				paddleOne.positionY += document.global.keyboard.s * document.global.keyboard.speed;
@@ -645,7 +647,7 @@ export function movePaddle() {
 			paddleWidth = largePaddleWidth;
 			paddleHeight = largePaddleHeight;
 		}
-		if (!document.global.gameplay.pause) {
+		if (!document.global.gameplay.pause && !document.global.gameplay.gameEnd) {
 			if ((document.global.arena3D.rotation.x - Math.PI / 2) % (Math.PI * 2) > 0 && (document.global.arena3D.rotation.x - Math.PI/2) % (Math.PI * 2) < Math.PI) {
 				if (paddleTwo.positionY < (arenaHeight / 2) - (paddleHeight/2))
 					paddleTwo.positionY += document.global.keyboard.down * document.global.keyboard.speed;

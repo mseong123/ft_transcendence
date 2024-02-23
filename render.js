@@ -22,6 +22,7 @@ function resizeRendererToDisplaySize( renderer ) {
 
 function createArenaMesh(arena3D) {
 	const arenaMaterial = new THREE.LineBasicMaterial( { color: document.global.arena.color } );
+	
 	const arenaMesh = [];
 	for (let i = 0; i < document.global.arena.thickness; i++) {
 		const arenaGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry( (document.global.clientWidth + i) / document.global.arena.widthDivision,
@@ -338,6 +339,8 @@ function processUI() {
 		document.querySelector(".local-menu").classList.add("display-block"):document.querySelector(".local-menu").classList.remove("display-block");
 	document.global.ui.single?
 		document.querySelector(".single-menu").classList.add("display-block"):document.querySelector(".single-menu").classList.remove("display-block");
+	document.global.gameplay.ludicrious?
+		document.querySelector(".timer").classList.add("timer-ludicrious"):document.querySelector(".timer").classList.remove("timer-ludicrious");
 	
 	for (let i = 0; i < document.global.gameplay.localInfo.player.length; i++) {
 		const parent = document.querySelector(".single-alias-display-inside");
@@ -398,13 +401,17 @@ function processUI() {
 		document.querySelector(".pause").classList.remove("display-none");
 	else 
 		document.querySelector(".pause").classList.add("display-none");
+	// if (document.global.gameplay.gameEnd) 
+	// 	document.querySelector(".game-summary-container").classList.remove("display-none");
+	// else 
+	// 	document.querySelector(".game-summary-container").classList.add("display-none");
 	
 		
 	
 }
 
 function arenaRotateY() {
-	if (document.global.gameplay.initRotateY) {
+	if (document.global.gameplay.initRotateY && !document.global.gameplay.pause && !document.global.gameplay.gameEnd) {
 		document.global.arena3D.position.z += document.global.arena.depth;
 		document.global.arena3D.rotation.y += document.global.gameplay.rotationY;
 		document.global.powerUp.mesh.forEach(mesh=>{
@@ -419,7 +426,7 @@ function arenaRotateY() {
 }
 
 function arenaRotateX() {
-	if (document.global.gameplay.initRotateX) {
+	if (document.global.gameplay.initRotateX && !document.global.gameplay.pause && !document.global.gameplay.gameEnd) {
 		document.global.arena3D.position.z += document.global.arena.depth;
 		document.global.arena3D.rotation.x += document.global.gameplay.rotationX;
 		document.global.powerUp.mesh.forEach(mesh=>{
@@ -457,7 +464,7 @@ function shakeEffect() {
 }
 
 function setTimer() {
-	if (document.global.gameplay.gameStart) {
+	if (document.global.gameplay.gameStart && !document.global.gameplay.pause && !document.global.gameplay.gameEnd) {
 		//roundStart shadow issue actions for ALL CLIENTS
 		if (document.global.gameplay.roundStart === 0) {
 			document.global.pointLight.castShadow = false;
@@ -498,10 +505,38 @@ function reduceTime(localInfo) {
 	const newDate = date.getTime() - 1000;
 	date.setTime(newDate);
 	localInfo.durationCount = date.getMinutes().toString().padStart(2, '0') + ':' + date.getSeconds().toString().padStart(2, '0');
+	//set ludicrious mode
+	if (localInfo.ludicrious) {
+		if (date.getMinutes() < document.global.gameplay.ludicriousYminuteUpper && date.getMinutes() >= document.global.gameplay.ludicriousYminuteLower 
+		&& date.getSeconds() < document.global.gameplay.ludicriousYsecondUpper  && date.getSeconds() >= document.global.gameplay.ludicriousYsecondLower) {
+			document.global.gameplay.initRotateY = 1;
+			document.global.gameplay.initRotateX = 0;
+			document.global.gameplay.ludicrious = 1;
+		}
+		if (date.getMinutes() < document.global.gameplay.ludicriousXminuteUpper && date.getMinutes() >= document.global.gameplay.ludicriousXminuteLower 
+			&& date.getSeconds() < document.global.gameplay.ludicriousXsecondUpper  && date.getSeconds() >= document.global.gameplay.ludicriousXsecondLower){
+				document.global.gameplay.initRotateY = 0;
+				document.global.gameplay.initRotateX = 1;
+				document.global.gameplay.ludicrious = 1;
+		}
+		if (date.getMinutes() < document.global.gameplay.ludicriousYXminuteUpper && date.getMinutes() >= document.global.gameplay.ludicriousYXminuteLower 
+			&& date.getSeconds() < document.global.gameplay.ludicriousYXsecondUpper  && date.getSeconds() >= document.global.gameplay.ludicriousYXsecondLower){
+				document.global.gameplay.initRotateY = 1;
+				document.global.gameplay.initRotateX = 1;
+				document.global.gameplay.ludicrious = 1;
+		}
+	}
+	if (minute === '00' && second === '01') {
+		document.global.gameplay.gameEnd = 1; 
+	}
+	
+	
+	
+			
 }
 
 function processCountDown(frameTimer) {
-	if (document.global.gameplay.gameStart && !document.global.gameplay.pause) {
+	if (document.global.gameplay.gameStart && !document.global.gameplay.pause && !document.global.gameplay.gameEnd) {
 		if (document.global.gameplay.local && document.global.gameplay.single) {
 			if (frameTimer.now - frameTimer.prev > 0) {
 				reduceTime(document.global.gameplay.localInfo)
@@ -510,9 +545,9 @@ function processCountDown(frameTimer) {
 			
 		}
 
-	} 
-
+	}
 }
+
 
 export function main() {
 	const frameTimer = {
@@ -563,6 +598,7 @@ export function main() {
 		}
 		processCountDown(frameTimer);
 		processCamera(camera);
+		
 		processSphere();
 		processPaddle();
 		processPowerUp();

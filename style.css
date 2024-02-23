@@ -323,6 +323,36 @@ hr {
 	z-index: 2;
 }
 
+.timer {
+	border-radius:0.25rem;
+	border:1px solid white;
+	padding:0.25rem 0.5rem; 
+}
+
+.timer-ludicrious {
+	color:rgb(2,238,139);
+	border-color:rgb(2,238,139);
+}
+
+.game-summary-container {
+	z-index:4;
+	position:absolute;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+	background-color:rgb(32,32,32,0.7);
+	display:grid;
+	justify-content: center;
+	align-content: center;
+	color:white;
+}
+
+.game-summary {
+	min-height:100px;
+	min-width:100px;
+}
+
 @media (min-width:577px) {
 	.banner {
 		margin-top:3rem;
