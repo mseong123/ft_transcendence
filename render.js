@@ -384,6 +384,7 @@ function processUI() {
 			document.querySelector(".scoreboard-one-score").textContent = document.global.gameplay.localInfo.player[0].score;
 			document.querySelector(".scoreboard-two-name").textContent = "A.I.";
 			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.computerScore;
+			document.querySelector(".timer").textContent = document.global.gameplay.localInfo.durationCount;
 			
 		}
 	}
@@ -489,11 +490,36 @@ function setTimer() {
 			}
 		}
 	}
-	
-	
+}
+
+function reduceTime(localInfo) {
+	const [minute, second] = localInfo.durationCount.split(':')
+	const date = new Date(1970, 0, 1, 0, minute, second);
+	const newDate = date.getTime() - 1000;
+	date.setTime(newDate);
+	localInfo.durationCount = date.getMinutes().toString().padStart(2, '0') + ':' + date.getSeconds().toString().padStart(2, '0');
+}
+
+function processCountDown(frameTimer) {
+	if (document.global.gameplay.gameStart && !document.global.gameplay.pause) {
+		if (document.global.gameplay.local && document.global.gameplay.single) {
+			if (frameTimer.now - frameTimer.prev > 0) {
+				reduceTime(document.global.gameplay.localInfo)
+				frameTimer.prev = frameTimer.now;
+			}
+			
+		}
+
+	} 
+
 }
 
 export function main() {
+	const frameTimer = {
+		now:0,
+		prev:0,
+	};
+
 	init();
 	//render background
 	document.querySelector(".canvas-background-1").classList.add(document.global.gameplay.backgroundClass[document.global.gameplay.backgroundIndex]);
@@ -523,11 +549,19 @@ export function main() {
 	scene.add(arena3D);
 
 	function render( time ) {
+		if (document.global.gameplay.gameStart)
+			frameTimer.now = Math.floor(time * 0.001);
+		else {
+			frameTimer.now = 0;
+			frameTimer.prev = 0;
+		}
+		
 		if ( resizeRendererToDisplaySize( renderer ) ) {
 			const canvas = renderer.domElement;
 			camera.aspect = canvas.clientWidth / canvas.clientHeight;
 			camera.updateProjectionMatrix();
 		}
+		processCountDown(frameTimer);
 		processCamera(camera);
 		processSphere();
 		processPaddle();

@@ -227,6 +227,8 @@ export function keyBinding() {
 		if (document.global.gameplay.localInfo.player.length === 1) {
 			document.global.gameplay.local = 1;
 			document.global.gameplay.single = 1;
+			document.global.gameplay.localInfo.durationCount = document.global.gameplay.localInfo.duration;
+			document.global.powerUp.enable = document.global.gameplay.localInfo.powerUp;
 			gameStart()
 		}
 	})
@@ -242,7 +244,8 @@ export function keyBinding() {
 				player:[],
 				ludicrious:1,
 				powerUp:1,
-				duration:"02:00"
+				duration:document.global.gameplay.defaultDuration,
+				durationCount:document.global.gameplay.defaultDuration
 			};
 			document.global.ui.mainMenu = 1;
 			document.global.ui.local = 0;
@@ -634,7 +637,7 @@ export function movePaddle() {
 				paddleOne.positionX -= document.global.keyboard.a * document.global.keyboard.speed;
 		}
 	}
-	if (document.global.gameplay.local && !document.global.gameplay.computer) {
+	if (document.global.gameplay.local && !document.global.gameplay.single) {
 		let paddleWidth = document.global.paddle.defaultWidth;
 		let paddleHeight = document.global.paddle.defaultHeight;
 			//modification for large paddle powerup

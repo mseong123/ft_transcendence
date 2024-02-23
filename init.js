@@ -158,6 +158,7 @@ function initGlobal() {
 	document.global.gameplay.roundStartFrameLimit = 30;
 	document.global.gameplay.shadowFrame = 0;
 	document.global.gameplay.shadowFrameLimit = 5;
+	document.global.gameplay.defaultDuration = "02:00";
 
 	//local or multiplayer game
 	document.global.gameplay.local = 1;
@@ -165,10 +166,9 @@ function initGlobal() {
 		player:[{alias:"Player", score:0}],
 		ludicrious:1,
 		powerUp:1,
-		duration:"02:00"
+		duration:document.global.gameplay.defaultDuration,
+		durationCount:document.global.gameplay.defaultDuration,
 	};
-	
-	document.global.gameplay.computer = 0;
 	document.global.gameplay.computerScore = 0;
 	document.global.gameplay.mainClient = 1;
 	

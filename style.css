@@ -269,13 +269,17 @@ hr {
 	padding:1rem 1.5rem;
 	z-index: 0;
 	display: grid;
-	grid-template-columns: auto auto;
+	grid-template-columns: auto auto auto;
 	justify-content:space-between;
 }
 
 .scoreboard-one p, .scoreboard-two p{
 	display:inline-block;
 	margin:0 1rem;
+}
+
+.scoreboard-one .scoreboard-one-score, .scoreboard-two .scoreboard-two-score {
+	width:10px;
 }
 
 .pause {
@@ -343,6 +347,9 @@ hr {
 	.scoreboard {
 		font-size: 1.5rem;
 		padding:1.5rem;
+	}
+	.scoreboard-one .scoreboard-one-score, .scoreboard-two .scoreboard-two-score {
+		width:15px;
 	}
 	.next-one, .next-two {
 		font-size: 1.25rem;
@@ -419,6 +426,9 @@ hr {
 	}
 	.scoreboard {
 		font-size: 1.75rem;
+	}
+	.scoreboard-one .scoreboard-one-score, .scoreboard-two .scoreboard-two-score {
+		width:17.5px;
 	}
 	.next-one, .next-two {
 		font-size: 1.25rem;
