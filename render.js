@@ -231,7 +231,7 @@ function createShadowPlanes(arena3D) {
 }
 
 function processCamera(camera) {
-	if (!document.global.gameplay.gameStart) {
+	if (!document.global.gameplay.gameStart || document.global.gameplay.gameEnd) {
 		camera.position.y = document.global.camera.initPositionY;
 		camera.rotation.x = document.global.camera.initRotationX;
 	}
@@ -321,10 +321,6 @@ function processUI() {
 		document.querySelector(".menu-game").classList.remove("display-none");
 	else
 		document.querySelector(".menu-game").classList.add("display-none");
-	if (document.global.gameplay.cheat && document.global.gameplay.gameStart)
-		document.querySelector(".toggle-cheat").classList.remove("display-none");
-	else
-		document.querySelector(".toggle-cheat").classList.add("display-none");
 	if (document.global.ui.chat) {
 		document.querySelector(".chat-container").classList.add("display-block");
 		document.querySelector(".canvas-container").classList.add("display-none");
@@ -375,11 +371,10 @@ function processUI() {
 		}))
 			parent.removeChild(child);
 	})
-	
-	if (document.global.gameplay.gameStart) {
+	if (document.global.gameplay.gameStart && !document.global.gameplay.gameEnd) {
+		//during gameStart and before gameEnd screen
 		document.querySelector(".banner").classList.add("display-none");
 		document.querySelector(".scoreboard").classList.remove("display-none");
-		document.querySelector(".toggle-game").classList.remove("display-none");
 		document.querySelector(".toggle-game").classList.remove("display-none");
 		document.querySelector(".toggle-cheat").classList.remove("display-none");
 		if (document.global.gameplay.local && document.global.gameplay.single) {
@@ -392,23 +387,31 @@ function processUI() {
 			document.querySelector(".AI-score").textContent = document.global.gameplay.computerScore;
 		}
 	}
-	else {
+	else if (document.global.gameplay.gameStart && document.global.gameplay.gameEnd) {
+		//for gameEnd screen
+		document.querySelector(".game-summary-container").classList.remove("display-none");
+		document.querySelector(".banner").classList.add("display-none");
+		document.querySelector(".scoreboard").classList.add("display-none");
+		document.querySelector(".toggle-game").classList.add("display-none");
+		document.querySelector(".toggle-cheat").classList.add("display-none");
+		document.querySelector(".reset-game").classList.remove("display-none");
+	}
+	else { 
+		//for starting screen before gameStart
 		document.querySelector(".banner").classList.remove("display-none");
 		document.querySelector(".scoreboard").classList.add("display-none");
 		document.querySelector(".toggle-game").classList.add("display-none");
 		document.querySelector(".toggle-cheat").classList.add("display-none");
 	}
+	
 	if (document.global.gameplay.pause) 
 		document.querySelector(".pause").classList.remove("display-none");
 	else 
 		document.querySelector(".pause").classList.add("display-none");
-	if (document.global.gameplay.gameSummary) 
+	if (document.global.gameplay.gameSummary && !document.global.gameplay.gameEnd) 
 		document.querySelector(".game-summary-container").classList.remove("display-none");
-	else 
+	else if (!document.global.gameplay.gameSummary && !document.global.gameplay.gameEnd)
 		document.querySelector(".game-summary-container").classList.add("display-none");
-	
-		
-	
 }
 
 function arenaRotateY() {

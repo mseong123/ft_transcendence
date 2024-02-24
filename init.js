@@ -173,7 +173,7 @@ function initGlobal() {
 	document.global.gameplay.roundStartFrameLimit = 30;
 	document.global.gameplay.shadowFrame = 0;
 	document.global.gameplay.shadowFrameLimit = 5;
-	document.global.gameplay.defaultDuration = "01:00";
+	document.global.gameplay.defaultDuration = "00:02";
 
 	//local or multiplayer game
 	document.global.gameplay.local = 1;

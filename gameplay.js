@@ -115,8 +115,40 @@ function gameStart() {
 		sphereMesh.rotation.y = 0;
 		sphereMesh.rotation.x = 0;
 	})
-
 }
+
+function resetGame() {
+	//overall game reset
+	document.global.gameplay.gameStart = 0;
+	document.global.gameplay.gameEnd = 0;
+	document.global.gameplay.initRotateY = 1;
+	document.global.gameplay.initRotateX = 0;
+	document.global.arena3D.rotation.x = 0;
+	document.global.arena3D.rotation.y = 0;
+	document.global.gameplay.ludicrious = 0;
+	resetPowerUp();
+	document.global.sphere.sphereMesh.forEach(sphereMesh=>{
+		sphereMesh.rotation.x = 0;
+		sphereMesh.rotation.y = 0;
+	})
+	document.global.powerUp.mesh.forEach(mesh=>{
+		mesh.rotation.x = 0;
+		mesh.rotation.y = 0;
+	})
+	document.querySelector(".game-summary-display").innerHTML = '';
+	//individual game format reset
+	if (document.global.gameplay.single) {
+		document.global.gameplay.localInfo = {
+			player:[{alias:"Player", score:0}],
+			ludicrious:1,
+			powerUp:1,
+			duration:document.global.gameplay.defaultDuration,
+			durationCount:document.global.gameplay.defaultDuration
+		};
+		document.global.gameplay.single = 0;
+		document.global.gameplay.computerScore = 0;
+	}
+} 
 
 function populateGameSummary() {
 	const parent = document.querySelector(".game-summary-display");
@@ -157,14 +189,14 @@ export function keyBinding() {
 			document.global.gameplay.pause? document.global.gameplay.pause = 0 :document.global.gameplay.pause = 1;
 		if (e.keyCode === 9)
 			e.preventDefault();
-		if (e.keyCode === 9 && document.global.gameplay.gameStart)
+		if (e.keyCode === 9 && document.global.gameplay.gameStart && !document.global.gameplay.gameEnd)
 			document.global.gameplay.gameSummary = 1;
 
 	})
 	document.addEventListener("keyup", (e)=>{
 		if (e.keyCode === 9)
 			e.preventDefault();
-		if (e.keyCode === 9 && document.global.gameplay.gameStart) 
+		if (e.keyCode === 9 && document.global.gameplay.gameStart && !document.global.gameplay.gameEnd) 
 			document.global.gameplay.gameSummary = 0;
 	})
 	
@@ -267,6 +299,7 @@ export function keyBinding() {
 			document.global.gameplay.single = 1;
 			document.global.gameplay.localInfo.durationCount = document.global.gameplay.localInfo.duration;
 			document.global.powerUp.enable = document.global.gameplay.localInfo.powerUp;
+			document.querySelector(".game-summary-header-type").textContent = "Single vs A.I."
 			gameStart()
 			populateGameSummary();
 		}
@@ -286,9 +319,21 @@ export function keyBinding() {
 	})
 	const gameSummary = document.querySelector(".game-summary-container");
 	gameSummary.addEventListener("click", (e)=>{
-		if (!document.global.gameplay.gameSummary)
+		if (!document.global.gameplay.gameEnd)
 			document.global.gameplay.gameSummary = 0;
 	})
+	const navGameSummary = document.querySelector(".nav-game-summary");
+	navGameSummary.addEventListener("click", (e)=>{
+		document.global.gameplay.gameSummary = 1;
+		document.global.ui.toggleGame = 0;
+	})
+
+	const resetGameButton = document.querySelector(".reset-game-button");
+	resetGameButton.addEventListener("click", (e)=>{
+		resetGame();
+	})
+
+
 	const menuHome = document.querySelectorAll(".menu-home");
 		menuHome.forEach(menuHome=>menuHome.addEventListener("click", (e)=>{
 			document.global.gameplay.localInfo = {
