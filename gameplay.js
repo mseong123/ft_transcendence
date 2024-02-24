@@ -126,6 +126,9 @@ function resetGame() {
 	document.global.arena3D.rotation.x = 0;
 	document.global.arena3D.rotation.y = 0;
 	document.global.gameplay.ludicrious = 0;
+	document.global.ui.mainMenu = 1;
+	document.global.ui.local = 0;
+	document.global.ui.single = 0;
 	resetPowerUp();
 	document.global.sphere.sphereMesh.forEach(sphereMesh=>{
 		sphereMesh.rotation.x = 0;
