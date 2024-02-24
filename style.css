@@ -482,7 +482,7 @@ hr {
 		min-height:100vh;
 		overflow-x: hidden;
 	}
-	.chat-menu, .canvas-menu, .menu-chat {
+	.chat-menu, .canvas-menu {
 		display:none;
 	}
 	.toggle-chat {
