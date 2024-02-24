@@ -146,6 +146,7 @@ function initGlobal() {
 	document.global.gameplay.gameStart = 0;
 	document.global.gameplay.gameEnd = 0;
 	document.global.gameplay.pause = 0;
+	document.global.gameplay.gameSummary = 0;
 	document.global.gameplay.single = 0;
 	document.global.gameplay.playerIndex = []; 
 	document.global.gameplay.immortality = 0; //for gameplay debugging purpose
@@ -172,7 +173,7 @@ function initGlobal() {
 	document.global.gameplay.roundStartFrameLimit = 30;
 	document.global.gameplay.shadowFrame = 0;
 	document.global.gameplay.shadowFrameLimit = 5;
-	document.global.gameplay.defaultDuration = "00:01";
+	document.global.gameplay.defaultDuration = "01:00";
 
 	//local or multiplayer game
 	document.global.gameplay.local = 1;

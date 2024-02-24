@@ -118,6 +118,34 @@ function gameStart() {
 
 }
 
+function populateGameSummary() {
+	const parent = document.querySelector(".game-summary-display");
+	if (document.global.gameplay.single) {
+		const singleName = document.createElement("span");
+		const singleScore = document.createElement("span");
+		const AIname = document.createElement("span");
+		const AIscore = document.createElement("span");
+		singleName.textContent = document.global.gameplay.localInfo.player[0].alias;
+		singleScore.textContent = document.global.gameplay.localInfo.player[0].score;
+		singleScore.classList.add(document.global.gameplay.localInfo.player[0].alias + "-score")
+		AIname.textContent = "A.I."
+		AIscore.textContent = document.global.gameplay.computerScore;
+		AIscore.classList.add("AI-score")
+		const singleDiv = document.createElement("div");
+		const AIDiv = document.createElement("div");
+		singleDiv.appendChild(singleName);
+		singleDiv.appendChild(singleScore);
+		AIDiv.appendChild(AIname)
+		AIDiv.appendChild(AIscore);
+		const containerDiv = document.createElement("div");
+		containerDiv.classList.add("game-summary-items")
+		containerDiv.appendChild(singleDiv);
+		containerDiv.appendChild(AIDiv);
+		parent.appendChild(containerDiv);
+
+	}
+}
+
 //addeventlistener
 export function keyBinding() {
 	const canvas = document.querySelector(".canvas");
@@ -127,6 +155,17 @@ export function keyBinding() {
 	document.addEventListener("keydown", (e)=>{
 		if (e.keyCode === 27 && document.global.gameplay.gameStart && !document.global.gameplay.gameEnd)
 			document.global.gameplay.pause? document.global.gameplay.pause = 0 :document.global.gameplay.pause = 1;
+		if (e.keyCode === 9)
+			e.preventDefault();
+		if (e.keyCode === 9 && document.global.gameplay.gameStart)
+			document.global.gameplay.gameSummary = 1;
+
+	})
+	document.addEventListener("keyup", (e)=>{
+		if (e.keyCode === 9)
+			e.preventDefault();
+		if (e.keyCode === 9 && document.global.gameplay.gameStart) 
+			document.global.gameplay.gameSummary = 0;
 	})
 	
 	document.addEventListener("click", (e)=>{
@@ -135,7 +174,6 @@ export function keyBinding() {
 			if (Array.from(menuCanvasChild).every(child=>e.target !== child) && e.target !== document.querySelector(".menu-canvas"))
 				document.global.ui.toggleCanvas = 0;
 		}
-			
 		if (!e.target.classList.contains("toggle-chat")) {
 			const menuChatChild = document.querySelector(".menu-chat").querySelectorAll("*");
 			if (Array.from(menuChatChild).every(child=>e.target !== child) && e.target !== document.querySelector(".menu-chat"))
@@ -230,15 +268,26 @@ export function keyBinding() {
 			document.global.gameplay.localInfo.durationCount = document.global.gameplay.localInfo.duration;
 			document.global.powerUp.enable = document.global.gameplay.localInfo.powerUp;
 			gameStart()
+			populateGameSummary();
 		}
 	})
 
 	const navPause = document.querySelector(".nav-pause");
 	navPause.addEventListener("click", (e)=>{
 		if (!document.global.gameplay.gameEnd) {
-			document.global.gameplay.pause? document.global.gameplay.pause = 0:document.global.gameplay.pause = 1;
+			document.global.gameplay.pause = 1;
 			document.global.ui.toggleGame = 0;
 		}
+	})
+	const pause = document.querySelector(".pause");
+	pause.addEventListener("click", (e)=>{
+		if (!document.global.gameplay.gameEnd)
+			document.global.gameplay.pause = 0;
+	})
+	const gameSummary = document.querySelector(".game-summary-container");
+	gameSummary.addEventListener("click", (e)=>{
+		if (!document.global.gameplay.gameSummary)
+			document.global.gameplay.gameSummary = 0;
 	})
 	const menuHome = document.querySelectorAll(".menu-home");
 		menuHome.forEach(menuHome=>menuHome.addEventListener("click", (e)=>{

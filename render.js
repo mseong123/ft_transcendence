@@ -388,7 +388,8 @@ function processUI() {
 			document.querySelector(".scoreboard-two-name").textContent = "A.I.";
 			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.computerScore;
 			document.querySelector(".timer").textContent = document.global.gameplay.localInfo.durationCount;
-			
+			document.querySelector("." + document.global.gameplay.localInfo.player[0].alias + "-score").textContent = document.global.gameplay.localInfo.player[0].score;
+			document.querySelector(".AI-score").textContent = document.global.gameplay.computerScore;
 		}
 	}
 	else {
@@ -401,10 +402,10 @@ function processUI() {
 		document.querySelector(".pause").classList.remove("display-none");
 	else 
 		document.querySelector(".pause").classList.add("display-none");
-	// if (document.global.gameplay.gameEnd) 
-	// 	document.querySelector(".game-summary-container").classList.remove("display-none");
-	// else 
-	// 	document.querySelector(".game-summary-container").classList.add("display-none");
+	if (document.global.gameplay.gameSummary) 
+		document.querySelector(".game-summary-container").classList.remove("display-none");
+	else 
+		document.querySelector(".game-summary-container").classList.add("display-none");
 	
 		
 	
