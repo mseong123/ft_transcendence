@@ -28,13 +28,48 @@
 							<button type="button" class="nav nav-multi"><i class="fas fa-network-wired"></i>Multiplayer &nbsp;<i class="fa fa-caret-right"></i></button>
 						</div>
 						<div class="local-menu display-none">
-							<button type="button" class="menu-back local-back"><i class="fa fa-square-caret-left"></i></button>
+							<button type="button" class="menu-back local-back"><i class="fa fa-caret-left"></i></button>
 							<button type="button" class="menu-home"><i class="fa fa-home"></i></button>
 							<h4><i class="fas fa-location-dot"></i>LOCAL GAME</h4>
 							<button type="button" class="nav nav-single">Single Player (vs A.I.) &nbsp;<i class="fa fa-caret-right"></i></button>
 							<button type="button" class="nav nav-two">Two Player &nbsp;<i class="fa fa-caret-right"></i></button>
 							<button type="button" class="nav nav-Tournament">Local Tournament &nbsp;<i class="fa fa-caret-right"></i></button>
 						</div>
+						<div class="single-menu display-none">
+								<button type="button" class="menu-back single-back"><i class="fa fa-caret-left"></i></button>
+								<button type="button" class="menu-home"><i class="fa fa-home"></i></button>
+								<h4>SINGLE PLAYER (V.S. A.I.)</h4>
+								<form class="single-alias">
+									<div class="single-alias-display">
+										<p>Player(s): &nbsp;</p>
+										<div class="single-alias-display-inside"></div>
+									</div>
+									<p class="single-alias-display-warning">Enter only 1 alias</p>
+									<hr>
+									
+									<div>
+										<label for="single-alias-text">Enter Alias</label>
+										<input type="text" id="single-alias-text" required pattern="^[A-Za-z][A-Za-z0-9]*$" placeholder="alias">
+										<button type="submit" class="single-alias-submit"><i class="fa fa-caret-right"></i></button>
+									</div>
+								</form>
+								<form class="single-submit">
+									<div>
+										<label for="single-duration">Duration</label>
+										<input type="time" id="single-duration">
+									</div>
+									<div>
+										<label for="single-powerup">Power Up</label>
+										<input type="checkbox" id="single-powerup" checked>
+									</div>
+									<div>
+										<label for="single-ludicrious" class="single-ludicrious">Ludicious Mode</label>
+										<input type="checkbox" id="single-ludicrious" checked>
+									</div>
+									<button type="button" class="single-start"><i class="fa fa-play"></i>Play</button>
+								</form>
+						</div>
+						<!-- single vs ai menu -->
 						<div class="single-menu display-none">
 								<button type="button" class="menu-back single-back"><i class="fa fa-square-caret-left"></i></button>
 								<button type="button" class="menu-home"><i class="fa fa-home"></i></button>
@@ -68,15 +103,48 @@
 									</div>
 									<button type="button" class="single-start"><i class="fa fa-play"></i>Play</button>
 								</form>
-								
-								
 						</div>
+						<!-- two player menu -->
+						<div class="two-menu display-none">
+							<button type="button" class="menu-back two-back"><i class="fa fa-caret-left"></i></button>
+							<button type="button" class="menu-home"><i class="fa fa-home"></i></button>
+							<h4>TWO PLAYER</h4>
+							<form class="two-alias">
+								<div class="two-alias-display">
+									<p>Player(s): &nbsp;</p>
+									<div class="two-alias-display-inside"></div>
+								</div>
+								<p class="two-alias-display-warning">Enter only 2 alias</p>
+								<hr>
+								
+								<div>
+									<label for="two-alias-text">Enter Alias</label>
+									<input type="text" id="two-alias-text" required pattern="^[A-Za-z][A-Za-z0-9]*$" placeholder="alias">
+									<button type="submit" class="two-alias-submit"><i class="fa fa-caret-right"></i></button>
+								</div>
+							</form>
+							<form class="two-submit">
+								<div>
+									<label for="two-duration">Duration</label>
+									<input type="time" id="two-duration">
+								</div>
+								<div>
+									<label for="two-powerup">Power Up</label>
+									<input type="checkbox" id="two-powerup" checked>
+								</div>
+								<div>
+									<label for="two-ludicrious" class="two-ludicrious">Ludicious Mode</label>
+									<input type="checkbox" id="two-ludicrious" checked>
+								</div>
+								<button type="button" class="two-start"><i class="fa fa-play"></i>Play</button>
+							</form>
+					</div>
 						
-						<div class="chat-menu">
-							<hr class="chat-divider"></hr>
-							<button type="button" class="nav nav-chat"><i class="fas fa-comment"></i>Live Chat &nbsp;<i class="fa fa-caret-right"></i></button>
-								
-						</div>
+					<div class="chat-menu">
+						<hr class="chat-divider"></hr>
+						<button type="button" class="nav nav-chat"><i class="fas fa-comment"></i>Live Chat &nbsp;<i class="fa fa-caret-right"></i></button>
+							
+					</div>
 					</div>
 				</h2>
 				<div class="canvas-background canvas-background-1"></div>
@@ -125,6 +193,7 @@
 						<hr>
 						<button type="button" class="nav nav-pause">Pause &nbsp;<i class="fa fa-2xs">ESC</i></button>
 						<button type="button" class="nav nav-game-summary">Game Score &nbsp;<i class="fa fa-2xs">TAB</i></button>
+						<button type="button" class="nav nav-reset">Reset &nbsp;<i class="fa fa-2xs"></i></button>
 						<div class="chat-menu">
 							<hr class="chat-divider"></hr>
 							<button type="button" class="nav nav-chat"><i class="fas fa-comment"></i>Live Chat &nbsp;<i class="fa fa-caret-right"></i></button>

@@ -1,4 +1,5 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
+import { resetPowerUp } from "./gameplay.js"
 
 export function createFirstHalfCircleGeometry(radius) {
 	const circleRadius = radius;
@@ -129,11 +130,7 @@ export function createPowerUp(arena3D) {
 	createDouble(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty);
 	createUltimate(arena3D, sphereGeometry, firstHalfCircleGeometry, SecondHalfCircleGeometry, meshProperty);
 
-	if (document.global.powerUp.enable && (document.global.gameplay.local || !document.global.gameplay.local && document.global.gameplay.mainClient)) {
-		const random = Math.floor(Math.random() * 5);
-		document.global.powerUp.meshProperty[random].visible = true;
-		document.global.powerUp.meshProperty[random].positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
-		document.global.powerUp.meshProperty[random].positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
-		document.global.powerUp.meshProperty[random].positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
-	}
+	//enable powerup for starting screen
+	resetPowerUp()
 }
+

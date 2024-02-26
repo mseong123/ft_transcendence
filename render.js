@@ -289,7 +289,6 @@ function processPaddle() {
 }
 
 function processPowerUp() {
-	
 	document.global.powerUp.mesh.forEach((mesh, idx)=>{
 		//rotate circle around each powerup
 		mesh.rotation.z += document.global.powerUp.circleRotation;
@@ -335,12 +334,15 @@ function processUI() {
 		document.querySelector(".local-menu").classList.add("display-block"):document.querySelector(".local-menu").classList.remove("display-block");
 	document.global.ui.single?
 		document.querySelector(".single-menu").classList.add("display-block"):document.querySelector(".single-menu").classList.remove("display-block");
+	document.global.ui.two?
+		document.querySelector(".two-menu").classList.add("display-block"):document.querySelector(".two-menu").classList.remove("display-block");
 	document.global.gameplay.ludicrious?
 		document.querySelector(".timer").classList.add("timer-ludicrious"):document.querySelector(".timer").classList.remove("timer-ludicrious");
 	
-	for (let i = 0; i < document.global.gameplay.localInfo.player.length; i++) {
+	
+	for (let i = 0; i < document.global.gameplay.localSingleInfo.player.length; i++) {
 		const parent = document.querySelector(".single-alias-display-inside");
-		const target = document.querySelector(".single-" + document.global.gameplay.localInfo.player[i].alias)
+		const target = document.querySelector(".single-" + document.global.gameplay.localSingleInfo.player[i].alias)
 		
 		if (!target) {
 			const element = document.createElement('p');
@@ -348,29 +350,64 @@ function processUI() {
 			button.setAttribute("type", "button")
 			const xmark = document.createElement('i');
 			xmark.classList.add("fa", "fa-xmark");
-			xmark.setAttribute("identifier",document.global.gameplay.localInfo.player[i].alias);
+			xmark.setAttribute("single-identifier",document.global.gameplay.localSingleInfo.player[i].alias);
 			button.addEventListener("click", (e)=>{
-				for (let i = 0; i < document.global.gameplay.localInfo.player.length; i++) {
-					if (document.global.gameplay.localInfo.player.length && document.global.gameplay.localInfo.player[i] && document.global.gameplay.localInfo.player[i].alias === e.target.getAttribute("identifier"))
-						document.global.gameplay.localInfo.player = [...document.global.gameplay.localInfo.player.slice(0, i),...document.global.gameplay.localInfo.player.slice(i + 1)];
+				for (let i = 0; i < document.global.gameplay.localSingleInfo.player.length; i++) {
+					if (document.global.gameplay.localSingleInfo.player.length && document.global.gameplay.localSingleInfo.player[i] && document.global.gameplay.localSingleInfo.player[i].alias === e.target.getAttribute("single-identifier"))
+						document.global.gameplay.localSingleInfo.player = [...document.global.gameplay.localSingleInfo.player.slice(0, i),...document.global.gameplay.localSingleInfo.player.slice(i + 1)];
 				}
 			})
-			element.classList.add("single-" + document.global.gameplay.localInfo.player[i].alias)
-			element.textContent = document.global.gameplay.localInfo.player[i].alias;
+			element.classList.add("single-" + document.global.gameplay.localSingleInfo.player[i].alias)
+			element.textContent = document.global.gameplay.localSingleInfo.player[i].alias;
 			parent.appendChild(element).appendChild(button).appendChild(xmark);
 		}
 	}
-	document.getElementById("single-duration").value = document.global.gameplay.localInfo.duration;
-	document.global.gameplay.localInfo.powerUp? document.getElementById("single-powerup").checked=true:document.getElementById("single-powerup").checked=false;
-	document.global.gameplay.localInfo.ludicrious? document.getElementById("single-ludicrious").checked=true:document.getElementById("single-ludicrious").checked=false;
+
+	for (let i = 0; i < document.global.gameplay.localTwoInfo.player.length; i++) {
+		const parent = document.querySelector(".two-alias-display-inside");
+		const target = document.querySelector(".two-" + document.global.gameplay.localTwoInfo.player[i].alias)
+		
+		if (!target) {
+			const element = document.createElement('p');
+			const button = document.createElement('button');
+			button.setAttribute("type", "button")
+			const xmark = document.createElement('i');
+			xmark.classList.add("fa", "fa-xmark");
+			xmark.setAttribute("two-identifier",document.global.gameplay.localTwoInfo.player[i].alias);
+			button.addEventListener("click", (e)=>{
+				for (let i = 0; i < document.global.gameplay.localTwoInfo.player.length; i++) {
+					if (document.global.gameplay.localTwoInfo.player.length && document.global.gameplay.localTwoInfo.player[i] && document.global.gameplay.localTwoInfo.player[i].alias === e.target.getAttribute("two-identifier"))
+						document.global.gameplay.localTwoInfo.player = [...document.global.gameplay.localTwoInfo.player.slice(0, i),...document.global.gameplay.localTwoInfo.player.slice(i + 1)];
+				}
+			})
+			element.classList.add("two-" + document.global.gameplay.localTwoInfo.player[i].alias)
+			element.textContent = document.global.gameplay.localTwoInfo.player[i].alias;
+			parent.appendChild(element).appendChild(button).appendChild(xmark);
+		}
+	}
+	document.getElementById("single-duration").value = document.global.gameplay.localSingleInfo.duration;
+	document.getElementById("two-duration").value = document.global.gameplay.localTwoInfo.duration;
+	document.global.gameplay.localSingleInfo.powerUp? document.getElementById("single-powerup").checked=true:document.getElementById("single-powerup").checked=false;
+	document.global.gameplay.localSingleInfo.ludicrious? document.getElementById("single-ludicrious").checked=true:document.getElementById("single-ludicrious").checked=false;
+	document.global.gameplay.localTwoInfo.powerUp? document.getElementById("two-powerup").checked=true:document.getElementById("two-powerup").checked=false;
+	document.global.gameplay.localTwoInfo.ludicrious? document.getElementById("two-ludicrious").checked=true:document.getElementById("two-ludicrious").checked=false;
 	
-	const parent = document.querySelector(".single-alias-display-inside")
-	Array.from(parent.children).forEach(child=>{
-		if (document.global.gameplay.localInfo.player.every(player=>{
+	const parentSingle = document.querySelector(".single-alias-display-inside")
+	Array.from(parentSingle.children).forEach(child=>{
+		if (document.global.gameplay.localSingleInfo.player.every(player=>{
 			return "single-" + player.alias !== child.classList[0]
 		}))
-			parent.removeChild(child);
+			parentSingle.removeChild(child);
 	})
+	const parentTwo = document.querySelector(".two-alias-display-inside")
+	Array.from(parentTwo.children).forEach(child=>{
+		if (document.global.gameplay.localTwoInfo.player.every(player=>{
+			return "two-" + player.alias !== child.classList[0]
+		}))
+		parentTwo.removeChild(child);
+	})
+	
+	
 	if (document.global.gameplay.gameStart && !document.global.gameplay.gameEnd) {
 		//during gameStart and before gameEnd screen
 		document.querySelector(".banner").classList.add("display-none");
@@ -379,13 +416,22 @@ function processUI() {
 		document.querySelector(".toggle-cheat").classList.remove("display-none");
 		document.querySelector(".reset-game").classList.add("display-none");
 		if (document.global.gameplay.local && document.global.gameplay.single) {
-			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localInfo.player[0].alias;
-			document.querySelector(".scoreboard-one-score").textContent = document.global.gameplay.localInfo.player[0].score;
+			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localSingleInfo.player[0].alias;
+			document.querySelector(".scoreboard-one-score").textContent = document.global.gameplay.localSingleInfo.player[0].score;
 			document.querySelector(".scoreboard-two-name").textContent = "A.I.";
 			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.computerScore;
-			document.querySelector(".timer").textContent = document.global.gameplay.localInfo.durationCount;
-			document.querySelector("." + document.global.gameplay.localInfo.player[0].alias + "-score").textContent = document.global.gameplay.localInfo.player[0].score;
+			document.querySelector(".timer").textContent = document.global.gameplay.localSingleInfo.durationCount;
+			document.querySelector(".single-" + document.global.gameplay.localSingleInfo.player[0].alias + "-score").textContent = document.global.gameplay.localSingleInfo.player[0].score;
 			document.querySelector(".AI-score").textContent = document.global.gameplay.computerScore;
+		}
+		else if (document.global.gameplay.local && document.global.gameplay.two) {
+			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localTwoInfo.player[0].alias;
+			document.querySelector(".scoreboard-one-score").textContent = document.global.gameplay.localTwoInfo.player[0].score;
+			document.querySelector(".scoreboard-two-name").textContent = document.global.gameplay.localTwoInfo.player[1].alias;
+			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.localTwoInfo.player[1].score;
+			document.querySelector(".timer").textContent = document.global.gameplay.localTwoInfo.durationCount;
+			document.querySelector(".two-" + document.global.gameplay.localTwoInfo.player[0].alias + "-score").textContent = document.global.gameplay.localTwoInfo.player[0].score;
+			document.querySelector(".two-" + document.global.gameplay.localTwoInfo.player[1].alias + "-score").textContent = document.global.gameplay.localTwoInfo.player[1].score;
 		}
 	}
 	else if (document.global.gameplay.gameStart && document.global.gameplay.gameEnd) {
@@ -487,7 +533,7 @@ function setTimer() {
 			
 			if (document.global.gameplay.roundStartFrame === document.global.gameplay.roundStartFrameLimit) {
 				document.global.gameplay.roundStart = 1;
-				document.global.gameplay.roundStartFrame =0;
+				document.global.gameplay.roundStartFrame = 0;
 			}
 			// powerup timer
 			if (document.global.powerUp.enable) {
@@ -504,14 +550,14 @@ function setTimer() {
 	}
 }
 
-function reduceTime(localInfo) {
-	const [minute, second] = localInfo.durationCount.split(':')
+function reduceTime(info) {
+	const [minute, second] = info.durationCount.split(':')
 	const date = new Date(1970, 0, 1, 0, minute, second);
 	const newDate = date.getTime() - 1000;
 	date.setTime(newDate);
-	localInfo.durationCount = date.getMinutes().toString().padStart(2, '0') + ':' + date.getSeconds().toString().padStart(2, '0');
+	info.durationCount = date.getMinutes().toString().padStart(2, '0') + ':' + date.getSeconds().toString().padStart(2, '0');
 	//set ludicrious mode
-	if (localInfo.ludicrious) {
+	if (info.ludicrious) {
 		if (date.getMinutes() < document.global.gameplay.ludicriousYminuteUpper && date.getMinutes() >= document.global.gameplay.ludicriousYminuteLower 
 		&& date.getSeconds() < document.global.gameplay.ludicriousYsecondUpper  && date.getSeconds() >= document.global.gameplay.ludicriousYsecondLower) {
 			document.global.gameplay.initRotateY = 1;
@@ -534,20 +580,21 @@ function reduceTime(localInfo) {
 	if (minute === '00' && second === '01') {
 		document.global.gameplay.gameEnd = 1; 
 	}
-	
-	
-	
-			
 }
 
 function processCountDown(frameTimer) {
 	if (document.global.gameplay.gameStart && !document.global.gameplay.pause && !document.global.gameplay.gameEnd) {
 		if (document.global.gameplay.local && document.global.gameplay.single) {
 			if (frameTimer.now - frameTimer.prev > 0) {
-				reduceTime(document.global.gameplay.localInfo)
+				reduceTime(document.global.gameplay.localSingleInfo)
 				frameTimer.prev = frameTimer.now;
 			}
-			
+		}
+		else if (document.global.gameplay.local && document.global.gameplay.two) {
+			if (frameTimer.now - frameTimer.prev > 0) {
+				reduceTime(document.global.gameplay.localTwoInfo)
+				frameTimer.prev = frameTimer.now;
+			}
 		}
 
 	}

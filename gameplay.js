@@ -115,6 +115,8 @@ function gameStart() {
 		sphereMesh.rotation.y = 0;
 		sphereMesh.rotation.x = 0;
 	})
+	//enable powerup based on game option
+	resetPowerUp();
 }
 
 function resetGame() {
@@ -123,12 +125,14 @@ function resetGame() {
 	document.global.gameplay.gameEnd = 0;
 	document.global.gameplay.initRotateY = 1;
 	document.global.gameplay.initRotateX = 0;
+	document.global.powerUp.enable = 1;
 	document.global.arena3D.rotation.x = 0;
 	document.global.arena3D.rotation.y = 0;
 	document.global.gameplay.ludicrious = 0;
 	document.global.ui.mainMenu = 1;
 	document.global.ui.local = 0;
 	document.global.ui.single = 0;
+	document.global.ui.two = 0;
 	resetPowerUp();
 	document.global.sphere.sphereMesh.forEach(sphereMesh=>{
 		sphereMesh.rotation.x = 0;
@@ -141,7 +145,7 @@ function resetGame() {
 	document.querySelector(".game-summary-display").innerHTML = '';
 	//individual game format reset
 	if (document.global.gameplay.single) {
-		document.global.gameplay.localInfo = {
+		document.global.gameplay.localSingleInfo = {
 			player:[{alias:"Player", score:0}],
 			ludicrious:1,
 			powerUp:1,
@@ -150,6 +154,16 @@ function resetGame() {
 		};
 		document.global.gameplay.single = 0;
 		document.global.gameplay.computerScore = 0;
+	}
+	else if (document.global.gameplay.two) {
+		document.global.gameplay.localTwoInfo = {
+			player:[{alias:"Player-One", score:0}, {alias:"Player-Two", score:0}],
+			ludicrious:1,
+			powerUp:1,
+			duration:document.global.gameplay.defaultDuration,
+			durationCount:document.global.gameplay.defaultDuration
+		};
+		document.global.gameplay.two = 0;
 	}
 } 
 
@@ -160,9 +174,9 @@ function populateGameSummary() {
 		const singleScore = document.createElement("span");
 		const AIname = document.createElement("span");
 		const AIscore = document.createElement("span");
-		singleName.textContent = document.global.gameplay.localInfo.player[0].alias;
-		singleScore.textContent = document.global.gameplay.localInfo.player[0].score;
-		singleScore.classList.add(document.global.gameplay.localInfo.player[0].alias + "-score")
+		singleName.textContent = document.global.gameplay.localSingleInfo.player[0].alias;
+		singleScore.textContent = document.global.gameplay.localSingleInfo.player[0].score;
+		singleScore.classList.add('single-'+document.global.gameplay.localSingleInfo.player[0].alias + "-score")
 		AIname.textContent = "A.I."
 		AIscore.textContent = document.global.gameplay.computerScore;
 		AIscore.classList.add("AI-score")
@@ -173,11 +187,33 @@ function populateGameSummary() {
 		AIDiv.appendChild(AIname)
 		AIDiv.appendChild(AIscore);
 		const containerDiv = document.createElement("div");
-		containerDiv.classList.add("game-summary-items")
+		containerDiv.classList.add("game-summary-items");
 		containerDiv.appendChild(singleDiv);
 		containerDiv.appendChild(AIDiv);
 		parent.appendChild(containerDiv);
-
+	}
+	else if (document.global.gameplay.two) {
+		const twoFirstName = document.createElement("span");
+		const twoFirstScore = document.createElement("span");
+		const twoSecondName = document.createElement("span");
+		const twoSecondScore = document.createElement("span");
+		twoFirstName.textContent = document.global.gameplay.localTwoInfo.player[0].alias;
+		twoFirstScore.textContent = document.global.gameplay.localTwoInfo.player[0].score;
+		twoFirstScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[0].alias + "-score")
+		twoSecondName.textContent = document.global.gameplay.localTwoInfo.player[1].alias;
+		twoSecondScore.textContent = document.global.gameplay.localTwoInfo.player[1].score;
+		twoSecondScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[1].alias + "-score")
+		const twoFirstDiv = document.createElement("div");
+		const twoSecondDiv = document.createElement("div");
+		twoFirstDiv.appendChild(twoFirstName);
+		twoFirstDiv.appendChild(twoFirstScore);
+		twoSecondDiv.appendChild(twoSecondName)
+		twoSecondDiv.appendChild(twoSecondScore);
+		const containerDiv = document.createElement("div");
+		containerDiv.classList.add("game-summary-items")
+		containerDiv.appendChild(twoFirstDiv);
+		containerDiv.appendChild(twoSecondDiv);
+		parent.appendChild(containerDiv);
 	}
 }
 
@@ -263,12 +299,21 @@ export function keyBinding() {
 	single.addEventListener("click", (e)=>{
 		document.global.ui.local = 0;
 		document.global.ui.single = 1;
-		
+	})
+	const two = document.querySelector(".nav-two");
+	two.addEventListener("click", (e)=>{
+		document.global.ui.local = 0;
+		document.global.ui.two = 1;
 	})
 	const singleBack = document.querySelector(".single-back");
 	singleBack.addEventListener("click", (e)=>{
 		document.global.ui.local = 1;
 		document.global.ui.single = 0;
+	})
+	const twoBack = document.querySelector(".two-back");
+	twoBack.addEventListener("click", (e)=>{
+		document.global.ui.local = 1;
+		document.global.ui.two = 0;
 	})
 	const singleAlias = document.querySelector(".single-alias");
 	singleAlias.addEventListener("submit", (e)=>{
@@ -278,31 +323,68 @@ export function keyBinding() {
 			score:0,
 		}
 		document.getElementById("single-alias-text").value = "";
-		if (document.global.gameplay.localInfo.player.every(player=>{
+		if (document.global.gameplay.localSingleInfo.player.every(player=>{
 			return player.alias !== newPlayer.alias;
-		}) && document.global.gameplay.localInfo.player.length < 1)
-			document.global.gameplay.localInfo.player.push(newPlayer);
+		}) && document.global.gameplay.localSingleInfo.player.length < 1)
+			document.global.gameplay.localSingleInfo.player.push(newPlayer);
+	})
+	const twoAlias = document.querySelector(".two-alias");
+	twoAlias.addEventListener("submit", (e)=>{
+		e.preventDefault();
+		const newPlayer = {
+			alias:document.getElementById("two-alias-text").value,
+			score:0,
+		}
+		document.getElementById("two-alias-text").value = "";
+		if (document.global.gameplay.localTwoInfo.player.every(player=>{
+			return player.alias !== newPlayer.alias;
+		}) && document.global.gameplay.localTwoInfo.player.length < 2)
+			document.global.gameplay.localTwoInfo.player.push(newPlayer);
 	})
 	const singleDuration = document.getElementById("single-duration");
 	singleDuration.addEventListener("change", (e)=>{
-		document.global.gameplay.localInfo.duration = e.target.value;
+		document.global.gameplay.localSingleInfo.duration = e.target.value;
+	})
+	const twoDuration = document.getElementById("two-duration");
+	twoDuration.addEventListener("change", (e)=>{
+		document.global.gameplay.localTwoInfo.duration = e.target.value;
 	})
 	const singlePowerup = document.getElementById("single-powerup");
 	singlePowerup.addEventListener("change", (e)=>{
-		document.global.gameplay.localInfo.powerUp ? document.global.gameplay.localInfo.powerUp = 0:document.global.gameplay.localInfo.powerUp = 1;
+		document.global.gameplay.localSingleInfo.powerUp ? document.global.gameplay.localSingleInfo.powerUp = 0:document.global.gameplay.localSingleInfo.powerUp = 1;
+	})
+	const twoPowerup = document.getElementById("two-powerup");
+	twoPowerup.addEventListener("change", (e)=>{
+		document.global.gameplay.localTwoInfo.powerUp ? document.global.gameplay.localTwoInfo.powerUp = 0:document.global.gameplay.localTwoInfo.powerUp = 1;
 	})
 	const singleLudicrious = document.getElementById("single-ludicrious");
 	singleLudicrious.addEventListener("change", (e)=>{
-		document.global.gameplay.localInfo.ludicrious ? document.global.gameplay.localInfo.ludicrious = 0:document.global.gameplay.localInfo.ludicrious = 1;
+		document.global.gameplay.localSingleInfo.ludicrious ? document.global.gameplay.localSingleInfo.ludicrious = 0:document.global.gameplay.localSingleInfo.ludicrious = 1;
+	})
+	const twoLudicrious = document.getElementById("two-ludicrious");
+	twoLudicrious.addEventListener("change", (e)=>{
+		document.global.gameplay.localTwoInfo.ludicrious ? document.global.gameplay.localTwoInfo.ludicrious = 0:document.global.gameplay.localTwoInfo.ludicrious = 1;
 	})
 	const singleStart = document.querySelector(".single-start");
 	singleStart.addEventListener("click", (e)=>{
-		if (document.global.gameplay.localInfo.player.length === 1) {
+		if (document.global.gameplay.localSingleInfo.player.length === 1) {
 			document.global.gameplay.local = 1;
 			document.global.gameplay.single = 1;
-			document.global.gameplay.localInfo.durationCount = document.global.gameplay.localInfo.duration;
-			document.global.powerUp.enable = document.global.gameplay.localInfo.powerUp;
+			document.global.gameplay.localSingleInfo.durationCount = document.global.gameplay.localSingleInfo.duration;
+			document.global.powerUp.enable = document.global.gameplay.localSingleInfo.powerUp;
 			document.querySelector(".game-summary-header-type").textContent = "Single vs A.I."
+			gameStart()
+			populateGameSummary();
+		}
+	})
+	const twoStart = document.querySelector(".two-start");
+	twoStart.addEventListener("click", (e)=>{
+		if (document.global.gameplay.localTwoInfo.player.length === 2) {
+			document.global.gameplay.local = 1;
+			document.global.gameplay.two = 1;
+			document.global.gameplay.localTwoInfo.durationCount = document.global.gameplay.localTwoInfo.duration;
+			document.global.powerUp.enable = document.global.gameplay.localTwoInfo.powerUp;
+			document.querySelector(".game-summary-header-type").textContent = "Two Players"
 			gameStart()
 			populateGameSummary();
 		}
@@ -336,11 +418,25 @@ export function keyBinding() {
 		resetGame();
 	})
 
+	const navReset = document.querySelector(".nav-reset");
+	navReset.addEventListener("click", (e)=>{
+		document.global.ui.toggleGame = 0;
+		document.global.gameplay.gameEnd = 1; 
+		
+	})
+
 
 	const menuHome = document.querySelectorAll(".menu-home");
 		menuHome.forEach(menuHome=>menuHome.addEventListener("click", (e)=>{
-			document.global.gameplay.localInfo = {
-				player:[],
+			document.global.gameplay.localSingleInfo = {
+				player:[{alias:"Player", score:0}],
+				ludicrious:1,
+				powerUp:1,
+				duration:document.global.gameplay.defaultDuration,
+				durationCount:document.global.gameplay.defaultDuration
+			};
+			document.global.gameplay.localTwoInfo = {
+				player:[{alias:"Player-One", score:0}, {alias:"Player-Two", score:0}],
 				ludicrious:1,
 				powerUp:1,
 				duration:document.global.gameplay.defaultDuration,
@@ -349,6 +445,7 @@ export function keyBinding() {
 			document.global.ui.mainMenu = 1;
 			document.global.ui.local = 0;
 			document.global.ui.single = 0;
+			document.global.ui.two = 0;
 		})
 	)
 }
@@ -620,11 +717,13 @@ export function resetPowerUp() {
 		document.global.powerUp.shake.enable = 0;
 
 		//set new random powerup and position
-		const random = Math.floor(Math.random() * 5);
-		document.global.powerUp.meshProperty[random].visible = true;
-		document.global.powerUp.meshProperty[random].positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
-		document.global.powerUp.meshProperty[random].positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
-		document.global.powerUp.meshProperty[random].positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
+		if (document.global.powerUp.enable) {
+			const random = Math.floor(Math.random() * 5);
+			document.global.powerUp.meshProperty[random].visible = true;
+			document.global.powerUp.meshProperty[random].positionX = Math.floor((Math.random() * (document.global.arena.width - document.global.powerUp.circleRadius)) - (document.global.arena.width - document.global.powerUp.circleRadius)/ 2);
+			document.global.powerUp.meshProperty[random].positionY = Math.floor((Math.random() * (document.global.arena.height - document.global.powerUp.circleRadius)) - (document.global.arena.height -document.global.powerUp.circleRadius) / 2);
+			document.global.powerUp.meshProperty[random].positionZ = Math.floor((Math.random() * (document.global.arena.depth / 3)) - (document.global.arena.depth / 3));
+		}
 }
 
 function updateSpherePosition(sphereMeshProperty) {
@@ -656,7 +755,14 @@ export function processGame() {
 								if (sphereMeshProperty.positionZ > 0)
 									document.global.gameplay.computerScore += 1;
 								else {
-									document.global.gameplay.localInfo.player[0].score += 1;
+									document.global.gameplay.localSingleInfo.player[0].score += 1;
+								}
+							}
+							else if (document.global.gameplay.two) {
+								if (sphereMeshProperty.positionZ > 0)
+									document.global.gameplay.localTwoInfo.player[1].score += 1;
+								else {
+									document.global.gameplay.localTwoInfo.player[0].score += 1;
 								}
 							}
 							document.global.sphere.sphereMeshProperty.forEach(sphereMeshProperty=>{
@@ -667,7 +773,8 @@ export function processGame() {
 								sphereMeshProperty.velocityY = document.global.sphere.velocityY;
 								sphereMeshProperty.velocityZ = document.global.sphere.velocityZ;
 							})
-							resetPowerUp();
+							if (document.global.powerUp.enable)
+								resetPowerUp();
 						}
 					}
 					if (document.global.powerUp.enable && isPowerUpCollision(sphereMeshProperty)) {
