@@ -336,6 +336,8 @@ function processUI() {
 		document.querySelector(".single-menu").classList.add("display-block"):document.querySelector(".single-menu").classList.remove("display-block");
 	document.global.ui.two?
 		document.querySelector(".two-menu").classList.add("display-block"):document.querySelector(".two-menu").classList.remove("display-block");
+	document.global.ui.tournament?
+		document.querySelector(".tournament-menu").classList.add("display-block"):document.querySelector(".tournament-menu").classList.remove("display-block");
 	document.global.gameplay.ludicrious?
 		document.querySelector(".timer").classList.add("timer-ludicrious"):document.querySelector(".timer").classList.remove("timer-ludicrious");
 	
@@ -385,12 +387,38 @@ function processUI() {
 			parent.appendChild(element).appendChild(button).appendChild(xmark);
 		}
 	}
+
+	for (let i = 0; i < document.global.gameplay.localTournamentInfo.player.length; i++) {
+		const parent = document.querySelector(".tournament-alias-display-inside");
+		const target = document.querySelector(".tournament-" + document.global.gameplay.localTournamentInfo.player[i].alias)
+		
+		if (!target) {
+			const element = document.createElement('p');
+			const button = document.createElement('button');
+			button.setAttribute("type", "button")
+			const xmark = document.createElement('i');
+			xmark.classList.add("fa", "fa-xmark");
+			xmark.setAttribute("tournament-identifier",document.global.gameplay.localTournamentInfo.player[i].alias);
+			button.addEventListener("click", (e)=>{
+				for (let i = 0; i < document.global.gameplay.localTournamentInfo.player.length; i++) {
+					if (document.global.gameplay.localTournamentInfo.player.length && document.global.gameplay.localTournamentInfo.player[i] && document.global.gameplay.localTournamentInfo.player[i].alias === e.target.getAttribute("tournament-identifier"))
+						document.global.gameplay.localTournamentInfo.player = [...document.global.gameplay.localTournamentInfo.player.slice(0, i),...document.global.gameplay.localTournamentInfo.player.slice(i + 1)];
+				}
+			})
+			element.classList.add("tournament-" + document.global.gameplay.localTournamentInfo.player[i].alias)
+			element.textContent = document.global.gameplay.localTournamentInfo.player[i].alias;
+			parent.appendChild(element).appendChild(button).appendChild(xmark);
+		}
+	}
 	document.getElementById("single-duration").value = document.global.gameplay.localSingleInfo.duration;
 	document.getElementById("two-duration").value = document.global.gameplay.localTwoInfo.duration;
+	document.getElementById("tournament-duration").value = document.global.gameplay.localTournamentInfo.duration;
 	document.global.gameplay.localSingleInfo.powerUp? document.getElementById("single-powerup").checked=true:document.getElementById("single-powerup").checked=false;
 	document.global.gameplay.localSingleInfo.ludicrious? document.getElementById("single-ludicrious").checked=true:document.getElementById("single-ludicrious").checked=false;
 	document.global.gameplay.localTwoInfo.powerUp? document.getElementById("two-powerup").checked=true:document.getElementById("two-powerup").checked=false;
 	document.global.gameplay.localTwoInfo.ludicrious? document.getElementById("two-ludicrious").checked=true:document.getElementById("two-ludicrious").checked=false;
+	document.global.gameplay.localTournamentInfo.powerUp? document.getElementById("tournament-powerup").checked=true:document.getElementById("tournament-powerup").checked=false;
+	document.global.gameplay.localTournamentInfo.ludicrious? document.getElementById("tournament-ludicrious").checked=true:document.getElementById("tournament-ludicrious").checked=false;
 	
 	const parentSingle = document.querySelector(".single-alias-display-inside")
 	Array.from(parentSingle.children).forEach(child=>{
@@ -406,6 +434,13 @@ function processUI() {
 		}))
 		parentTwo.removeChild(child);
 	})
+	const parentTournament = document.querySelector(".tournament-alias-display-inside")
+	Array.from(parentTournament.children).forEach(child=>{
+		if (document.global.gameplay.localTournamentInfo.player.every(player=>{
+			return "tournament-" + player.alias !== child.classList[0]
+		}))
+		parentTournament.removeChild(child);
+	})
 	
 	
 	if (document.global.gameplay.gameStart && !document.global.gameplay.gameEnd) {
@@ -413,7 +448,10 @@ function processUI() {
 		document.querySelector(".banner").classList.add("display-none");
 		document.querySelector(".scoreboard").classList.remove("display-none");
 		document.querySelector(".toggle-game").classList.remove("display-none");
-		document.querySelector(".toggle-cheat").classList.remove("display-none");
+		if (document.global.gameplay.cheat)
+			document.querySelector(".toggle-cheat").classList.remove("display-none");
+		else
+			document.querySelector(".toggle-cheat").classList.add("display-none");
 		document.querySelector(".reset-game").classList.add("display-none");
 		if (document.global.gameplay.local && document.global.gameplay.single) {
 			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localSingleInfo.player[0].alias;
@@ -596,6 +634,7 @@ function processCountDown(frameTimer) {
 				frameTimer.prev = frameTimer.now;
 			}
 		}
+		
 
 	}
 }

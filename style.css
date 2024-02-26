@@ -372,7 +372,9 @@ hr {
 .game-summary-items {
 	display:grid;
 	justify-content:space-between;
-	grid-template-columns:auto auto;
+	grid-template-areas:
+		"round round"
+		"player-1 player-2";
 	border:1px solid white;
 	border-radius:0.25rem;
 	padding:0.25rem;
@@ -380,6 +382,12 @@ hr {
 }
 .game-summary-items div span{
 	margin:0 0.1rem;
+}
+.game-summary-items div:nth-child(2) {
+	grid-area:player-1;
+}
+.game-summary-items div:nth-child(3) {
+	grid-area:player-2;
 }
 
 .reset-game {

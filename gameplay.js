@@ -165,55 +165,155 @@ function resetGame() {
 		};
 		document.global.gameplay.two = 0;
 	}
+	else if (document.global.gameplay.tournament) {
+		document.global.gameplay.localTournamentInfo = {
+			player:[{alias:"Player-One"}, {alias:"Player-Two"}],
+			ludicrious:1,
+			powerUp:1,
+			duration:document.global.gameplay.defaultDuration,
+			durationCount:document.global.gameplay.defaultDuration
+		};
+		document.global.gameplay.tournament = 0;
+	}
 } 
 
-function populateGameSummary() {
+function matchFix() {
+	const randomNumArray = [];
+	let j = 0;
+	document.global.gameplay.localTournamentInfo.round = document.global.gameplay.localTournamentInfo.player.length - 1;
+	while (randomNumArray.length != document.global.gameplay.localTournamentInfo.player.length) {
+		const randomNum = Math.floor(Math.random() * document.global.gameplay.localTournamentInfo.player.length)
+		if (randomNumArray.every(array => {
+			return array != randomNum
+		}))
+			randomNumArray.push(randomNum);
+	}
+	for (let i = 0; i < randomNumArray.length - 1; i++) {
+		
+		const round = [];
+		for (let k = j; k < j + 2 && j < (randomNumArray.length - 1) * 2 ; k++) {
+			const player = {
+				alias:'',
+				score:0,
+			};
+			if (randomNumArray[k] !== undefined)
+				player.alias = document.global.gameplay.localTournamentInfo.player[randomNumArray[k]].alias;
+			else
+				player.alias = "<Player>";
+			round.push(player)
+		}
+		j += 2;
+		document.global.gameplay.localTournamentInfo.playerRound.push(round);
+	}
+	console.log(document.global.gameplay.localTournamentInfo.playerRound)
+
+}
+
+function createSingleSummary() {
 	const parent = document.querySelector(".game-summary-display");
+	const roundSpan = document.createElement("span");
+	const singleName = document.createElement("span");
+	const singleScore = document.createElement("span");
+	const AIname = document.createElement("span");
+	const AIscore = document.createElement("span");
+	singleName.textContent = document.global.gameplay.localSingleInfo.player[0].alias;
+	singleScore.textContent = document.global.gameplay.localSingleInfo.player[0].score;
+	singleScore.classList.add('single-'+document.global.gameplay.localSingleInfo.player[0].alias + "-score")
+	AIname.textContent = "A.I."
+	AIscore.textContent = document.global.gameplay.computerScore;
+	AIscore.classList.add("AI-score")
+	const roundDiv = document.createElement("div");
+	const singleDiv = document.createElement("div");
+	const AIDiv = document.createElement("div");
+	roundDiv.appendChild(roundSpan);
+	singleDiv.appendChild(singleName);
+	singleDiv.appendChild(singleScore);
+	AIDiv.appendChild(AIname)
+	AIDiv.appendChild(AIscore);
+	const containerDiv = document.createElement("div");
+	containerDiv.classList.add("game-summary-items");
+	containerDiv.appendChild(roundDiv);
+	containerDiv.appendChild(singleDiv);
+	containerDiv.appendChild(AIDiv);
+	parent.appendChild(containerDiv);
+}
+
+function createTwoSummary() {
+	const parent = document.querySelector(".game-summary-display");
+	const roundSpan = document.createElement("span");
+	const twoFirstName = document.createElement("span");
+	const twoFirstScore = document.createElement("span");
+	const twoSecondName = document.createElement("span");
+	const twoSecondScore = document.createElement("span");
+	twoFirstName.textContent = document.global.gameplay.localTwoInfo.player[0].alias;
+	twoFirstScore.textContent = document.global.gameplay.localTwoInfo.player[0].score;
+	twoFirstScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[0].alias + "-score")
+	twoSecondName.textContent = document.global.gameplay.localTwoInfo.player[1].alias;
+	twoSecondScore.textContent = document.global.gameplay.localTwoInfo.player[1].score;
+	twoSecondScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[1].alias + "-score")
+	const roundDiv = document.createElement("div");
+	const twoFirstDiv = document.createElement("div");
+	const twoSecondDiv = document.createElement("div");
+	roundDiv.append(roundSpan);
+	twoFirstDiv.appendChild(twoFirstName);
+	twoFirstDiv.appendChild(twoFirstScore);
+	twoSecondDiv.appendChild(twoSecondName)
+	twoSecondDiv.appendChild(twoSecondScore);
+	const containerDiv = document.createElement("div");
+	containerDiv.classList.add("game-summary-items")
+	containerDiv.appendChild(roundDiv);
+	containerDiv.appendChild(twoFirstDiv);
+	containerDiv.appendChild(twoSecondDiv);
+	parent.appendChild(containerDiv);
+}
+
+function createTournamentSummary () {
+	// const parent = document.querySelector(".game-summary-display");
+	// const nameSpan = [];
+	// const scoreSpan = [];
+	// const roundHeader = [];
+	// document.global.ui.localTournamentInfo.player.forEach((player,idx)=>{
+	// 	if (idx % 2 === 0) 
+	// 		roundHeader[idx] = 
+		
+	// })
+	// const roundSpan = document.createElement("span");
+	// const twoFirstName = document.createElement("span");
+	// const twoFirstScore = document.createElement("span");
+	// const twoSecondName = document.createElement("span");
+	// const twoSecondScore = document.createElement("span");
+	// roundSpan.textContent = "Round 1";
+	// twoFirstName.textContent = document.global.gameplay.localTwoInfo.player[0].alias;
+	// twoFirstScore.textContent = document.global.gameplay.localTwoInfo.player[0].score;
+	// twoFirstScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[0].alias + "-score")
+	// twoSecondName.textContent = document.global.gameplay.localTwoInfo.player[1].alias;
+	// twoSecondScore.textContent = document.global.gameplay.localTwoInfo.player[1].score;
+	// twoSecondScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[1].alias + "-score")
+	// const roundDiv = document.createElement("div");
+	// const twoFirstDiv = document.createElement("div");
+	// const twoSecondDiv = document.createElement("div");
+	// roundDiv.append(roundSpan);
+	// twoFirstDiv.appendChild(twoFirstName);
+	// twoFirstDiv.appendChild(twoFirstScore);
+	// twoSecondDiv.appendChild(twoSecondName)
+	// twoSecondDiv.appendChild(twoSecondScore);
+	// const containerDiv = document.createElement("div");
+	// containerDiv.classList.add("game-summary-items")
+	// containerDiv.appendChild(roundDiv);
+	// containerDiv.appendChild(twoFirstDiv);
+	// containerDiv.appendChild(twoSecondDiv);
+	// parent.appendChild(containerDiv);
+}
+
+function populateGameSummary() {
 	if (document.global.gameplay.single) {
-		const singleName = document.createElement("span");
-		const singleScore = document.createElement("span");
-		const AIname = document.createElement("span");
-		const AIscore = document.createElement("span");
-		singleName.textContent = document.global.gameplay.localSingleInfo.player[0].alias;
-		singleScore.textContent = document.global.gameplay.localSingleInfo.player[0].score;
-		singleScore.classList.add('single-'+document.global.gameplay.localSingleInfo.player[0].alias + "-score")
-		AIname.textContent = "A.I."
-		AIscore.textContent = document.global.gameplay.computerScore;
-		AIscore.classList.add("AI-score")
-		const singleDiv = document.createElement("div");
-		const AIDiv = document.createElement("div");
-		singleDiv.appendChild(singleName);
-		singleDiv.appendChild(singleScore);
-		AIDiv.appendChild(AIname)
-		AIDiv.appendChild(AIscore);
-		const containerDiv = document.createElement("div");
-		containerDiv.classList.add("game-summary-items");
-		containerDiv.appendChild(singleDiv);
-		containerDiv.appendChild(AIDiv);
-		parent.appendChild(containerDiv);
+		createSingleSummary();
 	}
 	else if (document.global.gameplay.two) {
-		const twoFirstName = document.createElement("span");
-		const twoFirstScore = document.createElement("span");
-		const twoSecondName = document.createElement("span");
-		const twoSecondScore = document.createElement("span");
-		twoFirstName.textContent = document.global.gameplay.localTwoInfo.player[0].alias;
-		twoFirstScore.textContent = document.global.gameplay.localTwoInfo.player[0].score;
-		twoFirstScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[0].alias + "-score")
-		twoSecondName.textContent = document.global.gameplay.localTwoInfo.player[1].alias;
-		twoSecondScore.textContent = document.global.gameplay.localTwoInfo.player[1].score;
-		twoSecondScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[1].alias + "-score")
-		const twoFirstDiv = document.createElement("div");
-		const twoSecondDiv = document.createElement("div");
-		twoFirstDiv.appendChild(twoFirstName);
-		twoFirstDiv.appendChild(twoFirstScore);
-		twoSecondDiv.appendChild(twoSecondName)
-		twoSecondDiv.appendChild(twoSecondScore);
-		const containerDiv = document.createElement("div");
-		containerDiv.classList.add("game-summary-items")
-		containerDiv.appendChild(twoFirstDiv);
-		containerDiv.appendChild(twoSecondDiv);
-		parent.appendChild(containerDiv);
+		createTwoSummary()
+	}
+	else if (document.global.gameplay.tournament) {
+		createTournamentSummary();
 	}
 }
 
@@ -305,6 +405,11 @@ export function keyBinding() {
 		document.global.ui.local = 0;
 		document.global.ui.two = 1;
 	})
+	const tournament = document.querySelector(".nav-tournament");
+	tournament.addEventListener("click", (e)=>{
+		document.global.ui.local = 0;
+		document.global.ui.tournament = 1;
+	})
 	const singleBack = document.querySelector(".single-back");
 	singleBack.addEventListener("click", (e)=>{
 		document.global.ui.local = 1;
@@ -314,6 +419,11 @@ export function keyBinding() {
 	twoBack.addEventListener("click", (e)=>{
 		document.global.ui.local = 1;
 		document.global.ui.two = 0;
+	})
+	const tournamentBack = document.querySelector(".tournament-back");
+	tournamentBack.addEventListener("click", (e)=>{
+		document.global.ui.local = 1;
+		document.global.ui.tournament = 0;
 	})
 	const singleAlias = document.querySelector(".single-alias");
 	singleAlias.addEventListener("submit", (e)=>{
@@ -341,6 +451,19 @@ export function keyBinding() {
 		}) && document.global.gameplay.localTwoInfo.player.length < 2)
 			document.global.gameplay.localTwoInfo.player.push(newPlayer);
 	})
+	const tournamentAlias = document.querySelector(".tournament-alias");
+	tournamentAlias.addEventListener("submit", (e)=>{
+		e.preventDefault();
+		const newPlayer = {
+			alias:document.getElementById("tournament-alias-text").value,
+			score:0,
+		}
+		document.getElementById("tournament-alias-text").value = "";
+		if (document.global.gameplay.localTournamentInfo.player.every(player=>{
+			return player.alias !== newPlayer.alias;
+		}))
+			document.global.gameplay.localTournamentInfo.player.push(newPlayer);
+	})
 	const singleDuration = document.getElementById("single-duration");
 	singleDuration.addEventListener("change", (e)=>{
 		document.global.gameplay.localSingleInfo.duration = e.target.value;
@@ -348,6 +471,10 @@ export function keyBinding() {
 	const twoDuration = document.getElementById("two-duration");
 	twoDuration.addEventListener("change", (e)=>{
 		document.global.gameplay.localTwoInfo.duration = e.target.value;
+	})
+	const tournamentDuration = document.getElementById("tournament-duration");
+	tournamentDuration.addEventListener("change", (e)=>{
+		document.global.gameplay.localTournamentInfo.duration = e.target.value;
 	})
 	const singlePowerup = document.getElementById("single-powerup");
 	singlePowerup.addEventListener("change", (e)=>{
@@ -357,6 +484,10 @@ export function keyBinding() {
 	twoPowerup.addEventListener("change", (e)=>{
 		document.global.gameplay.localTwoInfo.powerUp ? document.global.gameplay.localTwoInfo.powerUp = 0:document.global.gameplay.localTwoInfo.powerUp = 1;
 	})
+	const tournamentPowerup = document.getElementById("tournament-powerup");
+	tournamentPowerup.addEventListener("change", (e)=>{
+		document.global.gameplay.localTournamentInfo.powerUp ? document.global.gameplay.localTournamentInfo.powerUp = 0:document.global.gameplay.localTournamentInfo.powerUp = 1;
+	})
 	const singleLudicrious = document.getElementById("single-ludicrious");
 	singleLudicrious.addEventListener("change", (e)=>{
 		document.global.gameplay.localSingleInfo.ludicrious ? document.global.gameplay.localSingleInfo.ludicrious = 0:document.global.gameplay.localSingleInfo.ludicrious = 1;
@@ -364,6 +495,10 @@ export function keyBinding() {
 	const twoLudicrious = document.getElementById("two-ludicrious");
 	twoLudicrious.addEventListener("change", (e)=>{
 		document.global.gameplay.localTwoInfo.ludicrious ? document.global.gameplay.localTwoInfo.ludicrious = 0:document.global.gameplay.localTwoInfo.ludicrious = 1;
+	})
+	const tournamentLudicrious = document.getElementById("tournament-ludicrious");
+	tournamentLudicrious.addEventListener("change", (e)=>{
+		document.global.gameplay.localTournamentInfo.ludicrious ? document.global.gameplay.localTournamentInfo.ludicrious = 0:document.global.gameplay.localTournamentInfo.ludicrious = 1;
 	})
 	const singleStart = document.querySelector(".single-start");
 	singleStart.addEventListener("click", (e)=>{
@@ -387,6 +522,20 @@ export function keyBinding() {
 			document.querySelector(".game-summary-header-type").textContent = "Two Players"
 			gameStart()
 			populateGameSummary();
+		}
+	})
+	const tournamentStart = document.querySelector(".tournament-start");
+	tournamentStart.addEventListener("click", (e)=>{
+		if (document.global.gameplay.localTournamentInfo.player.length >= 2) {
+			document.global.gameplay.local = 1;
+			document.global.gameplay.tournament = 1;
+			document.global.gameplay.localTournamentInfo.durationCount = document.global.gameplay.localTournamentInfo.duration;
+			document.global.powerUp.enable = document.global.gameplay.localTournamentInfo.powerUp;
+			document.querySelector(".game-summary-header-type").textContent = "Local Tournament"
+			console.log(document.global.gameplay.localTournamentInfo.playerRound)
+			matchFix();
+			// gameStart();
+			// populateGameSummary();
 		}
 	})
 
@@ -442,10 +591,19 @@ export function keyBinding() {
 				duration:document.global.gameplay.defaultDuration,
 				durationCount:document.global.gameplay.defaultDuration
 			};
+			document.global.gameplay.localTournamentInfo = {
+				player:[{alias:"Player-One"}, {alias:"Player-Two"}],
+				playerRound:[],
+				ludicrious:1,
+				powerUp:1,
+				duration:document.global.gameplay.defaultDuration,
+				durationCount:document.global.gameplay.defaultDuration
+			};
 			document.global.ui.mainMenu = 1;
 			document.global.ui.local = 0;
 			document.global.ui.single = 0;
 			document.global.ui.two = 0;
+			document.global.ui.tournament = 0;
 		})
 	)
 }

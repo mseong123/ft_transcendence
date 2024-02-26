@@ -191,6 +191,16 @@ function initGlobal() {
 		duration:document.global.gameplay.defaultDuration,
 		durationCount:document.global.gameplay.defaultDuration,
 	};
+	document.global.gameplay.localTournamentInfo = { 
+		player:[{alias:"Player-One"}, {alias:"Player-Two"}],
+		playerRound:[],
+		currentRound:0,
+		round:0,
+		ludicrious:1,
+		powerUp:1,
+		duration:document.global.gameplay.defaultDuration,
+		durationCount:document.global.gameplay.defaultDuration,
+	};
 	document.global.gameplay.computerScore = 0;
 	document.global.gameplay.mainClient = 1;
 	
@@ -221,6 +231,7 @@ function initGlobal() {
 	document.global.ui.local = 0;
 	document.global.ui.single = 0;
 	document.global.ui.two = 0;
+	document.global.ui.tournament = 0;
 	
 }
 

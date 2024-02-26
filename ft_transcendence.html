@@ -33,7 +33,7 @@
 							<h4><i class="fas fa-location-dot"></i>LOCAL GAME</h4>
 							<button type="button" class="nav nav-single">Single Player (vs A.I.) &nbsp;<i class="fa fa-caret-right"></i></button>
 							<button type="button" class="nav nav-two">Two Player &nbsp;<i class="fa fa-caret-right"></i></button>
-							<button type="button" class="nav nav-Tournament">Local Tournament &nbsp;<i class="fa fa-caret-right"></i></button>
+							<button type="button" class="nav nav-tournament">Local Tournament &nbsp;<i class="fa fa-caret-right"></i></button>
 						</div>
 						<div class="single-menu display-none">
 								<button type="button" class="menu-back single-back"><i class="fa fa-caret-left"></i></button>
@@ -138,6 +138,41 @@
 								</div>
 								<button type="button" class="two-start"><i class="fa fa-play"></i>Play</button>
 							</form>
+						</div>
+					<!-- local tournament menu -->
+					<div class="tournament-menu display-none">
+						<button type="button" class="menu-back tournament-back"><i class="fa fa-caret-left"></i></button>
+						<button type="button" class="menu-home"><i class="fa fa-home"></i></button>
+						<h4>LOCAL TOURNAMENT</h4>
+						<form class="tournament-alias">
+							<div class="tournament-alias-display">
+								<p>Player(s): &nbsp;</p>
+								<div class="tournament-alias-display-inside"></div>
+							</div>
+							<p class="tournament-alias-display-warning">Enter only 2 alias</p>
+							<hr>
+							
+							<div>
+								<label for="tournament-alias-text">Enter Alias</label>
+								<input type="text" id="tournament-alias-text" required pattern="^[A-Za-z][A-Za-z0-9]*$" placeholder="alias">
+								<button type="submit" class="tournament-alias-submit"><i class="fa fa-caret-right"></i></button>
+							</div>
+						</form>
+						<form class="tournament-submit">
+							<div>
+								<label for="tournament-duration">Duration</label>
+								<input type="time" id="tournament-duration">
+							</div>
+							<div>
+								<label for="tournament-powerup">Power Up</label>
+								<input type="checkbox" id="tournament-powerup" checked>
+							</div>
+							<div>
+								<label for="tournament-ludicrious" class="tournament-ludicrious">Ludicious Mode</label>
+								<input type="checkbox" id="tournament-ludicrious" checked>
+							</div>
+							<button type="button" class="tournament-start"><i class="fa fa-play"></i>Play</button>
+						</form>
 					</div>
 						
 					<div class="chat-menu">
@@ -159,6 +194,7 @@
 							<hr>
 							<h4 class="game-summary-header-type"></h4>
 							<div class="game-summary-display">
+								
 							</div>
 						</div>
 						<div class="reset-game display-none"><button class="reset-game-button" type="button">Next</button></div>
@@ -175,7 +211,6 @@
 						<p class="scoreboard-two-name"></p>
 						<p class="scoreboard-two-score"></p>
 					</div>
-
 					<p class="next-one display-none"></p>
 					<div></div>
 					<p class="next-two display-none"></p>
