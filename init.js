@@ -193,7 +193,7 @@ function initGlobal() {
 	};
 	document.global.gameplay.localTournamentInfo = { 
 		player:[{alias:"Player-One"}, {alias:"Player-Two"}],
-		playerRound:[],
+		playerGame:[],
 		currentRound:0,
 		round:0,
 		ludicrious:1,

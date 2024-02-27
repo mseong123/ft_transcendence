@@ -180,7 +180,7 @@ hr {
 	position:relative;
 }
 
-.main-menu, .local-menu, .single-menu, .two-menu {
+.main-menu, .local-menu, .single-menu, .two-menu, .tournament-menu {
 	font-weight:normal;
 }
 
@@ -194,27 +194,31 @@ hr {
 	margin:0.25rem 0;
 }
 
-.single-alias, .two-alias {
+.single-alias, .two-alias, .tournament-alias {
 	background-color:rgb(28,28,28);
 	border-radius:0.25rem;
 	padding:0.25rem;
 	margin-bottom:0.1rem;
 }
-.single-alias-display, .two-alias-display {
+.single-alias-display, .two-alias-display, .tournament-alias-display {
 	display:grid;
 	grid-template-columns: auto auto;
 }
+.tournament-alias-display {
+	max-height:45px;
+	overflow-y:auto;
+}
 
-.single-alias-display-inside, .two-alias-display-inside {
+.single-alias-display-inside, .two-alias-display-inside, .tournament-alias-display-inside {
 	display:grid;
 	grid-template-columns: auto auto auto;
 }
-.single-alias-display-warning, .two-alias-display-warning {
+.single-alias-display-warning, .two-alias-display-warning, .tournament-alias-display-warning {
 	color:red;
 	font-size: 0.5rem;
 }
 
-#single-alias-text, #two-alias-text {
+#single-alias-text, #two-alias-text, #tournament-alias-text {
 	margin-left:0.25rem;
 	width:140px;
 	height:18px;
@@ -224,11 +228,11 @@ hr {
 	border-bottom:1px solid rgb(143,143,143);
 }
 
-#single-alias-text:focus, #two-alias-text:focus {
+#single-alias-text:focus, #two-alias-text:focus, #tournament-alias-text:focus {
 	border:1px solid rgb(143,143,143);
 }
 
-#single-duration, #two-duration {
+#single-duration, #two-duration, #tournament-duration {
 	width:77px;
 	height:24px;
 	background-color:transparent;
@@ -236,25 +240,25 @@ hr {
 	color:rgb(143,143,143);
 }
 
-.single-submit, .two-submit {
+.single-submit, .two-submit, .tournament-submit {
 	display:grid;
 	grid-template-columns: auto auto;
 	margin:0;
 }
 
-.single-submit div, .two-submit div {
+.single-submit div, .two-submit div, .tournament-submit div {
 	margin:0.1rem 0;
 }
 
-.single-ludicrious, .two-ludicrious {
+.single-ludicrious, .two-ludicrious, .tournament-ludicrious {
 	color:rgb(2,238,139);
 }
-.single-start, .two-start {
+.single-start, .two-start, .tournament-start {
 	border-radius:0.25rem;
 	border:1px solid rgb(2,238,139)!important;
 	color:rgb(2,238,139)!important;
 }
-.single-start:focus, .single-start:hover, .two-start:hover, .two-start:focus {
+.single-start:focus, .single-start:hover, .two-start:hover, .two-start:focus, .tournament-start:hover, .tournament-start:focus {
 	color:white!important;
 	border:1px solid white!important;
 }
@@ -366,8 +370,8 @@ hr {
 }
 .game-summary-display {
 	display:grid;
-	grid-template-columns:70%;
-	justify-content:space-evenly;
+	grid-template-columns:auto auto;
+	
 }
 .game-summary-items {
 	display:grid;
@@ -383,6 +387,10 @@ hr {
 .game-summary-items div span{
 	margin:0 0.1rem;
 }
+.game-summary-items div:nth-child(1) {
+	text-decoration:underline;
+}
+
 .game-summary-items div:nth-child(2) {
 	grid-area:player-1;
 }
@@ -503,16 +511,19 @@ hr {
 	.local-menu form div {
 		margin:0.5rem 0;
 	}
-	.single-alias, .two-alias {
+	.single-alias, .two-alias, .tournament-alias {
 		padding:0.5rem;
 		margin-bottom:0.25rem;
 	}
-	.single-alias-display-warning, .two-alias-display-warning{
+	.single-alias-display-warning, .two-alias-display-warning, .tournament-alias-display-warning{
 		color:red;
 		font-size: 0.75rem;
 	}
-	.single-submit div, .two-submit div {
+	.single-submit div, .two-submit div, .tournament-submit div {
 		margin:0.25rem 0;
+	}
+	.tournament-alias-display {
+		max-height:60px;
 	}
 	.scoreboard {
 		font-size: 1.75rem;
