@@ -422,6 +422,18 @@ hr {
 	color:white;
 }
 
+.game-end-display-container {
+	display:grid;
+	grid-template-columns: 50%;
+	justify-content:center;
+}
+
+.game-end-display {
+	border:1px solid rgb(2,238,139);
+	border-radius:0.25rem;
+	text-align:center;
+}
+
 @media (min-width:577px) {
 	.banner {
 		margin-top:3rem;

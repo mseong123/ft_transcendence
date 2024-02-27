@@ -425,10 +425,15 @@ function updateGameSummary() {
 			document.querySelector('[data-player='+'"tournament-' + document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].alias + "-" +document.global.gameplay.localTournamentInfo.currentRound + '-score"]').textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].score;
 		}
 		document.global.gameplay.localTournamentInfo.playerGame.forEach((playerGame,idx)=>{
-			if (playerGame[0].winner)
+			if (playerGame[0].winner) {
 				document.querySelector(".game-summary-display").children[idx].children[1].classList.add("won");
+			}
+				
 			else if (playerGame[1].winner)
 				document.querySelector(".game-summary-display").children[idx].children[2].classList.add("won");
+			parent.children[idx].children[1].children[1].setAttribute("data-player","tournament-" + playerGame[0].alias + '-' + idx + "-score")
+			parent.children[idx].children[2].children[1].setAttribute("data-player","tournament-" + playerGame[1].alias + '-' + idx + "-score")
+			
 		})
 	}
 }
@@ -574,6 +579,7 @@ function processUI() {
 		document.querySelector(".banner").classList.add("display-none");
 		document.querySelector(".scoreboard").classList.remove("display-none");
 		document.querySelector(".toggle-game").classList.remove("display-none");
+		document.querySelector(".game-end-display-container").classList.add("display-none");
 		if (document.global.gameplay.cheat)
 			document.querySelector(".toggle-cheat").classList.remove("display-none");
 		else
@@ -585,7 +591,6 @@ function processUI() {
 			document.querySelector(".scoreboard-two-name").textContent = "A.I.";
 			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.computerScore;
 			document.querySelector(".timer").textContent = document.global.gameplay.localSingleInfo.durationCount;
-			updateGameSummary();
 		}
 		else if (document.global.gameplay.local && document.global.gameplay.two) {
 			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localTwoInfo.player[0].alias;
@@ -593,7 +598,6 @@ function processUI() {
 			document.querySelector(".scoreboard-two-name").textContent = document.global.gameplay.localTwoInfo.player[1].alias;
 			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.localTwoInfo.player[1].score;
 			document.querySelector(".timer").textContent = document.global.gameplay.localTwoInfo.durationCount;
-			updateGameSummary();
 		}
 		else if (document.global.gameplay.local && document.global.gameplay.tournament) {
 			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].alias;
@@ -601,22 +605,26 @@ function processUI() {
 			document.querySelector(".scoreboard-two-name").textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].alias;
 			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].score;
 			document.querySelector(".timer").textContent = document.global.gameplay.localTournamentInfo.durationCount;
-			updateGameSummary();
 			
 		}
+		updateGameSummary();
 	}
 	else if (document.global.gameplay.gameStart && document.global.gameplay.gameEnd) {
 		//for gameEnd screen
+		updateGameSummary();
 		document.querySelector(".game-summary-container").classList.remove("display-none");
+		if (document.global.gameplay.single || document.global.gameplay.two || document.global.gameplay.tournament && (document.global.gameplay.localTournamentInfo.currentRound === document.global.gameplay.localTournamentInfo.round - 1))
+			document.querySelector(".game-end-display-container").classList.remove("display-none");
 		document.querySelector(".banner").classList.add("display-none");
 		document.querySelector(".scoreboard").classList.add("display-none");
 		document.querySelector(".toggle-game").classList.add("display-none");
 		document.querySelector(".toggle-cheat").classList.add("display-none");
 		document.querySelector(".reset-game").classList.remove("display-none");
-		updateGameSummary();
 	}
 	else { 
 		//for starting screen before gameStart
+		document.querySelector(".game-summary-display").innerHTML = '';
+		document.querySelector(".game-end-display-container").classList.add("display-none");
 		document.querySelector(".banner").classList.remove("display-none");
 		document.querySelector(".scoreboard").classList.add("display-none");
 		document.querySelector(".toggle-game").classList.add("display-none");
@@ -722,6 +730,67 @@ function setTimer() {
 	}
 }
 
+export function populateWinner() {
+	if (document.global.gameplay.local && document.global.gameplay.single) {
+		const scoreOne = parseInt(document.global.gameplay.localSingleInfo.player[0].score);
+		const scoreAI = parseInt(document.global.gameplay.computerScore);
+		if (scoreOne > scoreAI) {
+			document.global.gameplay.localSingleInfo.player[0].winner = true;
+			document.global.gameplay.computerWinner = false;
+		}
+		else if (scoreAI > scoreOne) {
+			document.global.gameplay.localSingleInfo.player[0].winner = false;
+			document.global.gameplay.computerWinner = true;
+		}
+	}
+	else if (document.global.gameplay.local && document.global.gameplay.two) {
+		const scoreOne = parseInt(document.global.gameplay.localTwoInfo.player[0].score);
+		const scoreTwo = parseInt(document.global.gameplay.localTwoInfo.player[1].score);
+		if (scoreOne > scoreTwo) {
+			document.global.gameplay.localTwoInfo.player[0].winner = true;
+			document.global.gameplay.localTwoInfo.player[1].winner = false;
+		}
+		else if (scoreTwo > scoreOne) {
+			document.global.gameplay.localTwoInfo.player[0].winner = false;
+			document.global.gameplay.localTwoInfo.player[1].winner = true;
+		}
+	}
+	else if (document.global.gameplay.local && document.global.gameplay.tournament) {
+		const scoreOne = parseInt(document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].score);
+		const scoreTwo = parseInt(document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].score);
+		let winnerAlias;
+		if (scoreOne > scoreTwo) {
+			document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].winner = true;
+			document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].winner = false;
+			winnerAlias = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].alias;
+		}
+		else if (scoreTwo > scoreOne) {
+			document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].winner = true;
+			document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].winner = false;
+			winnerAlias = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].alias;
+		}
+		else {
+			const randomWinner = Math.floor(Math.random() * 1)
+			if (randomWinner === 0)
+				winnerAlias = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].alias;
+			else
+				winnerAlias = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].alias;
+		}
+
+		for (let i = 0; i < document.global.gameplay.localTournamentInfo.playerGame.length; i++) {
+			if (document.global.gameplay.localTournamentInfo.playerGame[i][0].alias === "<Player>") {
+				document.global.gameplay.localTournamentInfo.playerGame[i][0].alias = winnerAlias;
+				break;
+			}
+			else if (document.global.gameplay.localTournamentInfo.playerGame[i][1].alias === "<Player>") {
+				document.global.gameplay.localTournamentInfo.playerGame[i][1].alias = winnerAlias;
+				break;
+			}
+		}
+	}
+
+}
+
 function reduceTime(info) {
 	const [minute, second] = info.durationCount.split(':')
 	const date = new Date(1970, 0, 1, 0, minute, second);
@@ -750,61 +819,7 @@ function reduceTime(info) {
 		}
 	}
 	if (minute === '00' && second === '01') {
-		if (document.global.gameplay.local && document.global.gameplay.single) {
-			const scoreOne = parseInt(document.global.gameplay.localSingleInfo.player[0].score);
-			const scoreAI = parseInt(document.global.gameplay.computerScore);
-			if (scoreOne > scoreAI) {
-				document.global.gameplay.localSingleInfo.player[0].winner = true;
-				document.global.gameplay.computerWinner = false;
-			}
-			else if (scoreAI > scoreOne) {
-				document.global.gameplay.localSingleInfo.player[0].winner = false;
-				document.global.gameplay.computerWinner = true;
-			}
-		}
-		else if (document.global.gameplay.local && document.global.gameplay.two) {
-			const scoreOne = parseInt(document.global.gameplay.localTwoInfo.player[0].score);
-			const scoreTwo = parseInt(document.global.gameplay.localTwoInfo.player[1].score);
-			if (scoreOne > scoreTwo) {
-				document.global.gameplay.localTwoInfo.player[0].winner = true;
-				document.global.gameplay.localTwoInfo.player[1].winner = false;
-			}
-			else if (scoreTwo > scoreOne) {
-				document.global.gameplay.localTwoInfo.player[0].winner = false;
-				document.global.gameplay.localTwoInfo.player[1].winner = true;
-			}
-		}
-		else if (document.global.gameplay.local && document.global.gameplay.tournament) {
-			const scoreOne = parseInt(document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].score);
-			const scoreTwo = parseInt(document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].score);
-			let winnerAlias;
-			if (scoreOne > scoreTwo) {
-				document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].winner = true;
-				document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].winner = false;
-				winnerAlias = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].alias;
-			}
-			else {
-				document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].winner = true;
-				document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].winner = false;
-				winnerAlias = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].alias;
-			}
-			for (let i = 0; i < document.global.gameplay.localTournamentInfo.playerGame.length; i++) {
-				if (document.global.gameplay.localTournamentInfo.playerGame[i][0].alias === "<Player>") {
-					document.querySelector('[data-player='+'"tournament-' + document.global.gameplay.localTournamentInfo.playerGame[i][0].alias + "-" + i + '-score"]').setAttribute("data-player","tournament-" + winnerAlias + '-' + i + "-score")
-					document.global.gameplay.localTournamentInfo.playerGame[i][0].alias = winnerAlias;
-					break;
-				}
-				else if (document.global.gameplay.localTournamentInfo.playerGame[i][1].alias === "<Player>") {
-					document.querySelector('[data-player='+'"tournament-' + document.global.gameplay.localTournamentInfo.playerGame[i][1].alias + "-" + i + '-score"]').setAttribute("data-player","tournament-" + winnerAlias + '-' + i + "-score")
-					document.global.gameplay.localTournamentInfo.playerGame[i][1].alias = winnerAlias;
-					break;
-				}
-			}
-
-
-
-		}
-		
+		populateWinner()
 		document.global.gameplay.gameEnd = 1; 
 	}
 		
@@ -905,12 +920,6 @@ export function main() {
 		}
 		movePaddle();
 		setTimer();
-		
-
-		
-			
-
-
 		renderer.render( scene, camera );
 		document.global.requestID = requestAnimationFrame(render);
 	}

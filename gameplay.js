@@ -1,5 +1,5 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
-
+import {populateWinner} from './render.js'
 
 
 function canvasKeydown(e) {
@@ -145,7 +145,6 @@ function resetGame() {
 	})
 	//individual game format reset
 	if (document.global.gameplay.single) {
-		document.querySelector(".game-summary-display").innerHTML = '';
 		document.global.gameplay.localSingleInfo = {
 			player:[{alias:"Player", score:0, winner:false}],
 			ludicrious:1,
@@ -158,7 +157,6 @@ function resetGame() {
 		document.global.gameplay.computerWinner = false;
 	}
 	else if (document.global.gameplay.two) {
-		document.querySelector(".game-summary-display").innerHTML = '';
 		document.global.gameplay.localTwoInfo = {
 			player:[{alias:"Player-One", score:0, winner:false}, {alias:"Player-Two", score:0, winner:false}],
 			ludicrious:1,
@@ -176,7 +174,6 @@ function resetGame() {
 			gameStart();
 		}
 		else {
-			document.querySelector(".game-summary-display").innerHTML = '';
 			document.global.gameplay.localTournamentInfo = {
 				player:[{alias:"Player-One"}, {alias:"Player-Two"}],
 				playerGame:[],
@@ -473,10 +470,9 @@ export function keyBinding() {
 	const navReset = document.querySelector(".nav-reset");
 	navReset.addEventListener("click", (e)=>{
 		document.global.ui.toggleGame = 0;
-		document.global.gameplay.gameEnd = 1; 
-		
+		document.global.gameplay.gameEnd = 1;
+		populateWinner();
 	})
-
 
 	const menuHome = document.querySelectorAll(".menu-home");
 		menuHome.forEach(menuHome=>menuHome.addEventListener("click", (e)=>{
