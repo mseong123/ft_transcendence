@@ -384,6 +384,12 @@ hr {
 	padding:0.25rem;
 	margin:0.25rem 0.25rem;
 }
+
+.won {
+	background-color:rgb(2,238,139);
+	border-radius:0.25rem;
+}
+
 .game-summary-items div span{
 	margin:0 0.1rem;
 }

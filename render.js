@@ -307,6 +307,132 @@ function processPowerUp() {
 	})
 }
 
+function updateGameSummary() {
+	const parent = document.querySelector(".game-summary-display");
+	if (document.global.gameplay.local && document.global.gameplay.single) {
+		if (parent.children.length === 0) {
+			const roundSpan = document.createElement("span");
+			const singleName = document.createElement("span");
+			const singleScore = document.createElement("span");
+			const AIname = document.createElement("span");
+			const AIscore = document.createElement("span");
+			singleName.textContent = document.global.gameplay.localSingleInfo.player[0].alias;
+			singleScore.textContent = document.global.gameplay.localSingleInfo.player[0].score;
+			singleScore.classList.add('single-'+document.global.gameplay.localSingleInfo.player[0].alias + "-score")
+			AIname.textContent = "A.I."
+			AIscore.textContent = document.global.gameplay.computerScore;
+			AIscore.classList.add("AI-score")
+			const roundDiv = document.createElement("div");
+			const singleDiv = document.createElement("div");
+			const AIDiv = document.createElement("div");
+			roundDiv.appendChild(roundSpan);
+			singleDiv.appendChild(singleName);
+			singleDiv.appendChild(singleScore);
+			AIDiv.appendChild(AIname)
+			AIDiv.appendChild(AIscore);
+			const containerDiv = document.createElement("div");
+			containerDiv.classList.add("game-summary-items");
+			containerDiv.appendChild(roundDiv);
+			containerDiv.appendChild(singleDiv);
+			containerDiv.appendChild(AIDiv);
+			parent.appendChild(containerDiv);
+		}
+		else {
+			document.querySelector(".single-" + document.global.gameplay.localSingleInfo.player[0].alias + "-score").textContent = document.global.gameplay.localSingleInfo.player[0].score;
+			document.querySelector(".AI-score").textContent = document.global.gameplay.computerScore;
+		}
+		if (document.global.gameplay.localSingleInfo.player[0].winner)
+			document.querySelector(".game-summary-display").children[0].children[1].classList.add("won");
+		else if (document.global.gameplay.computerWinner)
+			document.querySelector(".game-summary-display").children[0].children[2].classList.add("won");
+		
+	}
+	else if (document.global.gameplay.local && document.global.gameplay.two) {
+		if (parent.children.length === 0) {
+			const parent = document.querySelector(".game-summary-display");
+			const roundSpan = document.createElement("span");
+			const twoFirstName = document.createElement("span");
+			const twoFirstScore = document.createElement("span");
+			const twoSecondName = document.createElement("span");
+			const twoSecondScore = document.createElement("span");
+			twoFirstName.textContent = document.global.gameplay.localTwoInfo.player[0].alias;
+			twoFirstScore.textContent = document.global.gameplay.localTwoInfo.player[0].score;
+			twoFirstScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[0].alias + "-score")
+			twoSecondName.textContent = document.global.gameplay.localTwoInfo.player[1].alias;
+			twoSecondScore.textContent = document.global.gameplay.localTwoInfo.player[1].score;
+			twoSecondScore.classList.add("two-" + document.global.gameplay.localTwoInfo.player[1].alias + "-score")
+			const roundDiv = document.createElement("div");
+			const twoFirstDiv = document.createElement("div");
+			const twoSecondDiv = document.createElement("div");
+			roundDiv.append(roundSpan);
+			twoFirstDiv.appendChild(twoFirstName);
+			twoFirstDiv.appendChild(twoFirstScore);
+			twoSecondDiv.appendChild(twoSecondName)
+			twoSecondDiv.appendChild(twoSecondScore);
+			const containerDiv = document.createElement("div");
+			containerDiv.classList.add("game-summary-items")
+			containerDiv.appendChild(roundDiv);
+			containerDiv.appendChild(twoFirstDiv);
+			containerDiv.appendChild(twoSecondDiv);
+			parent.appendChild(containerDiv);
+		}
+		else {
+			document.querySelector(".two-" + document.global.gameplay.localTwoInfo.player[0].alias + "-score").textContent = document.global.gameplay.localTwoInfo.player[0].score;
+			document.querySelector(".two-" + document.global.gameplay.localTwoInfo.player[1].alias + "-score").textContent = document.global.gameplay.localTwoInfo.player[1].score;
+		}
+		if (document.global.gameplay.localTwoInfo.player[0].winner)
+			document.querySelector(".game-summary-display").children[0].children[1].classList.add("won");
+		else if (document.global.gameplay.localTwoInfo.player[1].winner)
+			document.querySelector(".game-summary-display").children[0].children[2].classList.add("won");
+	}
+	else if (document.global.gameplay.local && document.global.gameplay.tournament) {
+		if (parent.children.length === 0) {
+			document.global.gameplay.localTournamentInfo.playerGame.forEach((playerGame,idx)=>{
+				const roundSpan = document.createElement("span");
+				const firstName = document.createElement("span");
+				const firstScore = document.createElement("span");
+				const secondName = document.createElement("span");
+				const secondScore = document.createElement("span");
+				roundSpan.textContent = "Game " + (idx + 1);
+				firstName.textContent = playerGame[0].alias;
+				firstScore.textContent = playerGame[0].score;
+				firstScore.setAttribute("data-player","tournament-" + playerGame[0].alias + '-' + idx + "-score")
+				secondName.textContent = playerGame[1].alias;
+				secondScore.textContent = playerGame[1].score;
+				secondScore.setAttribute("data-player", "tournament-" + playerGame[1].alias + '-' + idx + "-score")
+				const roundDiv = document.createElement("div");
+				const firstDiv = document.createElement("div");
+				const secondDiv = document.createElement("div");
+				roundDiv.append(roundSpan);
+				firstDiv.appendChild(firstName);
+				firstDiv.appendChild(firstScore);
+				secondDiv.appendChild(secondName)
+				secondDiv.appendChild(secondScore);
+				const containerDiv = document.createElement("div");
+				containerDiv.classList.add("game-summary-items")
+				containerDiv.appendChild(roundDiv);
+				containerDiv.appendChild(firstDiv);
+				containerDiv.appendChild(secondDiv);
+				parent.appendChild(containerDiv);
+			})
+		}
+		else {
+			document.global.gameplay.localTournamentInfo.playerGame.forEach((playerGame,idx)=>{
+				parent.children[idx].children[1].children[0].textContent = playerGame[0].alias;
+				parent.children[idx].children[2].children[0].textContent = playerGame[1].alias;
+			})
+			document.querySelector('[data-player='+'"tournament-' + document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].alias + "-" +document.global.gameplay.localTournamentInfo.currentRound + '-score"]').textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].score;
+			document.querySelector('[data-player='+'"tournament-' + document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].alias + "-" +document.global.gameplay.localTournamentInfo.currentRound + '-score"]').textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].score;
+		}
+		document.global.gameplay.localTournamentInfo.playerGame.forEach((playerGame,idx)=>{
+			if (playerGame[0].winner)
+				document.querySelector(".game-summary-display").children[idx].children[1].classList.add("won");
+			else if (playerGame[1].winner)
+				document.querySelector(".game-summary-display").children[idx].children[2].classList.add("won");
+		})
+	}
+}
+
 function processUI() {
 	if (document.global.ui.toggleCanvas)
 		document.querySelector(".menu-canvas").classList.remove("display-none");
@@ -459,8 +585,7 @@ function processUI() {
 			document.querySelector(".scoreboard-two-name").textContent = "A.I.";
 			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.computerScore;
 			document.querySelector(".timer").textContent = document.global.gameplay.localSingleInfo.durationCount;
-			document.querySelector(".single-" + document.global.gameplay.localSingleInfo.player[0].alias + "-score").textContent = document.global.gameplay.localSingleInfo.player[0].score;
-			document.querySelector(".AI-score").textContent = document.global.gameplay.computerScore;
+			updateGameSummary();
 		}
 		else if (document.global.gameplay.local && document.global.gameplay.two) {
 			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localTwoInfo.player[0].alias;
@@ -468,8 +593,16 @@ function processUI() {
 			document.querySelector(".scoreboard-two-name").textContent = document.global.gameplay.localTwoInfo.player[1].alias;
 			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.localTwoInfo.player[1].score;
 			document.querySelector(".timer").textContent = document.global.gameplay.localTwoInfo.durationCount;
-			document.querySelector(".two-" + document.global.gameplay.localTwoInfo.player[0].alias + "-score").textContent = document.global.gameplay.localTwoInfo.player[0].score;
-			document.querySelector(".two-" + document.global.gameplay.localTwoInfo.player[1].alias + "-score").textContent = document.global.gameplay.localTwoInfo.player[1].score;
+			updateGameSummary();
+		}
+		else if (document.global.gameplay.local && document.global.gameplay.tournament) {
+			document.querySelector(".scoreboard-one-name").textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].alias;
+			document.querySelector(".scoreboard-one-score").textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].score;
+			document.querySelector(".scoreboard-two-name").textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].alias;
+			document.querySelector(".scoreboard-two-score").textContent = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].score;
+			document.querySelector(".timer").textContent = document.global.gameplay.localTournamentInfo.durationCount;
+			updateGameSummary();
+			
 		}
 	}
 	else if (document.global.gameplay.gameStart && document.global.gameplay.gameEnd) {
@@ -480,6 +613,7 @@ function processUI() {
 		document.querySelector(".toggle-game").classList.add("display-none");
 		document.querySelector(".toggle-cheat").classList.add("display-none");
 		document.querySelector(".reset-game").classList.remove("display-none");
+		updateGameSummary();
 	}
 	else { 
 		//for starting screen before gameStart
@@ -616,8 +750,64 @@ function reduceTime(info) {
 		}
 	}
 	if (minute === '00' && second === '01') {
+		if (document.global.gameplay.local && document.global.gameplay.single) {
+			const scoreOne = parseInt(document.global.gameplay.localSingleInfo.player[0].score);
+			const scoreAI = parseInt(document.global.gameplay.computerScore);
+			if (scoreOne > scoreAI) {
+				document.global.gameplay.localSingleInfo.player[0].winner = true;
+				document.global.gameplay.computerWinner = false;
+			}
+			else if (scoreAI > scoreOne) {
+				document.global.gameplay.localSingleInfo.player[0].winner = false;
+				document.global.gameplay.computerWinner = true;
+			}
+		}
+		else if (document.global.gameplay.local && document.global.gameplay.two) {
+			const scoreOne = parseInt(document.global.gameplay.localTwoInfo.player[0].score);
+			const scoreTwo = parseInt(document.global.gameplay.localTwoInfo.player[1].score);
+			if (scoreOne > scoreTwo) {
+				document.global.gameplay.localTwoInfo.player[0].winner = true;
+				document.global.gameplay.localTwoInfo.player[1].winner = false;
+			}
+			else if (scoreTwo > scoreOne) {
+				document.global.gameplay.localTwoInfo.player[0].winner = false;
+				document.global.gameplay.localTwoInfo.player[1].winner = true;
+			}
+		}
+		else if (document.global.gameplay.local && document.global.gameplay.tournament) {
+			const scoreOne = parseInt(document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].score);
+			const scoreTwo = parseInt(document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].score);
+			let winnerAlias;
+			if (scoreOne > scoreTwo) {
+				document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].winner = true;
+				document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].winner = false;
+				winnerAlias = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].alias;
+			}
+			else {
+				document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].winner = true;
+				document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][0].winner = false;
+				winnerAlias = document.global.gameplay.localTournamentInfo.playerGame[document.global.gameplay.localTournamentInfo.currentRound][1].alias;
+			}
+			for (let i = 0; i < document.global.gameplay.localTournamentInfo.playerGame.length; i++) {
+				if (document.global.gameplay.localTournamentInfo.playerGame[i][0].alias === "<Player>") {
+					document.querySelector('[data-player='+'"tournament-' + document.global.gameplay.localTournamentInfo.playerGame[i][0].alias + "-" + i + '-score"]').setAttribute("data-player","tournament-" + winnerAlias + '-' + i + "-score")
+					document.global.gameplay.localTournamentInfo.playerGame[i][0].alias = winnerAlias;
+					break;
+				}
+				else if (document.global.gameplay.localTournamentInfo.playerGame[i][1].alias === "<Player>") {
+					document.querySelector('[data-player='+'"tournament-' + document.global.gameplay.localTournamentInfo.playerGame[i][1].alias + "-" + i + '-score"]').setAttribute("data-player","tournament-" + winnerAlias + '-' + i + "-score")
+					document.global.gameplay.localTournamentInfo.playerGame[i][1].alias = winnerAlias;
+					break;
+				}
+			}
+
+
+
+		}
+		
 		document.global.gameplay.gameEnd = 1; 
 	}
+		
 }
 
 function processCountDown(frameTimer) {
@@ -631,6 +821,12 @@ function processCountDown(frameTimer) {
 		else if (document.global.gameplay.local && document.global.gameplay.two) {
 			if (frameTimer.now - frameTimer.prev > 0) {
 				reduceTime(document.global.gameplay.localTwoInfo)
+				frameTimer.prev = frameTimer.now;
+			}
+		}
+		else if (document.global.gameplay.local && document.global.gameplay.tournament) {
+			if (frameTimer.now - frameTimer.prev > 0) {
+				reduceTime(document.global.gameplay.localTournamentInfo)
 				frameTimer.prev = frameTimer.now;
 			}
 		}

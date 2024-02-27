@@ -173,19 +173,19 @@ function initGlobal() {
 	document.global.gameplay.roundStartFrameLimit = 30;
 	document.global.gameplay.shadowFrame = 0;
 	document.global.gameplay.shadowFrameLimit = 5;
-	document.global.gameplay.defaultDuration = "01:00";
+	document.global.gameplay.defaultDuration = "00:05";
 
 	//local or multiplayer game
 	document.global.gameplay.local = 1;
 	document.global.gameplay.localSingleInfo = { 
-		player:[{alias:"Player", score:0}],
+		player:[{alias:"Player", score:0, winner:false}],
 		ludicrious:1,
 		powerUp:1,
 		duration:document.global.gameplay.defaultDuration,
 		durationCount:document.global.gameplay.defaultDuration,
 	};
 	document.global.gameplay.localTwoInfo = { 
-		player:[{alias:"Player-One", score:0}, {alias:"Player-Two", score:0}],
+		player:[{alias:"Player-One", score:0, winner:false}, {alias:"Player-Two", score:0, winner:false}],
 		ludicrious:1,
 		powerUp:1,
 		duration:document.global.gameplay.defaultDuration,
@@ -202,6 +202,7 @@ function initGlobal() {
 		durationCount:document.global.gameplay.defaultDuration,
 	};
 	document.global.gameplay.computerScore = 0;
+	document.global.gameplay.computerWinner = false;
 	document.global.gameplay.mainClient = 1;
 	
 	//other game info
